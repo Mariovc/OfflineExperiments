@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">GLORIA experiments</string>
+    <string name="action_settings">Settings</string>
+    <string name="usernameMsg">User name:</string>
+    <string name="usernameHint">Username</string>
+    <string name="passwordMsg">Password:</string>
+    <string name="passwordHint">Password</string>
+    <string name="loginBtn">Log in</string>
+    <string name="remembermeMsg">Remember me</string>
+    <string name="loginInfo">Info</string>
+    <string name="infoBtnDescription">Info button</string>
+
+    
+    <string name="hello">Hello World, Set_Text_TitleBar!</string>
+
+    <color name="titlebackgroundcolor">#3232CD</color>
+    <color name="titletextcolor">#FFFFFF</color>
+</resources>
