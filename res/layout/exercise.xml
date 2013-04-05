@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <com.gloria.offlineexperiments.TouchImageView2
+    <com.gloria.offlineexperiments.TouchImageView
         android:id="@+id/touchImageView1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -23,5 +23,15 @@
         android:layout_alignParentTop="true"
         android:src="@drawable/pin"
         android:visibility="invisible" />
+
+    <Button
+        android:id="@+id/button1"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:onClick="printPinPosition"
+        android:text="Position" />
 
 </RelativeLayout>

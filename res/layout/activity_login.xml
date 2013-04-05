@@ -16,13 +16,14 @@
         android:id="@+id/imageView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:contentDescription="@string/app_name"
         android:src="@drawable/gloria_logo" />
 
     <TextView
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/titlebackgroundcolor"
+        android:background="@android:color/black"
         android:text="@string/usernameMsg"
         android:textColor="@android:color/white" />
 
@@ -41,6 +42,7 @@
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@android:color/black"
         android:layout_marginTop="8dp"
         android:text="@string/passwordMsg"
         android:textColor="@android:color/white" />

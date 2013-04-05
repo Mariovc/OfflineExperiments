@@ -41,9 +41,11 @@ public class TouchImageView extends ImageView {
 
 	Context context;
 
-	private boolean drawnPin = false;
+	private boolean visiblePin = false;
 	private ImageView pin2;
 	private float pinPosX=0, pinPosY=0;
+
+	private PointF centerPoint = new PointF();
 
 
 	public TouchImageView(Context context, AttributeSet attrs) {
@@ -56,6 +58,7 @@ public class TouchImageView extends ImageView {
 		m = new float[9];
 		setImageMatrix(matrix);
 		setScaleType(ScaleType.MATRIX);
+
 
 		setOnTouchListener(new OnTouchListener() {
 
@@ -106,6 +109,7 @@ public class TouchImageView extends ImageView {
 						matrix.postTranslate(deltaX, deltaY);
 						last.set(curr.x, curr.y);
 						movePinPosition(deltaX, deltaY);
+						moveCenterPointDrag(deltaX, deltaY);
 					}
 					break;
 
@@ -133,7 +137,7 @@ public class TouchImageView extends ImageView {
 
 
 	private void movePinPositionZoom (float focusX, float focusY, float scale) {
-		if (drawnPin) {
+		if (visiblePin) {
 			pinPosX = (scale * (pinPosX - focusX)) + focusX;
 			pinPosY = (scale * (pinPosY - focusY)) + focusY;
 			adjustPinPosition();
@@ -141,14 +145,14 @@ public class TouchImageView extends ImageView {
 	}
 
 	private void movePinPosition (float dx, float dy) {
-		if (drawnPin) {
+		if (visiblePin) {
 			pinPosX += dx;
 			pinPosY += dy;
 			adjustPinPosition();
 		}
 	}
 	private void markPosition (float posX, float posY) {
-		if (!drawnPin)
+		if (!visiblePin)
 			drawPin();
 		pinPosX = posX;
 		pinPosY = posY;
@@ -165,7 +169,7 @@ public class TouchImageView extends ImageView {
 	}
 
 	private void drawPin() {
-		drawnPin = true;
+		visiblePin = true;
 		View parent = (View) getParent();
 		pin2 = (ImageView) parent.findViewById(R.id.pinView);
 		pin2.setVisibility(VISIBLE);
@@ -206,7 +210,7 @@ public class TouchImageView extends ImageView {
 			}
 			right = screenWidth * saveScale - screenWidth - (2 * redundantXSpace * saveScale);
 			bottom = screenHeight * saveScale - screenHeight - (2 * redundantYSpace * saveScale);
-			
+
 			//if the scaled image doesn't fill the screen width/height
 			if (bmScaledWidth * saveScale <= screenWidth || bmScaledHeight * saveScale <= screenHeight) {
 				matrix.postScale(mScaleFactor, mScaleFactor, screenWidth / 2, screenHeight / 2);
@@ -267,6 +271,7 @@ public class TouchImageView extends ImageView {
 			}
 			// movePin
 			movePinPositionZoom(focusX, focusY, mScaleFactor);
+			moveCenterPointZoom(focusX,focusY, mScaleFactor);
 			return true;
 		}
 	}
@@ -277,6 +282,9 @@ public class TouchImageView extends ImageView {
 		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 		screenWidth = MeasureSpec.getSize(widthMeasureSpec);
 		screenHeight = MeasureSpec.getSize(heightMeasureSpec);
+
+		centerPoint.x = screenWidth/2;
+		centerPoint.y = screenHeight/2;
 
 		//Fit to screen.
 		float scale;
@@ -301,4 +309,42 @@ public class TouchImageView extends ImageView {
 		bottom = screenHeight * saveScale - screenHeight - (2 * redundantYSpace * saveScale);
 	}
 
+	private void moveCenterPointZoom (float focusX, float focusY, float scale) {
+		float centerViewX = screenWidth/2;
+		float centerViewY = screenHeight/2;
+		float focusDistanceX = centerViewX - focusX;
+		float focusDistanceY = centerViewY - focusY;
+		float deltaX = 0;
+		float deltaY = 0;
+		if (scale != 1) {
+			deltaX = focusDistanceX / scale - focusDistanceX;
+			deltaY = focusDistanceY / scale - focusDistanceY;
+			centerPoint.x += deltaX / saveScale / scale;
+			centerPoint.y += deltaY / saveScale / scale;
+		}
+	}
+
+	private void moveCenterPointDrag (float deltaX, float deltaY) {
+		centerPoint.x -= deltaX / saveScale;
+		centerPoint.y -= deltaY / saveScale;
+	}
+
+	public PointF getPinPosition() {
+		PointF pinPos = new PointF();
+		float deltaX;
+		float deltaY;
+		if (!visiblePin) {
+			//pinPos.x = pinPosY = 0;
+
+			pinPos.x = centerPoint.x;
+			pinPos.y = centerPoint.y;
+		}
+		else {
+			deltaX = (pinPosX - screenWidth/2) / saveScale;
+			deltaY = (pinPosY - screenHeight/2) / saveScale;
+			pinPos.x = centerPoint.x + deltaX;
+			pinPos.y = centerPoint.y + deltaY;
+		}
+		return pinPos;
+	}
 }
