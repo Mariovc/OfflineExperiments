@@ -1,21 +1,21 @@
 package com.gloria.offlineexperiments;
 
+
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.PointF;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
-import android.view.ViewGroup.MarginLayoutParams;
+import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 public class TouchImageView extends ImageView {
 
-	Matrix matrix = new Matrix();
+	Matrix matrix;
 
 	// We can be in one of these 3 states
 	static final int NONE = 0;
@@ -30,86 +30,68 @@ public class TouchImageView extends ImageView {
 	float maxScale = 3f;
 	float[] m;
 
-	float redundantXSpace, redundantYSpace;
 
-	float screenWidth, screenHeight;
+	int viewWidth, viewHeight;
 	static final int CLICK = 3;
 	float saveScale = 1f;
-	float right, bottom, bmScaledWidth, bmScaledHeight, bmWidth, bmHeight;
+	protected float origWidth, origHeight;
+	int oldMeasuredWidth, oldMeasuredHeight;
+
 
 	ScaleGestureDetector mScaleDetector;
 
 	Context context;
 
-	private boolean visiblePin = false;
-	private ImageView pin2;
-	private float pinPosX=0, pinPosY=0;
+	private ZoomablePinView pin = null;
 
-	private PointF centerPoint = new PointF();
+	// Center of the focused area in pixels
+	private PointF centerFocus = new PointF();
 
+	public TouchImageView(Context context) {
+		super(context);
+		sharedConstructing(context);
+	}
 
 	public TouchImageView(Context context, AttributeSet attrs) {
 		super(context, attrs);
+		sharedConstructing(context);
+	}
+
+	private void sharedConstructing(Context context) {
 		super.setClickable(true);
 		this.context = context;
-
 		mScaleDetector = new ScaleGestureDetector(context, new ScaleListener());
-		matrix.setTranslate(1f, 1f);
+		matrix = new Matrix();
 		m = new float[9];
 		setImageMatrix(matrix);
 		setScaleType(ScaleType.MATRIX);
-
 
 		setOnTouchListener(new OnTouchListener() {
 
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
 				mScaleDetector.onTouchEvent(event);
-
-				matrix.getValues(m);
-				float x = m[Matrix.MTRANS_X];
-				float y = m[Matrix.MTRANS_Y];
 				PointF curr = new PointF(event.getX(), event.getY());
 
 				switch (event.getAction()) {
 				case MotionEvent.ACTION_DOWN:
-					last.set(event.getX(), event.getY());
+					last.set(curr);
 					start.set(last);
 					mode = DRAG;
 					break;
+
 				case MotionEvent.ACTION_MOVE:
 					if (mode == DRAG) {
 						float deltaX = curr.x - last.x;
 						float deltaY = curr.y - last.y;
-						float scaleWidth = Math.round(bmScaledWidth * saveScale);
-						float scaleHeight = Math.round(bmScaledHeight * saveScale);
-						if (scaleWidth < screenWidth) {
-							deltaX = 0;
-							if (y + deltaY > 0)
-								deltaY = -y;
-							else if (y + deltaY < -bottom)
-								deltaY = -(y + bottom); 
-						} else if (scaleHeight < screenHeight) {
-							deltaY = 0;
-							if (x + deltaX > 0)
-								deltaX = -x;
-							else if (x + deltaX < -right)
-								deltaX = -(x + right);
-						} else {
-							if (x + deltaX > 0)
-								deltaX = -x;
-							else if (x + deltaX < -right)
-								deltaX = -(x + right);
-
-							if (y + deltaY > 0)
-								deltaY = -y;
-							else if (y + deltaY < -bottom)
-								deltaY = -(y + bottom);
-						}
-						matrix.postTranslate(deltaX, deltaY);
+						float fixTransX = getFixDragTrans(deltaX, viewWidth, origWidth * saveScale);
+						float fixTransY = getFixDragTrans(deltaY, viewHeight, origHeight * saveScale);
+						matrix.postTranslate(fixTransX, fixTransY);
+						fixTrans();
 						last.set(curr.x, curr.y);
-						movePinPosition(deltaX, deltaY);
-						moveCenterPointDrag(deltaX, deltaY);
+						moveCenterPointDrag(fixTransX, fixTransY);
+						if (pin != null)
+							pin.moveOnDrag(fixTransX, fixTransY);
 					}
 					break;
 
@@ -118,8 +100,11 @@ public class TouchImageView extends ImageView {
 					int xDiff = (int) Math.abs(curr.x - start.x);
 					int yDiff = (int) Math.abs(curr.y - start.y);
 					if (xDiff < CLICK && yDiff < CLICK) {
-						markPosition(start.x, start.y);
 						performClick();
+						if (pin == null)
+							addPin();
+						PointF centerPoint = new PointF((float) viewWidth/2, (float) viewHeight/2);
+						pin.setPosition(curr.x, curr.y, centerPoint, centerFocus, saveScale);
 					}
 					break;
 
@@ -127,6 +112,7 @@ public class TouchImageView extends ImageView {
 					mode = NONE;
 					break;
 				}
+
 				setImageMatrix(matrix);
 				invalidate();
 				return true; // indicate event was handled
@@ -135,55 +121,7 @@ public class TouchImageView extends ImageView {
 		});
 	}
 
-
-	private void movePinPositionZoom (float focusX, float focusY, float scale) {
-		if (visiblePin) {
-			pinPosX = (scale * (pinPosX - focusX)) + focusX;
-			pinPosY = (scale * (pinPosY - focusY)) + focusY;
-			adjustPinPosition();
-		}
-	}
-
-	private void movePinPosition (float dx, float dy) {
-		if (visiblePin) {
-			pinPosX += dx;
-			pinPosY += dy;
-			adjustPinPosition();
-		}
-	}
-	private void markPosition (float posX, float posY) {
-		if (!visiblePin)
-			drawPin();
-		pinPosX = posX;
-		pinPosY = posY;
-		adjustPinPosition();
-	}
-
-	private void adjustPinPosition() {
-		int leftMargin = (int) (pinPosX - pin2.getWidth()/2);
-		int topMargin = (int) (pinPosY - pin2.getHeight());
-		MarginLayoutParams marginParams = new MarginLayoutParams(pin2.getLayoutParams());
-		marginParams.setMargins( leftMargin, topMargin, 0, 0);
-		RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(marginParams);
-		pin2.setLayoutParams(layoutParams);
-	}
-
-	private void drawPin() {
-		visiblePin = true;
-		View parent = (View) getParent();
-		pin2 = (ImageView) parent.findViewById(R.id.pinView);
-		pin2.setVisibility(VISIBLE);
-	}
-
-	@Override
-	public void setImageBitmap(Bitmap bm) { 
-		super.setImageBitmap(bm);
-		bmWidth = bm.getWidth();
-		bmHeight = bm.getHeight();
-	}
-
-	public void setMaxZoom(float x)
-	{
+	public void setMaxZoom(float x) {
 		maxScale = x;
 	}
 
@@ -196,10 +134,8 @@ public class TouchImageView extends ImageView {
 
 		@Override
 		public boolean onScale(ScaleGestureDetector detector) {
-			float mScaleFactor = (float)Math.min(Math.max(.95f, detector.getScaleFactor()), 1.05);
+			float mScaleFactor = detector.getScaleFactor();
 			float origScale = saveScale;
-			float focusX;
-			float focusY;
 			saveScale *= mScaleFactor;
 			if (saveScale > maxScale) {
 				saveScale = maxScale;
@@ -208,143 +144,143 @@ public class TouchImageView extends ImageView {
 				saveScale = minScale;
 				mScaleFactor = minScale / origScale;
 			}
-			right = screenWidth * saveScale - screenWidth - (2 * redundantXSpace * saveScale);
-			bottom = screenHeight * saveScale - screenHeight - (2 * redundantYSpace * saveScale);
 
-			//if the scaled image doesn't fill the screen width/height
-			if (bmScaledWidth * saveScale <= screenWidth || bmScaledHeight * saveScale <= screenHeight) {
-				matrix.postScale(mScaleFactor, mScaleFactor, screenWidth / 2, screenHeight / 2);
-				focusX = screenWidth/2;
-				focusY = screenHeight/2;
-				if (mScaleFactor < 1) {		//zoom out
-					matrix.getValues(m);
-					float x = m[Matrix.MTRANS_X];
-					float y = m[Matrix.MTRANS_Y];
-					if (mScaleFactor < 1) {		//zoom out
-						if (Math.round(bmScaledWidth * saveScale) < screenWidth) {
-							if (y < -bottom) {
-								//Toast.makeText(getContext(), "1", Toast.LENGTH_SHORT).show();
-								matrix.postTranslate(0, -(y + bottom));
-								focusY = screenHeight;
-							}else if (y > 0){
-								//Toast.makeText(getContext(), "2", Toast.LENGTH_SHORT).show();
-								matrix.postTranslate(0, -y);
-								focusY = 0;
-							}
-						} else {
-							if (x < -right) {
-								//Toast.makeText(getContext(), "3", Toast.LENGTH_SHORT).show();
-								matrix.postTranslate(-(x + right), 0);
-								focusX = screenWidth;
-							}
-							else if (x > 0) {
-								//Toast.makeText(getContext(), "4", Toast.LENGTH_SHORT).show();
-								matrix.postTranslate(-x, 0);
-								focusX = 0;
-							}
-						}
-					}
-				}
-			} else {
-				matrix.postScale(mScaleFactor, mScaleFactor, detector.getFocusX(), detector.getFocusY());
-				focusX = detector.getFocusX();
-				focusY = detector.getFocusY();
-				matrix.getValues(m);
-				float x = m[Matrix.MTRANS_X];
-				float y = m[Matrix.MTRANS_Y];
-				if (mScaleFactor < 1) {
-					if (x < -right) {
-						matrix.postTranslate(-(x + right), 0);
-						focusX = screenWidth;
-					} else if (x > 0) {
-						matrix.postTranslate(-x, 0);
-						focusX = 0;
-					}
-					if (y < -bottom) {
-						matrix.postTranslate(0, -(y + bottom));
-						focusY = screenHeight;
-					} else if (y > 0) {
-						matrix.postTranslate(0, -y);
-						focusY = 0;
-					}
-				}
+			if (origWidth * saveScale <= viewWidth || origHeight * saveScale <= viewHeight) {
+				matrix.postScale(mScaleFactor, mScaleFactor, (float) viewWidth/2, (float) viewHeight/2);
+				moveCenterPointZoom((float) viewWidth/2, (float) viewHeight/2, mScaleFactor);
+				if (pin != null)
+					pin.moveOnZoom((float) viewWidth/2, (float) viewHeight/2, mScaleFactor);
 			}
-			// movePin
-			movePinPositionZoom(focusX, focusY, mScaleFactor);
-			moveCenterPointZoom(focusX,focusY, mScaleFactor);
+			else {
+				matrix.postScale(mScaleFactor, mScaleFactor, detector.getFocusX(), detector.getFocusY());
+				moveCenterPointZoom(detector.getFocusX(), detector.getFocusY(), mScaleFactor);
+				if (pin != null)
+					pin.moveOnZoom(detector.getFocusX(), detector.getFocusY(), mScaleFactor);
+			}
+			fixTrans();
 			return true;
 		}
 	}
 
+	void fixTrans() {
+		matrix.getValues(m);
+		float transX = m[Matrix.MTRANS_X];
+		float transY = m[Matrix.MTRANS_Y];
+
+		float fixTransX = getFixTrans(transX, viewWidth, origWidth * saveScale);
+		float fixTransY = getFixTrans(transY, viewHeight, origHeight * saveScale);
+
+		if (fixTransX != 0 || fixTransY != 0) {
+			matrix.postTranslate(fixTransX, fixTransY);
+			moveCenterPointDrag(fixTransX, fixTransY);
+			if (pin != null)
+				pin.moveOnDrag(fixTransX, fixTransY);
+		}
+	}
+
+	float getFixTrans(float trans, float viewSize, float contentSize) {
+		float minTrans, maxTrans;
+
+		if (contentSize <= viewSize) {
+			minTrans = 0;
+			maxTrans = viewSize - contentSize;
+		} else {
+			minTrans = viewSize - contentSize;
+			maxTrans = 0;
+		}
+
+		if (trans < minTrans)
+			return -trans + minTrans;
+		else if (trans > maxTrans)
+			return -trans + maxTrans;
+		else if (contentSize <= viewSize && mode == ZOOM)
+			return ((minTrans + maxTrans) / 2) - trans;
+		return 0;
+	}
+
+	float getFixDragTrans(float delta, float viewSize, float contentSize) {
+		if (contentSize <= viewSize) {
+			return 0;
+		}
+		return delta;
+	}
+
 	@Override
-	protected void onMeasure (int widthMeasureSpec, int heightMeasureSpec)
-	{
+	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-		screenWidth = MeasureSpec.getSize(widthMeasureSpec);
-		screenHeight = MeasureSpec.getSize(heightMeasureSpec);
+		viewWidth = MeasureSpec.getSize(widthMeasureSpec);
+		viewHeight = MeasureSpec.getSize(heightMeasureSpec);
 
-		centerPoint.x = screenWidth/2;
-		centerPoint.y = screenHeight/2;
+		centerFocus.x = (float) viewWidth/2;
+		centerFocus.y = (float) viewHeight/2;
 
-		//Fit to screen.
-		float scale;
-		float scaleX =  (float)screenWidth / (float)bmWidth;
-		float scaleY = (float)screenHeight / (float)bmHeight;
-		scale = Math.min(scaleX, scaleY);
-		matrix.setScale(scale, scale);
-		setImageMatrix(matrix);
-		saveScale = 1f;
+		//
+		// Rescales image on rotation
+		//
+		if (oldMeasuredHeight == viewWidth && oldMeasuredHeight == viewHeight
+				|| viewWidth == 0 || viewHeight == 0)
+			return;
+		oldMeasuredHeight = viewHeight;
+		oldMeasuredWidth = viewWidth;
 
-		// Center the image
-		redundantYSpace = (float)screenHeight - (scale * (float)bmHeight) ;
-		redundantXSpace = (float)screenWidth - (scale * (float)bmWidth);
-		redundantYSpace /= (float)2;
-		redundantXSpace /= (float)2;
-		matrix.postTranslate(redundantXSpace, redundantYSpace);
-		setImageMatrix(matrix);
+		if (saveScale == 1) {
+			//Fit to screen.
+			float scale;
 
-		bmScaledWidth = screenWidth - 2 * redundantXSpace;
-		bmScaledHeight = screenHeight - 2 * redundantYSpace;
-		right = screenWidth * saveScale - screenWidth - (2 * redundantXSpace * saveScale);
-		bottom = screenHeight * saveScale - screenHeight - (2 * redundantYSpace * saveScale);
+			Drawable drawable = getDrawable();
+			if (drawable == null || drawable.getIntrinsicWidth() == 0 || drawable.getIntrinsicHeight() == 0)
+				return;
+			int bmWidth = drawable.getIntrinsicWidth();
+			int bmHeight = drawable.getIntrinsicHeight();
+
+			Log.d("bmSize", "bmWidth: " + bmWidth + " bmHeight : " + bmHeight);
+
+			float scaleX = (float) viewWidth / (float) bmWidth;
+			float scaleY = (float) viewHeight / (float) bmHeight;
+			scale = Math.min(scaleX, scaleY);
+			matrix.setScale(scale, scale);
+
+			// Center the image
+			float redundantYSpace = (float) viewHeight - (scale * (float) bmHeight);
+			float redundantXSpace = (float) viewWidth - (scale * (float) bmWidth);
+			redundantYSpace /= 2;
+			redundantXSpace /= 2;
+
+			matrix.postTranslate(redundantXSpace, redundantYSpace);
+
+			origWidth = viewWidth - 2 * redundantXSpace;
+			origHeight = viewHeight - 2 * redundantYSpace;
+			setImageMatrix(matrix);
+		}
+		fixTrans();
+	}
+
+	public void addPin() {
+		pin = new ZoomablePinView(context);
+		pin.setLayoutParams(new ViewGroup.LayoutParams(
+				ViewGroup.LayoutParams.WRAP_CONTENT,
+				ViewGroup.LayoutParams.WRAP_CONTENT));
+		ViewGroup parent = (ViewGroup) getParent();
+		parent.addView(pin);
+	}
+	
+	public ZoomablePinView getPin() {
+		return pin;
 	}
 
 	private void moveCenterPointZoom (float focusX, float focusY, float scale) {
-		float centerViewX = screenWidth/2;
-		float centerViewY = screenHeight/2;
-		float focusDistanceX = centerViewX - focusX;
-		float focusDistanceY = centerViewY - focusY;
-		float deltaX = 0;
-		float deltaY = 0;
-		if (scale != 1) {
-			deltaX = focusDistanceX / scale - focusDistanceX;
-			deltaY = focusDistanceY / scale - focusDistanceY;
-			centerPoint.x += deltaX / saveScale / scale;
-			centerPoint.y += deltaY / saveScale / scale;
-		}
+			float centerViewX = (float) viewWidth/2;
+			float centerViewY = (float) viewHeight/2;
+			float focusDistanceX = centerViewX - focusX;
+			float focusDistanceY = centerViewY - focusY;
+			float deltaX = focusDistanceX / scale - focusDistanceX;
+			float deltaY = focusDistanceY / scale - focusDistanceY;
+			centerFocus.x += deltaX / (saveScale / scale);
+			centerFocus.y += deltaY / (saveScale / scale);
 	}
 
 	private void moveCenterPointDrag (float deltaX, float deltaY) {
-		centerPoint.x -= deltaX / saveScale;
-		centerPoint.y -= deltaY / saveScale;
-	}
-
-	public PointF getPinPosition() {
-		PointF pinPos = new PointF();
-		float deltaX;
-		float deltaY;
-		if (!visiblePin) {
-			//pinPos.x = pinPosY = 0;
-
-			pinPos.x = centerPoint.x;
-			pinPos.y = centerPoint.y;
-		}
-		else {
-			deltaX = (pinPosX - screenWidth/2) / saveScale;
-			deltaY = (pinPosY - screenHeight/2) / saveScale;
-			pinPos.x = centerPoint.x + deltaX;
-			pinPos.y = centerPoint.y + deltaY;
-		}
-		return pinPos;
+		centerFocus.x -= deltaX / saveScale;
+		centerFocus.y -= deltaY / saveScale;
 	}
 }

@@ -17,23 +17,17 @@ public class LoginActivity extends Activity {
 		//final boolean customTitleSupported = requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 		setContentView(R.layout.activity_login);
 
-		//if ( customTitleSupported ) {
-		//	getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.titlebar);
-		//}
+		/*if ( customTitleSupported ) {
+			getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.titlebar);
+		}
 
-		/*ImageView infoButton = (ImageView)findViewById(R.id.infoButton);
+		ImageView infoButton = (ImageView)findViewById(R.id.infoButton);
 		infoButton.setOnClickListener(new OnClickListener() {
 			public void onClick(View view) {
 				exit(null);
 			}
-		}); */
-		/*final TextView myTitleText = (TextView) findViewById(R.id.myTitle);
-        if ( myTitleText != null ) {
-            myTitleText.setText("NEW TITLE");
-
-            // user can also set color using "Color" and then "Color value constant"
-           // myTitleText.setBackgroundColor(Color.GREEN);
-        }*/
+		}); 
+		*/
 	}
 
 	@Override
