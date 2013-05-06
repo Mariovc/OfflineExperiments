@@ -33,6 +33,16 @@
             android:onClick="showPinPosition"
             android:text="Position" />
 
+        <Button
+            android:id="@+id/button2"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:onClick="removePin"
+            android:text="Remove" />
+
     </RelativeLayout>
 
 </FrameLayout>

@@ -286,6 +286,15 @@ public class TouchImageView extends ImageView {
 		selectedPin = pins.size() - 1;
 	}
 
+	public void removePin(){
+		if (selectedPin > -1){
+			ViewGroup parent = (ViewGroup) getParent();
+			parent.removeView(pins.get(selectedPin));
+			pins.remove(selectedPin);
+			selectedPin = -1;
+		}
+	}
+
 	public ZoomablePinView getPin() {
 		if (selectedPin == -1)
 			return null;

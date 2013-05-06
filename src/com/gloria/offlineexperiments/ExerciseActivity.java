@@ -31,5 +31,9 @@ public class ExerciseActivity extends Activity{
 			Toast.makeText(this, "no pin selected", Toast.LENGTH_SHORT).show();
 		}
 	}
+	
+	public void removePin (View view) {
+		imgTouchable.removePin();
+	}
 
 }
