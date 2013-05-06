@@ -21,14 +21,14 @@ public class ExerciseActivity extends Activity{
 		imgTouchable.setMaxZoom(4f); //change the max level of zoom, default is 3f
 	}
 
-	public void printPinPosition(View view) {
+	public void showPinPosition(View view) {
 		ZoomablePinView pin = imgTouchable.getPin();
 		if (pin != null) {
 			PointF pinPos = pin.getPositionInPixels();
 			Toast.makeText(this, "pin position: " + pinPos.x + ", " + pinPos.y, Toast.LENGTH_SHORT).show();
 		}
 		else {
-			Toast.makeText(this, "no pin", Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, "no pin selected", Toast.LENGTH_SHORT).show();
 		}
 	}
 

@@ -4,8 +4,11 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PointF;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 public class ZoomablePinView extends ImageView{
 
@@ -26,12 +29,9 @@ public class ZoomablePinView extends ImageView{
 	}
 
 	public void setPosition (float posX, float posY, PointF centerPoint, PointF centerFocus, float saveScale) {
-		float deltaX = (posX - centerPoint.x) / saveScale;
-		float deltaY = (posY - centerPoint.y) / saveScale;
-		posXInPixels = centerFocus.x + deltaX;
-		posYInPixels = centerFocus.y + deltaY;
 		this.posX = posX;
 		this.posY = posY;
+		setRealPosition(centerPoint, centerFocus, saveScale);
 		setMargins();
 	}
 
@@ -54,9 +54,30 @@ public class ZoomablePinView extends ImageView{
 		layoutParams.setMargins( leftMargin, topMargin, 0, 0);
 		setLayoutParams(layoutParams);
 	}
+	
+	public void drag (float dx, float dy, PointF centerPoint, PointF centerFocus, float saveScale) {
+		moveOnDrag(dx, dy);
+		setRealPosition(centerPoint, centerFocus, saveScale);
+	}
+	
+	private void setRealPosition (PointF centerPoint, PointF centerFocus, float saveScale) {
+		float deltaX = (posX - centerPoint.x) / saveScale;
+		float deltaY = (posY - centerPoint.y) / saveScale;
+		this.posXInPixels = centerFocus.x + deltaX;
+		this.posYInPixels = centerFocus.y + deltaY;
+	}
 
 	public PointF getPositionInPixels() {
 		PointF pinPos = new PointF(posXInPixels, posYInPixels);
 		return pinPos;
 	}
+
+	public float getCenterPointViewX() {
+		return posX;
+	}
+
+	public float getCenterPointViewY() {
+		return posY - height/2;
+	}
+	
 }
