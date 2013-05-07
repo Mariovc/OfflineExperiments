@@ -14,7 +14,7 @@ import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Toast;
+import android.widget.TextView;
 
 public class TouchImageView extends ImageView {
 
@@ -50,7 +50,7 @@ public class TouchImageView extends ImageView {
 	private int selectedPin = -1;
 	private int dragginPin = -1;
 	// Maximum distance between the clicked point and the pin, to be selected
-	private static final int SELECTION_DISTANCE = 10;
+	private static final int SELECTION_DISTANCE = 3;
 
 	// Center of the focused area in pixels
 	private PointF centerFocus = new PointF();
@@ -116,8 +116,8 @@ public class TouchImageView extends ImageView {
 
 				case MotionEvent.ACTION_UP:
 					if (mode == DRAG_PIN) {
-						selectedPin = dragginPin;
-						Toast.makeText(getContext(), "pin: " + selectedPin, Toast.LENGTH_SHORT).show();
+						selectPin(dragginPin);
+						//Toast.makeText(getContext(), "pin: " + selectedPin, Toast.LENGTH_SHORT).show();
 					}
 					else {
 						int xDiff = (int) Math.abs(curr.x - start.x);
@@ -279,20 +279,45 @@ public class TouchImageView extends ImageView {
 		pin.setLayoutParams(new ViewGroup.LayoutParams(
 				ViewGroup.LayoutParams.WRAP_CONTENT,
 				ViewGroup.LayoutParams.WRAP_CONTENT));
-		pin.setPosition(posX, posY, centerPoint, centerFocus, saveScale);
 		pins.add(pin);
 		ViewGroup parent = (ViewGroup) getParent();
 		parent.addView(pin);
-		selectedPin = pins.size() - 1;
+		TextView numberView = new TextView(context);
+		parent.addView(numberView);
+		pin.setNumberView(numberView);
+		selectPin(pins.size() - 1);
+		pin.setPosition(posX, posY, centerPoint, centerFocus, saveScale);
 	}
 
 	public void removePin(){
 		if (selectedPin > -1){
 			ViewGroup parent = (ViewGroup) getParent();
+			parent.removeView(pins.get(selectedPin).getNumberView());
 			parent.removeView(pins.get(selectedPin));
 			pins.remove(selectedPin);
 			selectedPin = -1;
+			selectPin(pins.size() - 1);
 		}
+	}
+
+	private void selectPin(int pinNumber){
+		if (selectedPin > -1) 
+			pins.get(selectedPin).unselect();
+		if (pinNumber > -1) {
+			selectedPin = pinNumber;
+			pins.get(selectedPin).select();
+			pins.get(selectedPin).bringToFront();
+		}
+	}
+
+	public void increasePin () {
+		if (selectedPin > -1)
+			pins.get(selectedPin).increaseNumber();
+	}
+
+	public void decreasePin () {
+		if (selectedPin > -1)
+			pins.get(selectedPin).decreaseNumber();
 	}
 
 	public ZoomablePinView getPin() {

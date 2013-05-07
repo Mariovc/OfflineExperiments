@@ -17,7 +17,7 @@ public class ExerciseActivity extends Activity{
 		setContentView(R.layout.exercise);
 
 		imgTouchable = (TouchImageView) findViewById(R.id.touchImageView1);
-		imgTouchable.setImageBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.water_drops_wallpaper));
+		imgTouchable.setImageBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.sol2));
 		imgTouchable.setMaxZoom(4f); //change the max level of zoom, default is 3f
 	}
 
@@ -36,4 +36,11 @@ public class ExerciseActivity extends Activity{
 		imgTouchable.removePin();
 	}
 
+	public void increase (View view) {
+		imgTouchable.increasePin();
+	}
+	
+	public void decrease (View view) {
+		imgTouchable.decreasePin();
+	}
 }
