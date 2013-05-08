@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PointF;
+import android.graphics.Typeface;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -93,6 +94,10 @@ public class ZoomablePinView extends ImageView{
 		return posY;
 	}
 
+	public int getNumber() {
+		return number;
+	}
+
 	public TextView getNumberView() {
 		return numberView;
 	}
@@ -130,11 +135,13 @@ public class ZoomablePinView extends ImageView{
 		setImageBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.marker_selected));
 		setMargins();
 		numberView.setTextColor(getResources().getColor(R.color.white));
+		numberView.setTypeface(null, Typeface.BOLD);
 	}
 	
 	public void unselect () {
 		setImageBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.marker));
 		setMargins();
 		numberView.setTextColor(getResources().getColor(R.color.black));
+		numberView.setTypeface(null, Typeface.NORMAL);
 	}
 }

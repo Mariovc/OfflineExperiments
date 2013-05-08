@@ -43,7 +43,7 @@ public class LoginActivity extends Activity {
 	}
 	
 	public void launchExercise(View view) {
-		Intent i = new Intent(this, ExerciseActivity.class);
+		Intent i = new Intent(this, SunMarkerActivity.class);
 		startActivity(i);
 	}
 	

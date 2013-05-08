@@ -23,7 +23,7 @@
             </intent-filter>
         </activity>
         <activity 
-            android:name="com.gloria.offlineexperiments.ExerciseActivity" 
+            android:name="com.gloria.offlineexperiments.SunMarkerActivity" 
             android:theme="@android:style/Theme.NoTitleBar">
         </activity>
     </application>

@@ -3,6 +3,7 @@ package com.gloria.offlineexperiments;
 
 import java.util.ArrayList;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Matrix;
 import android.graphics.PointF;
@@ -16,7 +17,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class TouchImageView extends ImageView {
+public class SunMarkerView extends ImageView {
 
 	Matrix matrix;
 
@@ -50,19 +51,24 @@ public class TouchImageView extends ImageView {
 	private int selectedPin = -1;
 	private int dragginPin = -1;
 	// Maximum distance between the clicked point and the pin, to be selected
-	private static final int SELECTION_DISTANCE = 3;
+	private static final int SELECTION_DISTANCE = 0;
 
 	// Center of the focused area in pixels
 	private PointF centerFocus = new PointF();
 	// Center point of TouchImageView
 	private final PointF centerPointView = new PointF();
+	
+	private int wolfNumber = 0;
+	private TextView wolfNumberText = null;
+	//observatory factor or the personal reduction coefficient
+	private static final int k = 1;
 
-	public TouchImageView(Context context) {
+	public SunMarkerView(Context context) {
 		super(context);
 		sharedConstructing(context);
 	}
 
-	public TouchImageView(Context context, AttributeSet attrs) {
+	public SunMarkerView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		sharedConstructing(context);
 	}
@@ -287,6 +293,7 @@ public class TouchImageView extends ImageView {
 		pin.setNumberView(numberView);
 		selectPin(pins.size() - 1);
 		pin.setPosition(posX, posY, centerPoint, centerFocus, saveScale);
+		calculateWolfNumber();
 	}
 
 	public void removePin(){
@@ -297,6 +304,7 @@ public class TouchImageView extends ImageView {
 			pins.remove(selectedPin);
 			selectedPin = -1;
 			selectPin(pins.size() - 1);
+			calculateWolfNumber();
 		}
 	}
 
@@ -311,13 +319,17 @@ public class TouchImageView extends ImageView {
 	}
 
 	public void increasePin () {
-		if (selectedPin > -1)
+		if (selectedPin > -1) {
 			pins.get(selectedPin).increaseNumber();
+		calculateWolfNumber();
+		}
 	}
 
 	public void decreasePin () {
-		if (selectedPin > -1)
+		if (selectedPin > -1){
 			pins.get(selectedPin).decreaseNumber();
+		calculateWolfNumber();
+		}
 	}
 
 	public ZoomablePinView getPin() {
@@ -371,5 +383,20 @@ public class TouchImageView extends ImageView {
 			}
 		}
 		return index;
+	}
+
+	private void calculateWolfNumber() {
+		if (wolfNumberText != null) {
+			int individualSpots = 0;
+			for (int i = 0; i < pins.size(); i++) {
+				individualSpots += pins.get(i).getNumber();
+			}
+			wolfNumber = k * (10 * pins.size() + individualSpots);
+			wolfNumberText.setText("Wolf Number: R = " + wolfNumber);
+		}
+	}
+	
+	public void setWolfNumberText (TextView textView) {
+		this.wolfNumberText = textView;
 	}
 }

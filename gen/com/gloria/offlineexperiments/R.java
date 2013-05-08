@@ -45,23 +45,24 @@ public final class R {
         public static final int Button01=0x7f09000b;
         public static final int Button02=0x7f09000a;
         public static final int LinearLayout1=0x7f090000;
-        public static final int action_settings=0x7f09000f;
+        public static final int action_settings=0x7f090010;
         public static final int button1=0x7f090007;
         public static final int checkBox1=0x7f090006;
         public static final int editText1=0x7f090003;
         public static final int editText2=0x7f090005;
         public static final int imageView1=0x7f090001;
-        public static final int infoButton=0x7f09000e;
-        public static final int logoTitlebar=0x7f09000c;
+        public static final int infoButton=0x7f09000f;
+        public static final int logoTitlebar=0x7f09000d;
         public static final int mainLayout=0x7f090008;
-        public static final int myTitle=0x7f09000d;
+        public static final int myTitle=0x7f09000e;
         public static final int textView1=0x7f090002;
         public static final int textView2=0x7f090004;
         public static final int touchImageView1=0x7f090009;
+        public static final int wolfNumberText=0x7f09000c;
     }
     public static final class layout {
         public static final int activity_login=0x7f030000;
-        public static final int exercise=0x7f030001;
+        public static final int sun_marker=0x7f030001;
         public static final int test=0x7f030002;
         public static final int titlebar=0x7f030003;
     }
