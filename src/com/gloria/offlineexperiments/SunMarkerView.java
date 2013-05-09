@@ -3,7 +3,6 @@ package com.gloria.offlineexperiments;
 
 import java.util.ArrayList;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Matrix;
 import android.graphics.PointF;
@@ -41,6 +40,8 @@ public class SunMarkerView extends ImageView {
 	float saveScale = 1f;
 	protected float origWidth, origHeight;
 	int oldMeasuredWidth, oldMeasuredHeight;
+	float redundantYSpace, redundantXSpace;
+	float scale = 1; // scale used to fit the image to the screen size;
 
 
 	ScaleGestureDetector mScaleDetector;
@@ -61,7 +62,9 @@ public class SunMarkerView extends ImageView {
 	private int wolfNumber = 0;
 	private TextView wolfNumberText = null;
 	//observatory factor or the personal reduction coefficient
-	private static final int k = 1;
+	private static final int K = 1;
+	
+	private boolean reload = false;
 
 	public SunMarkerView(Context context) {
 		super(context);
@@ -116,7 +119,8 @@ public class SunMarkerView extends ImageView {
 						float deltaX = curr.x - last.x;
 						float deltaY = curr.y - last.y;
 						last.set(curr.x, curr.y);
-						pins.get(dragginPin).drag(deltaX, deltaY, centerPointView, centerFocus, saveScale);
+						pins.get(dragginPin).drag(deltaX, deltaY, centerPointView, centerFocus, saveScale,
+								scale, redundantXSpace, redundantYSpace);
 					}
 					break;
 
@@ -130,7 +134,9 @@ public class SunMarkerView extends ImageView {
 						int yDiff = (int) Math.abs(curr.y - start.y);
 						if (xDiff < CLICK && yDiff < CLICK) {
 							performClick();
-							addPin(curr.x, curr.y, centerPointView, centerFocus, saveScale);
+							
+							addPin(curr.x, curr.y, centerPointView, centerFocus, saveScale, 
+									scale, redundantXSpace, redundantYSpace);
 						}
 					}
 					mode = NONE;
@@ -262,12 +268,12 @@ public class SunMarkerView extends ImageView {
 
 			float scaleX = (float) viewWidth / (float) bmWidth;
 			float scaleY = (float) viewHeight / (float) bmHeight;
-			scale = Math.min(scaleX, scaleY);
+			this.scale = scale = Math.min(scaleX, scaleY);
 			matrix.setScale(scale, scale);
 
 			// Center the image
-			float redundantYSpace = (float) viewHeight - (scale * (float) bmHeight);
-			float redundantXSpace = (float) viewWidth - (scale * (float) bmWidth);
+			redundantYSpace = (float) viewHeight - (scale * (float) bmHeight);
+			redundantXSpace = (float) viewWidth - (scale * (float) bmWidth);
 			redundantYSpace /= 2;
 			redundantXSpace /= 2;
 
@@ -276,14 +282,31 @@ public class SunMarkerView extends ImageView {
 			origWidth = viewWidth - 2 * redundantXSpace;
 			origHeight = viewHeight - 2 * redundantYSpace;
 			setImageMatrix(matrix);
+			
+			// reload saved state
+			if (reload) {
+				ViewGroup parent = (ViewGroup) getParent();
+				for (int i = 0; i < pins.size(); i++) {
+					ZoomablePinView pin = pins.get(i);
+					pin.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+							ViewGroup.LayoutParams.WRAP_CONTENT));
+					parent.addView(pin);
+					TextView numberView = new TextView(context);
+					parent.addView(numberView);
+					pin.setNumberView(numberView);
+					pin.setPosition(scale, redundantXSpace, redundantYSpace);
+				}
+				selectPin(selectedPin);
+				setReload(false);
+			}
 		}
 		fixTrans();
 	}
 
-	public void addPin(float posX, float posY, PointF centerPoint, PointF centerFocus, float saveScale) {
+	private void addPin(float posX, float posY, PointF centerPoint, PointF centerFocus, float saveScale, 
+			float scale, float redundantXSpace, float redundantYSpace) {
 		ZoomablePinView pin = new ZoomablePinView(context);
-		pin.setLayoutParams(new ViewGroup.LayoutParams(
-				ViewGroup.LayoutParams.WRAP_CONTENT,
+		pin.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
 				ViewGroup.LayoutParams.WRAP_CONTENT));
 		pins.add(pin);
 		ViewGroup parent = (ViewGroup) getParent();
@@ -292,7 +315,8 @@ public class SunMarkerView extends ImageView {
 		parent.addView(numberView);
 		pin.setNumberView(numberView);
 		selectPin(pins.size() - 1);
-		pin.setPosition(posX, posY, centerPoint, centerFocus, saveScale);
+		pin.setPosition(posX, posY, centerPoint, centerFocus, saveScale, 
+				scale, redundantXSpace, redundantYSpace);
 		calculateWolfNumber();
 	}
 
@@ -308,10 +332,10 @@ public class SunMarkerView extends ImageView {
 		}
 	}
 
-	private void selectPin(int pinNumber){
+	public void selectPin(int pinNumber){
 		if (selectedPin > -1) 
 			pins.get(selectedPin).unselect();
-		if (pinNumber > -1) {
+		if (pinNumber > -1 && pinNumber < pins.size()) {
 			selectedPin = pinNumber;
 			pins.get(selectedPin).select();
 			pins.get(selectedPin).bringToFront();
@@ -391,12 +415,41 @@ public class SunMarkerView extends ImageView {
 			for (int i = 0; i < pins.size(); i++) {
 				individualSpots += pins.get(i).getNumber();
 			}
-			wolfNumber = k * (10 * pins.size() + individualSpots);
+			wolfNumber = K * (10 * pins.size() + individualSpots);
 			wolfNumberText.setText("Wolf Number: R = " + wolfNumber);
 		}
 	}
 	
 	public void setWolfNumberText (TextView textView) {
 		this.wolfNumberText = textView;
+	}
+
+	public ArrayList<ZoomablePinView> getPins() {
+		return pins;
+	}
+
+	public void setPins(ArrayList<ZoomablePinView> pins) {
+		this.pins = pins;
+		calculateWolfNumber();
+	}
+
+	public int getSelectedPin() {
+		return selectedPin;
+	}
+	
+	public void setSelectedPin(int selectedPin) {
+		this.selectedPin = selectedPin;
+	}
+
+	public void setReload(boolean reload) {
+		this.reload = reload;
+	}
+
+	public int getRealWidth() {
+		return getDrawable().getIntrinsicWidth();
+	}
+	
+	public int getRealHeight() {
+		return getDrawable().getIntrinsicHeight();
 	}
 }

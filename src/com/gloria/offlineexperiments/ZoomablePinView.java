@@ -30,11 +30,24 @@ public class ZoomablePinView extends ImageView{
 		this.height = bm.getHeight();
 	}
 
-	public void setPosition (float posX, float posY, PointF centerPoint, PointF centerFocus, float saveScale) {
+	public void setPosition (float posX, float posY, PointF centerPoint, PointF centerFocus, float saveScale,
+			float scale, float redundantXSpace, float redundantYSpace) {
 		this.posX = posX;
 		this.posY = posY;
-		setRealPosition(centerPoint, centerFocus, saveScale);
+		setRealPosition(centerPoint, centerFocus, saveScale,
+				scale, redundantXSpace, redundantYSpace);
 		setMargins();
+	}
+	
+	public void setPosition (float scale, float redundantXSpace, float redundantYSpace) {
+		this.posX = this.posXInPixels * scale + redundantXSpace;
+		this.posY = this.posYInPixels * scale + redundantYSpace;
+		setMargins();
+	}
+	
+	public void setRealPosition (float realPosX, float realPosY) {
+		this.posXInPixels = realPosX;
+		this.posYInPixels = realPosY;
 	}
 
 	public void moveOnZoom (float focusX, float focusY, float scale) {
@@ -69,16 +82,21 @@ public class ZoomablePinView extends ImageView{
 		numberView.setLayoutParams(textLayoutParams);
 	}
 
-	public void drag (float dx, float dy, PointF centerPoint, PointF centerFocus, float saveScale) {
+	public void drag (float dx, float dy, PointF centerPoint, PointF centerFocus, float saveScale,
+			float scale, float redundantXSpace, float redundantYSpace) {
 		moveOnDrag(dx, dy);
-		setRealPosition(centerPoint, centerFocus, saveScale);
+		setRealPosition(centerPoint, centerFocus, saveScale,
+				scale, redundantXSpace, redundantYSpace);
 	}
 
-	private void setRealPosition (PointF centerPoint, PointF centerFocus, float saveScale) {
+	private void setRealPosition (PointF centerPoint, PointF centerFocus, float saveScale,
+			float scale, float redundantXSpace, float redundantYSpace) {
 		float deltaX = (posX - centerPoint.x) / saveScale;
 		float deltaY = (posY - centerPoint.y) / saveScale;
-		this.posXInPixels = centerFocus.x + deltaX;
-		this.posYInPixels = centerFocus.y + deltaY;
+		float posXOnScreen = centerFocus.x + deltaX;
+		float posYOnScreen = centerFocus.y + deltaY;
+		this.posXInPixels = (posXOnScreen - redundantXSpace) / scale;
+		this.posYInPixels = (posYOnScreen - redundantYSpace) / scale;
 	}
 
 	public PointF getPositionInPixels() {
@@ -96,6 +114,10 @@ public class ZoomablePinView extends ImageView{
 
 	public int getNumber() {
 		return number;
+	}
+
+	public void setNumber(int number) {
+		this.number = number;
 	}
 
 	public TextView getNumberView() {

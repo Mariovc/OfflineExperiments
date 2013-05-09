@@ -62,9 +62,20 @@
             android:id="@+id/wolfNumberText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:background="@color/black"
+            android:text="Wolf Number: R = 0" />
+
+        <Button
+            android:id="@+id/button2"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            android:text="Wolf Number: R = 0" />
+            android:onClick="showPinPosition"
+            android:text="Position" />
 
     </RelativeLayout>
 
