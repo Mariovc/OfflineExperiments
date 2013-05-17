@@ -8,13 +8,17 @@ import android.graphics.BitmapFactory;
 import android.graphics.PointF;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 public class SunMarkerActivity extends Activity{
 
 	private SunMarkerView imgTouchable;
-
+	private RelativeLayout buttons;
+	private int buttonsVisibility = RelativeLayout.INVISIBLE;
+	private ToggleButton toggleButton;
 
 	@Override public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -29,6 +33,11 @@ public class SunMarkerActivity extends Activity{
 		imgTouchable.setImageBitmap(bitmap);
 		imgTouchable.setMaxZoom(4f); //change the max level of zoom, default is 3f
 		imgTouchable.setWolfNumberText((TextView) findViewById(R.id.wolfNumberText));
+
+		buttons = (RelativeLayout) findViewById(R.id.Buttons);
+		buttons.setVisibility(buttonsVisibility);
+		
+		toggleButton = (ToggleButton) findViewById(R.id.toggleButton1);
 	}
 
 	public void showPinPosition(View view) {
@@ -41,7 +50,7 @@ public class SunMarkerActivity extends Activity{
 			Toast.makeText(this, "no pin selected", Toast.LENGTH_SHORT).show();
 		}
 	}
-	
+
 	public void removePin (View view) {
 		imgTouchable.removePin();
 	}
@@ -49,11 +58,31 @@ public class SunMarkerActivity extends Activity{
 	public void increase (View view) {
 		imgTouchable.increasePin();
 	}
-	
+
 	public void decrease (View view) {
 		imgTouchable.decreasePin();
 	}
+
+	public void hideDisplayButtons (View view){
+		if (buttonsVisibility == RelativeLayout.INVISIBLE)
+			buttonsVisibility = RelativeLayout.VISIBLE;
+		else
+			buttonsVisibility = RelativeLayout.INVISIBLE;
+		buttons.setVisibility(buttonsVisibility);
+	}
 	
+	public void displayButtons () {
+		buttonsVisibility = RelativeLayout.VISIBLE;
+		toggleButton.setChecked(true);
+		buttons.setVisibility(buttonsVisibility);
+	}
+	
+	public void hideButtons () {
+		buttonsVisibility = RelativeLayout.INVISIBLE;
+		toggleButton.setChecked(false);
+		buttons.setVisibility(buttonsVisibility);
+	}
+
 	@Override
 	protected void onSaveInstanceState(Bundle savedState){
 		super.onSaveInstanceState(savedState);
@@ -67,6 +96,7 @@ public class SunMarkerActivity extends Activity{
 			savedState.putFloat(pinName + "posY", pos.y);
 		}
 		savedState.putInt("selectedPin", imgTouchable.getSelectedPin());
+		savedState.putInt("buttonsVisibility", buttonsVisibility);
 	}
 
 	@Override
@@ -86,6 +116,8 @@ public class SunMarkerActivity extends Activity{
 		imgTouchable.setPins(pins);
 		imgTouchable.setSelectedPin(savedState.getInt("selectedPin"));
 		imgTouchable.setReload(true);
+		buttonsVisibility = savedState.getInt("buttonsVisibility");
+		buttons.setVisibility(buttonsVisibility);
 		//imgTouchable.selectPin(savedState.getInt("selectedPin"));
 	}
 }

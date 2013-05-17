@@ -20,53 +20,46 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/Buttons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom" >
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+        <Button
+            android:id="@+id/Button01"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:onClick="removePin"
+            android:text="Delete" />
 
-            <Button
-                android:id="@+id/Button02"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:onClick="decrease"
-                android:text="Decrease" />
+        <Button
+            android:id="@+id/Button02"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_toLeftOf="@+id/Button01"
+            android:onClick="decrease"
+            android:text="Decrease" />
 
-            <Button
-                android:id="@+id/Button01"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:onClick="removePin"
-                android:text="Delete" />
+        <Button
+            android:id="@+id/button1"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_toRightOf="@+id/Button01"
+            android:onClick="increase"
+            android:text="Increase" />
 
-            <Button
-                android:id="@+id/button1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:onClick="increase"
-                android:text="Increase" />
-        </LinearLayout>
     </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-
-        <TextView
-            android:id="@+id/wolfNumberText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:background="@color/black"
-            android:text="Wolf Number: R = 0" />
-
+        android:layout_height="match_parent" >
+        
         <Button
             android:id="@+id/button2"
             style="?android:attr/buttonStyleSmall"
@@ -76,6 +69,28 @@
             android:layout_alignParentTop="true"
             android:onClick="showPinPosition"
             android:text="Position" />
+        
+        <TextView
+            android:id="@+id/wolfNumberText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:background="@color/black"
+            android:text="Wolf Number: R = 0"
+            android:textColor="@color/white" />
+
+        <ToggleButton
+            android:id="@+id/toggleButton1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_toLeftOf="@+id/button2"
+            android:onClick="hideDisplayButtons"
+            android:text="ToggleButton"
+            android:textOff="show"
+            android:textOn="hide" />
 
     </RelativeLayout>
 

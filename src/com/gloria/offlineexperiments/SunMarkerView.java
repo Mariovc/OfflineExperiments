@@ -318,6 +318,8 @@ public class SunMarkerView extends ImageView {
 		pin.setPosition(posX, posY, centerPoint, centerFocus, saveScale, 
 				scale, redundantXSpace, redundantYSpace);
 		calculateWolfNumber();
+		if (pins.size() == 1) 
+			((SunMarkerActivity) context).displayButtons();
 	}
 
 	public void removePin(){
@@ -329,6 +331,9 @@ public class SunMarkerView extends ImageView {
 			selectedPin = -1;
 			selectPin(pins.size() - 1);
 			calculateWolfNumber();
+
+			if (pins.size() == 0) 
+				((SunMarkerActivity) context).hideButtons();
 		}
 	}
 
@@ -452,4 +457,5 @@ public class SunMarkerView extends ImageView {
 	public int getRealHeight() {
 		return getDrawable().getIntrinsicHeight();
 	}
+	
 }
