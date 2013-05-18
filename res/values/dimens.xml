@@ -5,5 +5,6 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="titlebar_margin">16dp</dimen>
     <dimen name="pin_number">24sp</dimen>
+    <dimen name="btn_margin">4dp</dimen>
 
 </resources>

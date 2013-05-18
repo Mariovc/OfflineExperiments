@@ -11,20 +11,18 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 public class SunMarkerActivity extends Activity{
 
 	private SunMarkerView imgTouchable;
 	private RelativeLayout buttons;
 	private int buttonsVisibility = RelativeLayout.INVISIBLE;
-	private ToggleButton toggleButton;
 
 	@Override public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.sun_marker);
 
-		imgTouchable = (SunMarkerView) findViewById(R.id.touchImageView1);
+		imgTouchable = (SunMarkerView) findViewById(R.id.zoomable_image);
 		// ask the bitmap factory not to scale the loaded bitmaps
 		BitmapFactory.Options opts = new BitmapFactory.Options();
 		opts.inScaled = false;
@@ -36,8 +34,6 @@ public class SunMarkerActivity extends Activity{
 
 		buttons = (RelativeLayout) findViewById(R.id.Buttons);
 		buttons.setVisibility(buttonsVisibility);
-		
-		toggleButton = (ToggleButton) findViewById(R.id.toggleButton1);
 	}
 
 	public void showPinPosition(View view) {
@@ -62,24 +58,14 @@ public class SunMarkerActivity extends Activity{
 	public void decrease (View view) {
 		imgTouchable.decreasePin();
 	}
-
-	public void hideDisplayButtons (View view){
-		if (buttonsVisibility == RelativeLayout.INVISIBLE)
-			buttonsVisibility = RelativeLayout.VISIBLE;
-		else
-			buttonsVisibility = RelativeLayout.INVISIBLE;
-		buttons.setVisibility(buttonsVisibility);
-	}
 	
 	public void displayButtons () {
 		buttonsVisibility = RelativeLayout.VISIBLE;
-		toggleButton.setChecked(true);
 		buttons.setVisibility(buttonsVisibility);
 	}
 	
 	public void hideButtons () {
 		buttonsVisibility = RelativeLayout.INVISIBLE;
-		toggleButton.setChecked(false);
 		buttons.setVisibility(buttonsVisibility);
 	}
 
@@ -118,6 +104,5 @@ public class SunMarkerActivity extends Activity{
 		imgTouchable.setReload(true);
 		buttonsVisibility = savedState.getInt("buttonsVisibility");
 		buttons.setVisibility(buttonsVisibility);
-		//imgTouchable.selectPin(savedState.getInt("selectedPin"));
 	}
 }
