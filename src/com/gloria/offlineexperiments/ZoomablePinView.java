@@ -82,13 +82,6 @@ public class ZoomablePinView extends ImageView{
 		numberView.setLayoutParams(textLayoutParams);
 	}
 
-	public void drag (float dx, float dy, PointF centerPoint, PointF centerFocus, float saveScale,
-			float scale, float redundantXSpace, float redundantYSpace) {
-		moveOnDrag(dx, dy);
-		setRealPosition(centerPoint, centerFocus, saveScale,
-				scale, redundantXSpace, redundantYSpace);
-	}
-
 	private void setRealPosition (PointF centerPoint, PointF centerFocus, float saveScale,
 			float scale, float redundantXSpace, float redundantYSpace) {
 		float deltaX = (posX - centerPoint.x) / saveScale;
@@ -104,11 +97,11 @@ public class ZoomablePinView extends ImageView{
 		return pinPos;
 	}
 
-	public float getCenterPointViewX() {
+	public float getPosX() {
 		return posX;
 	}
 
-	public float getCenterPointViewY() {
+	public float getPosY() {
 		return posY;
 	}
 
