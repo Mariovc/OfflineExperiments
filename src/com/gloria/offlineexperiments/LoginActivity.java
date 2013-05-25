@@ -1,6 +1,5 @@
 package com.gloria.offlineexperiments;
 
-import java.io.IOException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -21,11 +20,13 @@ import org.kxml2.kdom.Node;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -49,7 +50,6 @@ public class LoginActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		//final boolean customTitleSupported = requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 		setContentView(R.layout.activity_login);
-
 		/*if ( customTitleSupported ) {
 			getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.titlebar);
 		}
@@ -61,6 +61,13 @@ public class LoginActivity extends Activity {
 			}
 		}); 
 		 */
+	}
+	
+	
+	@Override 
+	protected void onResume(){
+		super.onResume();
+		loadUser();	
 	}
 
 	@Override
@@ -82,6 +89,9 @@ public class LoginActivity extends Activity {
 		this.username = usernameText.getText().toString();
 		EditText passwordText = (EditText) findViewById(R.id.password);
 		this.password = passwordText.getText().toString();
+		CheckBox checkbox = (CheckBox) findViewById(R.id.rememberMe);
+		if (checkbox.isChecked())
+			saveUser();
 		new Authentication().execute(); 
 	}
 
@@ -89,6 +99,26 @@ public class LoginActivity extends Activity {
 		finish();
 	}
 
+	
+	private void saveUser(){
+		SharedPreferences settings = getSharedPreferences("LoginGLORIA", MODE_PRIVATE);
+		SharedPreferences.Editor editor = settings.edit();
+		editor.putString("username", this.username);
+		editor.putString("password", this.password);
+		editor.commit();
+	}
+	
+	private void loadUser(){
+		SharedPreferences settings = getSharedPreferences("LoginGLORIA", MODE_PRIVATE);
+		String username = settings.getString("username", "");
+		EditText usernameText = (EditText) findViewById(R.id.username);
+		usernameText.setText(username);
+		String password = settings.getString("password", "");
+		EditText passwordText = (EditText) findViewById(R.id.password);
+		passwordText.setText(password);
+	}
+	
+	
 	private class Authentication extends AsyncTask<Void, Void, Boolean> {
 		private ProgressDialog progressDialog;
 		private String errorResponse = "Unexpected error";
