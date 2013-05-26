@@ -52,7 +52,9 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="@string/passwordHint"
-        android:inputType="textPassword" />
+        android:inputType="textPassword"
+        android:shadowColor="@color/white"
+        android:text="hola" />
 
     <CheckBox
         android:id="@+id/rememberMe"

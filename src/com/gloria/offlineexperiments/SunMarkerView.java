@@ -286,6 +286,7 @@ public class SunMarkerView extends ImageView {
 			origHeight = viewHeight - 2 * redundantYSpace;
 			setImageMatrix(matrix);
 
+			
 			// reload saved state
 			if (reloadPins) {
 				ViewGroup parent = (ViewGroup) getParent();
@@ -300,7 +301,7 @@ public class SunMarkerView extends ImageView {
 					pin.setPosition(scale, redundantXSpace, redundantYSpace);
 				}
 				selectPin(selectedPin);
-				setReload(false);
+				reloadPins = false;
 			}
 		}
 		fixTrans();
@@ -442,6 +443,15 @@ public class SunMarkerView extends ImageView {
 			wolfNumber = K * (10 * pins.size() + individualSpots);
 			wolfNumberText.setText("Wolf Number: R = " + wolfNumber);
 		}
+	}
+	
+	public void resetAttributes(){
+		int numPins = pins.size();
+		for (int i = 0; i < numPins; i++) {
+			removePin();
+		}
+		centerFocus = centerPointView;
+		saveScale = 1f;
 	}
 
 	public void setWolfNumberText (TextView textView) {

@@ -76,7 +76,7 @@
             android:layout_alignParentTop="true"
             android:layout_marginTop="@dimen/btn_margin"
             android:background="@drawable/next_button"
-            android:onClick="showPinPosition" />
+            android:onClick="nextImage" />
 
         <TextView
             android:id="@+id/wolfNumberText"
