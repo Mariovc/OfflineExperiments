@@ -12,7 +12,7 @@ import android.widget.TextView;
 public class ZoomablePinView extends ImageView{
 
 	private float posX=0, posY=0;
-	private float posXInPixels=0, posYInPixels=0;
+	private float realPosX=0, realPosY=0; // position in pixels of the real Image
 	private float width=0, height=0;
 
 	private TextView numberView;
@@ -40,14 +40,24 @@ public class ZoomablePinView extends ImageView{
 	}
 	
 	public void setPosition (float scale, float redundantXSpace, float redundantYSpace) {
-		this.posX = this.posXInPixels * scale + redundantXSpace;
-		this.posY = this.posYInPixels * scale + redundantYSpace;
+		this.posX = this.realPosX * scale + redundantXSpace;
+		this.posY = this.realPosY * scale + redundantYSpace;
 		setMargins();
+	}
+
+	private void setRealPosition (PointF centerPoint, PointF centerFocus, float saveScale,
+			float scale, float redundantXSpace, float redundantYSpace) {
+		float deltaX = (posX - centerPoint.x) / saveScale;
+		float deltaY = (posY - centerPoint.y) / saveScale;
+		float posXOnScreen = centerFocus.x + deltaX;
+		float posYOnScreen = centerFocus.y + deltaY;
+		this.realPosX = (posXOnScreen - redundantXSpace) / scale;
+		this.realPosY = (posYOnScreen - redundantYSpace) / scale;
 	}
 	
 	public void setRealPosition (float realPosX, float realPosY) {
-		this.posXInPixels = realPosX;
-		this.posYInPixels = realPosY;
+		this.realPosX = realPosX;
+		this.realPosY = realPosY;
 	}
 
 	public void moveOnZoom (float focusX, float focusY, float scale) {
@@ -82,18 +92,8 @@ public class ZoomablePinView extends ImageView{
 		numberView.setLayoutParams(textLayoutParams);
 	}
 
-	private void setRealPosition (PointF centerPoint, PointF centerFocus, float saveScale,
-			float scale, float redundantXSpace, float redundantYSpace) {
-		float deltaX = (posX - centerPoint.x) / saveScale;
-		float deltaY = (posY - centerPoint.y) / saveScale;
-		float posXOnScreen = centerFocus.x + deltaX;
-		float posYOnScreen = centerFocus.y + deltaY;
-		this.posXInPixels = (posXOnScreen - redundantXSpace) / scale;
-		this.posYInPixels = (posYOnScreen - redundantYSpace) / scale;
-	}
-
-	public PointF getPositionInPixels() {
-		PointF pinPos = new PointF(posXInPixels, posYInPixels);
+	public PointF getRealPosition() {
+		PointF pinPos = new PointF(realPosX, realPosY);
 		return pinPos;
 	}
 
