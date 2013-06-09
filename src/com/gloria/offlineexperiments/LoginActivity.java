@@ -25,11 +25,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.Window;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 public class LoginActivity extends Activity {
@@ -50,19 +47,19 @@ public class LoginActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		final boolean customTitleSupported = requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
+		//final boolean customTitleSupported = requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 		setContentView(R.layout.activity_login);
-		if ( customTitleSupported ) {
+		/*if ( customTitleSupported ) {
 			getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.titlebar);
 		}
 
 		ImageView infoButton = (ImageView)findViewById(R.id.infoButton);
 		infoButton.setOnClickListener(new OnClickListener() {
 			public void onClick(View view) {
-				launchInfo();
+				exit(null);
 			}
 		}); 
-		 
+		 */
 	}
 	
 	
@@ -80,8 +77,8 @@ public class LoginActivity extends Activity {
 	}
 
 	public void launchInfo() {
-		Intent i = new Intent(this, InfoActivity.class);
-		startActivity(i);
+		//Intent i = new Intent(this, Info.class);
+		//startActivity(i);
 	}
 
 	public void authenticate(View view) {
@@ -93,6 +90,10 @@ public class LoginActivity extends Activity {
 		if (checkbox.isChecked())
 			saveUser();
 		new Authentication().execute(); 
+	}
+
+	public void exit(View view) {
+		finish();
 	}
 
 	
@@ -162,7 +163,7 @@ public class LoginActivity extends Activity {
 			} catch (Exception exception) {
 				Log.d("DEBUG","AUTHENTICATEUSER EXC - "+exception.toString());
 				Log.d("DEBUG",httpsConnection.requestDump);
-				errorResponse = "Server down" + exception.toString();
+				errorResponse = exception.toString();
 			}
 
 			publishProgress();
@@ -178,7 +179,7 @@ public class LoginActivity extends Activity {
 			}	
 			
 			if (authenticated) {
-				Intent i = new Intent(LoginActivity.this, ExperimentsActivity.class);
+				Intent i = new Intent(LoginActivity.this, SunMarkerActivity.class);
 				startActivity(i);
 			}
 			else {

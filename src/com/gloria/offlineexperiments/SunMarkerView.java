@@ -16,7 +16,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class ZoomableImageView extends ImageView {
+public class SunMarkerView extends ImageView {
 
 	Matrix matrix;
 
@@ -66,12 +66,12 @@ public class ZoomableImageView extends ImageView {
 
 	private boolean reloadPins = false;
 
-	public ZoomableImageView(Context context) {
+	public SunMarkerView(Context context) {
 		super(context);
 		sharedConstructing(context);
 	}
 
-	public ZoomableImageView(Context context, AttributeSet attrs) {
+	public SunMarkerView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		sharedConstructing(context);
 	}
@@ -115,7 +115,7 @@ public class ZoomableImageView extends ImageView {
 						matrix.postTranslate(fixTransX, fixTransY);
 						fixTrans();
 						last.set(curr.x, curr.y);
-						moveCenterFocusOnDrag(fixTransX, fixTransY);
+						moveCenterPointDrag(fixTransX, fixTransY);
 						movePinsOnDrag(fixTransX, fixTransY);
 					}
 					else if (mode == DRAG_PIN) {
@@ -184,12 +184,12 @@ public class ZoomableImageView extends ImageView {
 
 			if (origWidth * saveScale <= viewWidth || origHeight * saveScale <= viewHeight) {
 				matrix.postScale(mScaleFactor, mScaleFactor, centerPointView.x, centerPointView.y);
-				moveCenterFocusOnZoom(centerPointView.x, centerPointView.y, mScaleFactor);
+				moveCenterPointZoom(centerPointView.x, centerPointView.y, mScaleFactor);
 				movePinsOnZoom(centerPointView.x, centerPointView.y, mScaleFactor);
 			}
 			else {
 				matrix.postScale(mScaleFactor, mScaleFactor, detector.getFocusX(), detector.getFocusY());
-				moveCenterFocusOnZoom(detector.getFocusX(), detector.getFocusY(), mScaleFactor);
+				moveCenterPointZoom(detector.getFocusX(), detector.getFocusY(), mScaleFactor);
 				movePinsOnZoom(detector.getFocusX(), detector.getFocusY(), mScaleFactor);
 			}
 			fixTrans();
@@ -207,7 +207,7 @@ public class ZoomableImageView extends ImageView {
 
 		if (fixTransX != 0 || fixTransY != 0) {
 			matrix.postTranslate(fixTransX, fixTransY);
-			moveCenterFocusOnDrag(fixTransX, fixTransY);
+			moveCenterPointDrag(fixTransX, fixTransY);
 			movePinsOnDrag(fixTransX, fixTransY);
 		}
 	}
@@ -388,7 +388,7 @@ public class ZoomableImageView extends ImageView {
 			return pins.get(selectedPin);
 	}
 
-	private void moveCenterFocusOnZoom (float focusX, float focusY, float scale) {
+	private void moveCenterPointZoom (float focusX, float focusY, float scale) {
 		float focusDistanceX = centerPointView.x - focusX;
 		float focusDistanceY = centerPointView.y - focusY;
 		float deltaX = focusDistanceX / scale - focusDistanceX;
@@ -397,7 +397,7 @@ public class ZoomableImageView extends ImageView {
 		centerFocus.y += deltaY / (saveScale / scale);
 	}
 
-	private void moveCenterFocusOnDrag (float deltaX, float deltaY) {
+	private void moveCenterPointDrag (float deltaX, float deltaY) {
 		centerFocus.x -= deltaX / saveScale;
 		centerFocus.y -= deltaY / saveScale;
 	}

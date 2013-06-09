@@ -9,7 +9,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSession;
@@ -28,6 +27,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PointF;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -55,20 +55,38 @@ public class SunMarkerActivity extends Activity{
 	private ProgressDialog progressDialog = null;
 	private boolean loadImage = true;
 
-	private ZoomableImageView imgTouchable;
+	private SunMarkerView imgTouchable;
 	private RelativeLayout buttons;
 	private int buttonsVisibility = RelativeLayout.INVISIBLE;
 
-	@Override 
-	public void onCreate(Bundle savedInstanceState) {
+	@Override public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.sun_marker);
-		imgTouchable = (ZoomableImageView) findViewById(R.id.zoomable_image);
+		imgTouchable = (SunMarkerView) findViewById(R.id.zoomable_image);
+		// ask the bitmap factory not to scale the loaded bitmaps
+		//BitmapFactory.Options opts = new BitmapFactory.Options();
+		//opts.inScaled = false;
+		// load the bitmap
+
+		//Bitmap bitmap = loadBitmap("http://161.72.128.9:8080/RTD_TAD_DB/ServletImage?fileName=00000000000000010000013ed64bbd0a.jpg");
+		//Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.sol2, opts);
+		//imgTouchable.setImageBitmap(bitmap);
 		imgTouchable.setMaxZoom(4f); //change the max level of zoom, default is 3f
 		imgTouchable.setWolfNumberText((TextView) findViewById(R.id.wolfNumberText));
 
 		buttons = (RelativeLayout) findViewById(R.id.Buttons);
 		buttons.setVisibility(buttonsVisibility); 
+	}
+
+	public void showPinPosition(View view) {
+		ZoomablePinView pin = imgTouchable.getPin();
+		if (pin != null) {
+			PointF pinPos = pin.getPositionInPixels();
+			Toast.makeText(this, "pin position: " + pinPos.x + ", " + pinPos.y, Toast.LENGTH_SHORT).show();
+		}
+		else {
+			Toast.makeText(this, "no pin selected", Toast.LENGTH_SHORT).show();
+		}
 	}
 
 	public void nextImage (View view) {
@@ -117,7 +135,7 @@ public class SunMarkerActivity extends Activity{
 		for (int i = 0; i < pins.size(); i++) {
 			String pinName = "pin" + i;
 			savedState.putInt(pinName + "number", pins.get(i).getNumber());
-			PointF pos = pins.get(i).getRealPosition();
+			PointF pos = pins.get(i).getPositionInPixels();
 			savedState.putFloat(pinName + "posX", pos.x);
 			savedState.putFloat(pinName + "posY", pos.y);
 		}
@@ -269,8 +287,10 @@ public class SunMarkerActivity extends Activity{
 			}	
 			BitmapDrawable oldDrawable = (BitmapDrawable)imgTouchable.getDrawable();
 			imgTouchable.setImageBitmap(bitmap);
-			if (oldDrawable != null && oldDrawable.getBitmap() != null)
+			if (oldDrawable != null)
 				oldDrawable.getBitmap().recycle();
+			//System.gc();
+			//bitmap.recycle();
 			imgTouchable.resetAttributes();
 			Toast.makeText(SunMarkerActivity.this, "Image #" + (currentImage+1), Toast.LENGTH_LONG).show();
 		}
@@ -313,7 +333,7 @@ public class SunMarkerActivity extends Activity{
 	}
 
 	private SoapObject buildIDsBodyRequest(){
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd",Locale.US);
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		Calendar calendar = Calendar.getInstance();
 		Date today = calendar.getTime();
 		calendar.add(Calendar.DAY_OF_YEAR, -1);

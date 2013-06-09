@@ -9,11 +9,8 @@
     <string name="passwordHint">Password</string>
     <string name="loginBtn">Log in</string>
     <string name="remembermeMsg">Remember me</string>
-    <string name="loginInfo">This application was created by GLORIA for its users to test our funny experiments. Visit us on http://gloria-project.eu/</string>
+    <string name="loginInfo">Info</string>
     <string name="infoBtnDescription">Info button</string>
-    <string name="wolfExperiment">Detect sunspots</string>
-    <string name="asteroidsExperiment">Find asteroids</string>
-    <string name="experiments">Experiments</string>
 
     
     <string name="hello">Hello World, Set_Text_TitleBar!</string>
