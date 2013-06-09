@@ -301,12 +301,12 @@ public class SunMarkerActivity extends Activity{
 		header[0].addChild(Node.ELEMENT,usernametoken);
 
 		Element username = new Element().createElement(null, "n0:Username");
-		username.addChild(Node.TEXT,"mario");
+		username.addChild(Node.TEXT,"");
 		usernametoken.addChild(Node.ELEMENT,username);
 
 		Element pass = new Element().createElement(null,"n0:Password");
 		pass.setAttribute(null, "Type", "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText");
-		pass.addChild(Node.TEXT, "mario123");
+		pass.addChild(Node.TEXT, "");
 		usernametoken.addChild(Node.ELEMENT, pass);
 
 		return header;
