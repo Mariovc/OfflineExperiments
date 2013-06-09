@@ -16,9 +16,10 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.gloria.offlineexperiments.LoginActivity"
+            android:name=".LoginActivity"
             android:screenOrientation="portrait"
-            android:label="@string/app_name" android:theme="@android:style/Theme.Black">
+            android:label="@string/app_name" 
+            android:theme="@android:style/Theme.Black">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -26,8 +27,20 @@
             </intent-filter>
         </activity>
         <activity 
-            android:name="com.gloria.offlineexperiments.SunMarkerActivity" 
+            android:name=".SunMarkerActivity" 
             android:theme="@android:style/Theme.NoTitleBar">
+        </activity>
+        <activity 
+            android:name=".InfoActivity" 
+            android:screenOrientation="portrait"
+            android:label="Information" 
+            android:theme="@android:style/Theme.Dialog">
+        </activity>
+        <activity 
+            android:name=".ExperimentsActivity" 
+            android:screenOrientation="portrait"
+            android:label="@string/experiments" 
+            android:theme="@android:style/Theme.Black">
         </activity>
     </application>
 
