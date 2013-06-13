@@ -7,15 +7,24 @@ import android.view.View;
 
 
 public class ExperimentsActivity extends Activity{
+
+	private String username;
+	private String sha1Password;
+
 	/** Called when the activity is first created. */
 	@Override public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.experiments);
 
+		Bundle extras = getIntent().getExtras();
+		username = extras.getString("username");
+		sha1Password = extras.getString("password");
 	}
 
 	public void launchSunMarker(View view) {
-		Intent i = new Intent(this, SunMarkerActivity.class);
-		startActivity(i);
+		Intent intent = new Intent(this, SunMarkerActivity.class);
+		intent.putExtra("username", username);
+		intent.putExtra("password", sha1Password);
+		startActivity(intent);
 	}
 }

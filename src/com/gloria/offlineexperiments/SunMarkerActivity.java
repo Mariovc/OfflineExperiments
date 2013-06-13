@@ -48,6 +48,8 @@ public class SunMarkerActivity extends Activity{
 	private static final String SOAP_ACTION =  "";
 
 	private static TrustManager[] trustManagers;
+	private String username;
+	private String sha1Password;
 
 	private static final int MAX_NUM_IMAGES = 10;
 	private int currentImage = 0;
@@ -69,6 +71,10 @@ public class SunMarkerActivity extends Activity{
 
 		buttons = (RelativeLayout) findViewById(R.id.Buttons);
 		buttons.setVisibility(buttonsVisibility); 
+		
+		Bundle extras = getIntent().getExtras();
+		username = extras.getString("username");
+		sha1Password = extras.getString("password");
 	}
 
 	public void nextImage (View view) {
@@ -107,8 +113,8 @@ public class SunMarkerActivity extends Activity{
 		if (loadImage)
 			new GetIDs().execute();
 	}
-	
-	
+
+
 	@Override
 	protected void onSaveInstanceState(Bundle savedState){
 		super.onSaveInstanceState(savedState);
@@ -123,8 +129,10 @@ public class SunMarkerActivity extends Activity{
 		}
 		savedState.putInt("selectedPin", imgTouchable.getSelectedPin());
 		savedState.putInt("buttonsVisibility", buttonsVisibility);
-		Bitmap bitmap = ((BitmapDrawable)imgTouchable.getDrawable()).getBitmap();
-		savedState.putParcelable("bitmap", bitmap);
+		if (imgTouchable.getDrawable() != null){
+			Bitmap bitmap = ((BitmapDrawable)imgTouchable.getDrawable()).getBitmap();
+			savedState.putParcelable("bitmap", bitmap);
+		}
 		for (int j = 0; j < MAX_NUM_IMAGES; j++) {
 			savedState.putString("id"+j, imageIDs[j]);
 		}
@@ -197,6 +205,7 @@ public class SunMarkerActivity extends Activity{
 					i++;
 				}
 				Log.d("DEBUG","Getting Ids  - SUCCESS");
+				Log.d("DEBUG",httpsConnection.requestDump);
 			} catch (Exception exception) {
 				Log.d("DEBUG","Getting Ids EXC - " + exception.toString());
 			}
@@ -254,7 +263,7 @@ public class SunMarkerActivity extends Activity{
 				Log.d("DEBUG","Getting URL EXC - " + exception.toString());
 				new GetImage().execute(); 
 			}
-			
+
 			publishProgress();
 			return bitmap;
 		}
@@ -267,6 +276,7 @@ public class SunMarkerActivity extends Activity{
 				progressDialog.dismiss();
 				progressDialog = null;
 			}	
+			
 			BitmapDrawable oldDrawable = (BitmapDrawable)imgTouchable.getDrawable();
 			imgTouchable.setImageBitmap(bitmap);
 			if (oldDrawable != null && oldDrawable.getBitmap() != null)
@@ -301,12 +311,12 @@ public class SunMarkerActivity extends Activity{
 		header[0].addChild(Node.ELEMENT,usernametoken);
 
 		Element username = new Element().createElement(null, "n0:Username");
-		username.addChild(Node.TEXT,"");
+		username.addChild(Node.TEXT, this.username);
 		usernametoken.addChild(Node.ELEMENT,username);
 
 		Element pass = new Element().createElement(null,"n0:Password");
 		pass.setAttribute(null, "Type", "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText");
-		pass.addChild(Node.TEXT, "");
+		pass.addChild(Node.TEXT, this.sha1Password);
 		usernametoken.addChild(Node.ELEMENT, pass);
 
 		return header;

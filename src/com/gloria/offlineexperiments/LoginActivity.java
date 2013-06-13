@@ -1,7 +1,9 @@
 package com.gloria.offlineexperiments;
 
+import java.io.UnsupportedEncodingException;
 import java.net.UnknownHostException;
 import java.security.KeyManagementException;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
@@ -154,6 +156,7 @@ public class LoginActivity extends Activity {
 				}
 				else {
 					Log.d("DEBUG","AUTHENTICATEUSER RES- invalid username or password");
+					Log.d("DEBUG",httpsConnection.requestDump);
 					errorResponse = "Invalid username or password";
 					response = false;
 				}	
@@ -162,7 +165,7 @@ public class LoginActivity extends Activity {
 			} catch (Exception exception) {
 				Log.d("DEBUG","AUTHENTICATEUSER EXC - "+exception.toString());
 				Log.d("DEBUG",httpsConnection.requestDump);
-				errorResponse = "Server down" + exception.toString();
+				errorResponse = "Cannot access the server: " + exception.toString();
 			}
 
 			publishProgress();
@@ -175,11 +178,16 @@ public class LoginActivity extends Activity {
 		protected void onPostExecute(Boolean authenticated){
 			if(progressDialog.isShowing()) {
 				progressDialog.cancel();
-			}	
+			}
 			
 			if (authenticated) {
-				Intent i = new Intent(LoginActivity.this, ExperimentsActivity.class);
-				startActivity(i);
+				Intent intent = new Intent(LoginActivity.this, ExperimentsActivity.class);
+				intent.putExtra("username", username);
+				try {
+					String sha1Password = sha1(password);
+					intent.putExtra("password", sha1Password);
+				} catch (Exception e) {}
+				startActivity(intent);
 			}
 			else {
 				Toast.makeText(LoginActivity.this, errorResponse, Toast.LENGTH_LONG).show();
@@ -195,12 +203,12 @@ public class LoginActivity extends Activity {
 			header[0].addChild(Node.ELEMENT,usernametoken);
 
 			Element username = new Element().createElement(null, "n0:Username");
-			username.addChild(Node.TEXT,"");
+			username.addChild(Node.TEXT,"mario");
 			usernametoken.addChild(Node.ELEMENT,username);
 
 			Element pass = new Element().createElement(null,"n0:Password");
 			pass.setAttribute(null, "Type", "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText");
-			pass.addChild(Node.TEXT, "");
+			pass.addChild(Node.TEXT, "mario123");
 			usernametoken.addChild(Node.ELEMENT, pass);
 			
 			return header;
@@ -209,7 +217,12 @@ public class LoginActivity extends Activity {
 		private SoapObject buildBodyRequest(){
 			SoapObject bodyRequest = new SoapObject(NAMESPACE, METHOD_NAME);
 			bodyRequest.addProperty("name", username);
-			bodyRequest.addProperty("password", password);
+			try {
+				String sha1Password = sha1(password);
+				bodyRequest.addProperty("password", sha1Password);
+			} catch (Exception e) {
+				errorResponse = e.toString();
+			}
 			
 			return bodyRequest;
 		}
@@ -250,5 +263,13 @@ public class LoginActivity extends Activity {
 			Log.e("allowAllSSL", e.toString());
 		}
 		javax.net.ssl.HttpsURLConnection.setDefaultSSLSocketFactory(context.getSocketFactory());
+	}
+	
+	
+	public static String sha1(String text) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+		MessageDigest md = MessageDigest.getInstance("SHA-1");
+		md.update(text.getBytes("iso-8859-1"), 0, text.length());
+		byte[] sha1hash = md.digest();
+		return Base64.encodeBase64String(sha1hash);
 	}
 }
