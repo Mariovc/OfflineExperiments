@@ -33,13 +33,13 @@
         <activity 
             android:name=".InfoActivity" 
             android:screenOrientation="portrait"
-            android:label="Information" 
+            android:label="@string/informationTitle" 
             android:theme="@android:style/Theme.Dialog">
         </activity>
         <activity 
             android:name=".ExperimentsActivity" 
             android:screenOrientation="portrait"
-            android:label="@string/experiments" 
+            android:label="@string/experimentsTitle" 
             android:theme="@android:style/Theme.Black">
         </activity>
     </application>

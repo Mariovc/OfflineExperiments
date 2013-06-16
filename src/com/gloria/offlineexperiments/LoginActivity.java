@@ -119,14 +119,14 @@ public class LoginActivity extends Activity {
 	
 	private class Authentication extends AsyncTask<Void, Void, Boolean> {
 		private ProgressDialog progressDialog;
-		private String errorResponse = "Unexpected error";
+		private String errorResponse = getString(R.string.defaultErrorMsg);
 
 		
 		// This function is called at the beginning, before doInBackground
 		@Override
 		protected void onPreExecute() {
 			progressDialog = new ProgressDialog(LoginActivity.this);
-			progressDialog.setMessage("Authenticating ...");
+			progressDialog.setMessage(getString(R.string.authenticatingMsg));
 			progressDialog.show();
 		}
 		
@@ -157,15 +157,15 @@ public class LoginActivity extends Activity {
 				else {
 					Log.d("DEBUG","AUTHENTICATEUSER RES- invalid username or password");
 					Log.d("DEBUG",httpsConnection.requestDump);
-					errorResponse = "Invalid username or password";
+					errorResponse = getString(R.string.wrongLoginMsg);
 					response = false;
 				}	
 			} catch (UnknownHostException e){
-				errorResponse = "No Internet connection";
+				errorResponse = getString(R.string.noInternetMsg);
 			} catch (Exception exception) {
 				Log.d("DEBUG","AUTHENTICATEUSER EXC - "+exception.toString());
 				Log.d("DEBUG",httpsConnection.requestDump);
-				errorResponse = "Cannot access the server: " + exception.toString();
+				errorResponse = getString(R.string.noAccessMsg) + exception.toString();
 			}
 
 			publishProgress();
@@ -186,6 +186,7 @@ public class LoginActivity extends Activity {
 				try {
 					String sha1Password = sha1(password);
 					intent.putExtra("password", sha1Password);
+					//intent.putExtra("password", password);
 				} catch (Exception e) {}
 				startActivity(intent);
 			}
@@ -203,12 +204,12 @@ public class LoginActivity extends Activity {
 			header[0].addChild(Node.ELEMENT,usernametoken);
 
 			Element username = new Element().createElement(null, "n0:Username");
-			username.addChild(Node.TEXT,"mario");
+			username.addChild(Node.TEXT,"");
 			usernametoken.addChild(Node.ELEMENT,username);
 
 			Element pass = new Element().createElement(null,"n0:Password");
 			pass.setAttribute(null, "Type", "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText");
-			pass.addChild(Node.TEXT, "mario123");
+			pass.addChild(Node.TEXT, "");
 			usernametoken.addChild(Node.ELEMENT, pass);
 			
 			return header;
@@ -220,6 +221,7 @@ public class LoginActivity extends Activity {
 			try {
 				String sha1Password = sha1(password);
 				bodyRequest.addProperty("password", sha1Password);
+				//bodyRequest.addProperty("password", password);
 			} catch (Exception e) {
 				errorResponse = e.toString();
 			}

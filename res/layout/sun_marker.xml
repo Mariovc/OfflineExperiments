@@ -2,7 +2,8 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/mainLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:layout_gravity="bottom" >
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -21,59 +22,165 @@
     <RelativeLayout
         android:id="@+id/Buttons"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent"
+        android:layout_gravity="bottom"
+        android:gravity="bottom" >
 
-        <Button
-            android:id="@+id/delete_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:background="@drawable/delete_button"
-            android:onClick="removePin" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
 
-        <Button
-            android:id="@+id/decrease_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_toLeftOf="@+id/delete_btn"
-            android:background="@drawable/decrease_button"
-            android:onClick="decrease" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1" >
+            </LinearLayout>
 
-        <Button
-            android:id="@+id/increase_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_toRightOf="@+id/delete_btn"
-            android:background="@drawable/increase_button"
-            android:onClick="increase" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="bottom|center_horizontal"
+                android:onClick="decrease"
+                android:orientation="vertical" >
+
+                <Button
+                    android:id="@+id/decrease_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/decrease_button"
+                    android:onClick="decrease" />
+
+                <TextView
+                    android:id="@+id/decreaseText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/btn_margin"
+                    android:layout_marginLeft="@dimen/between_btn_margin"
+                    android:layout_marginRight="@dimen/between_btn_margin"
+                    android:background="@color/black"
+                    android:text="@string/decreaseBtn"
+                    android:textAppearance="?android:attr/textAppearance"
+                    android:textColor="@color/white" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="bottom|center_horizontal"
+                android:onClick="removePin"
+                android:orientation="vertical" >
+
+                <Button
+                    android:id="@+id/delete_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/delete_button"
+                    android:onClick="removePin" />
+
+                <TextView
+                    android:id="@+id/deleteText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|center_horizontal"
+                    android:layout_marginBottom="@dimen/btn_margin"
+                    android:layout_marginLeft="@dimen/between_btn_margin"
+                    android:layout_marginRight="@dimen/between_btn_margin"
+                    android:background="@color/black"
+                    android:text="@string/deleteBtn"
+                    android:textAppearance="?android:attr/textAppearance"
+                    android:textColor="@color/white" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="bottom|center_horizontal"
+                android:onClick="increase"
+                android:orientation="vertical" >
+
+                <Button
+                    android:id="@+id/increase_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/increase_button"
+                    android:onClick="increase" />
+
+                <TextView
+                    android:id="@+id/increaseText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/btn_margin"
+                    android:layout_marginLeft="@dimen/between_btn_margin"
+                    android:layout_marginRight="@dimen/between_btn_margin"
+                    android:background="@color/black"
+                    android:text="@string/increaseBtn"
+                    android:textAppearance="?android:attr/textAppearance"
+                    android:textColor="@color/white" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1" >
+            </LinearLayout>
+        </LinearLayout>
     </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
 
-        <Button
-            android:id="@+id/next_btn"
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="@dimen/btn_margin"
-            android:background="@drawable/next_button"
-            android:onClick="nextImage" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
 
-        <TextView
-            android:id="@+id/wolfNumberText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:background="@color/black"
-            android:text="@string/wolfText" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:id="@+id/wolfNumberText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/btn_margin"
+                    android:layout_marginTop="@dimen/btn_margin"
+                    android:background="@color/black"
+                    android:text="@string/wolfText"
+                    android:textColor="@color/white" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="top|center_horizontal"
+                android:onClick="nextImage"
+                android:orientation="vertical" >
+
+                <Button
+                    android:id="@+id/next_btn"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/btn_margin"
+                    android:layout_marginRight="@dimen/btn_margin"
+                    android:layout_marginTop="@dimen/btn_margin"
+                    android:background="@drawable/next_button"
+                    android:onClick="nextImage" />
+
+                <TextView
+                    android:id="@+id/textView1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/btn_margin"
+                    android:layout_marginRight="@dimen/btn_margin"
+                    android:background="@color/black"
+                    android:text="@string/nextBtn"
+                    android:textAppearance="?android:attr/textAppearance"
+                    android:textColor="@color/white" />
+            </LinearLayout>
+        </LinearLayout>
     </RelativeLayout>
 
 </FrameLayout>

@@ -25,7 +25,9 @@ public final class R {
          */
         public static final int activity_horizontal_margin=0x7f050000;
         public static final int activity_vertical_margin=0x7f050001;
+        public static final int between_btn_margin=0x7f050005;
         public static final int btn_margin=0x7f050004;
+        public static final int increase_decrease_margin=0x7f050006;
         public static final int pin_number=0x7f050003;
         public static final int titlebar_margin=0x7f050002;
     }
@@ -47,31 +49,37 @@ public final class R {
         public static final int next_button=0x7f02000e;
         public static final int plus_btn=0x7f02000f;
         public static final int plus_btn_sel=0x7f020010;
-        public static final int sol2=0x7f020011;
-        public static final int wallpaper=0x7f020012;
+        public static final int wallpaper=0x7f020011;
     }
     public static final class id {
+        public static final int Button01=0x7f090017;
+        public static final int Button02=0x7f090016;
+        public static final int Button03=0x7f090015;
+        public static final int Button04=0x7f090018;
         public static final int Buttons=0x7f09000d;
         public static final int LinearLayout1=0x7f090000;
         public static final int TextView01=0x7f09000a;
-        public static final int action_settings=0x7f090015;
+        public static final int action_settings=0x7f09001c;
         public static final int button1=0x7f090008;
         public static final int button2=0x7f090009;
-        public static final int decrease_btn=0x7f09000f;
-        public static final int delete_btn=0x7f09000e;
+        public static final int decreaseText=0x7f09000f;
+        public static final int decrease_btn=0x7f09000e;
+        public static final int deleteText=0x7f090011;
+        public static final int delete_btn=0x7f090010;
         public static final int imageView1=0x7f090001;
+        public static final int increaseText=0x7f090012;
         public static final int increase_btn=0x7f090007;
-        public static final int infoButton=0x7f090014;
-        public static final int logoTitlebar=0x7f090012;
+        public static final int infoButton=0x7f09001b;
+        public static final int logoTitlebar=0x7f090019;
         public static final int mainLayout=0x7f09000b;
-        public static final int myTitle=0x7f090013;
-        public static final int next_btn=0x7f090010;
+        public static final int myTitle=0x7f09001a;
+        public static final int next_btn=0x7f090014;
         public static final int password=0x7f090005;
         public static final int rememberMe=0x7f090006;
         public static final int textView1=0x7f090002;
         public static final int textView2=0x7f090004;
         public static final int username=0x7f090003;
-        public static final int wolfNumberText=0x7f090011;
+        public static final int wolfNumberText=0x7f090013;
         public static final int zoomable_image=0x7f09000c;
     }
     public static final class layout {
@@ -87,19 +95,34 @@ public final class R {
     public static final class string {
         public static final int action_settings=0x7f060001;
         public static final int app_name=0x7f060000;
-        public static final int asteroidsExperiment=0x7f06000b;
-        public static final int experiments=0x7f06000c;
-        public static final int hello=0x7f06000d;
-        public static final int infoBtnDescription=0x7f060009;
-        public static final int loginBtn=0x7f060006;
-        public static final int loginInfo=0x7f060008;
+        public static final int asteroidsExperiment=0x7f06000c;
+        public static final int authenticatingMsg=0x7f060012;
+        public static final int decreaseBtn=0x7f060010;
+        public static final int defaultErrorMsg=0x7f060013;
+        public static final int deleteBtn=0x7f06000e;
+        public static final int experimentsTitle=0x7f06000a;
+        public static final int increaseBtn=0x7f06000f;
+        public static final int informationTitle=0x7f060008;
+        public static final int loadingIDsMsg=0x7f06001a;
+        public static final int loadingImageMsg=0x7f060019;
+        public static final int loginBtn=0x7f060007;
+        public static final int loginInfo=0x7f060009;
+        public static final int markPinMsg=0x7f06001c;
+        public static final int newImageMsg=0x7f060017;
+        public static final int nextBtn=0x7f060011;
+        public static final int noAccessMsg=0x7f060016;
+        public static final int noInternetMsg=0x7f060015;
+        public static final int noMoreImagesMsg=0x7f060018;
         public static final int passwordHint=0x7f060005;
-        public static final int passwordMsg=0x7f060004;
-        public static final int remembermeMsg=0x7f060007;
+        public static final int passwordTitle=0x7f060004;
+        public static final int remembermeTitle=0x7f060006;
+        public static final int sunspotNumberMsg=0x7f06001d;
         public static final int usernameHint=0x7f060003;
-        public static final int usernameMsg=0x7f060002;
-        public static final int wolfExperiment=0x7f06000a;
-        public static final int wolfText=0x7f06000e;
+        public static final int usernameTitle=0x7f060002;
+        public static final int wolfExperiment=0x7f06000b;
+        public static final int wolfText=0x7f06000d;
+        public static final int wrongLoginMsg=0x7f060014;
+        public static final int zoomsMsg=0x7f06001b;
     }
     public static final class style {
         /** 

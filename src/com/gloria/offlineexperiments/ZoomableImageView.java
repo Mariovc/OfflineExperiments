@@ -60,7 +60,8 @@ public class ZoomableImageView extends ImageView {
 	private final PointF centerPointView = new PointF();
 
 	private int wolfNumber = 0;
-	private TextView wolfNumberText = null;
+	private TextView wolfNumberTextView = null;
+	private String wolfNumberText = "";
 	//observatory factor or the personal reduction coefficient
 	private static final int K = 1;
 
@@ -435,13 +436,13 @@ public class ZoomableImageView extends ImageView {
 	}
 
 	private void calculateWolfNumber() {
-		if (wolfNumberText != null) {
+		if (wolfNumberTextView != null) {
 			int individualSpots = 0;
 			for (int i = 0; i < pins.size(); i++) {
 				individualSpots += pins.get(i).getNumber();
 			}
 			wolfNumber = K * (10 * pins.size() + individualSpots);
-			wolfNumberText.setText("Wolf Number: R = " + wolfNumber);
+			wolfNumberTextView.setText(wolfNumberText + wolfNumber);
 		}
 	}
 	
@@ -455,7 +456,9 @@ public class ZoomableImageView extends ImageView {
 	}
 
 	public void setWolfNumberText (TextView textView) {
-		this.wolfNumberText = textView;
+		this.wolfNumberTextView = textView;
+		this.wolfNumberText = textView.getText().toString();
+		calculateWolfNumber();
 	}
 
 	public ArrayList<ZoomablePinView> getPins() {

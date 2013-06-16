@@ -82,7 +82,7 @@ public class SunMarkerActivity extends Activity{
 		if (currentImage < MAX_NUM_IMAGES && imageIDs[currentImage] != null)
 			new GetImage().execute();
 		else
-			Toast.makeText(this, "There is no more images today", Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, getString(R.string.noMoreImagesMsg), Toast.LENGTH_SHORT).show();
 	}
 
 	public void removePin (View view) {
@@ -100,6 +100,7 @@ public class SunMarkerActivity extends Activity{
 	public void displayButtons () {
 		buttonsVisibility = RelativeLayout.VISIBLE;
 		buttons.setVisibility(buttonsVisibility);
+		Toast.makeText(SunMarkerActivity.this, getString(R.string.sunspotNumberMsg), Toast.LENGTH_LONG).show();
 	}
 
 	public void hideButtons () {
@@ -174,7 +175,7 @@ public class SunMarkerActivity extends Activity{
 		@Override
 		protected void onPreExecute() {
 			progressDialog = new ProgressDialog(SunMarkerActivity.this);
-			progressDialog.setMessage("Getting images ...");
+			progressDialog.setMessage(getString(R.string.loadingIDsMsg));
 			progressDialog.show();
 		}
 
@@ -223,6 +224,8 @@ public class SunMarkerActivity extends Activity{
 				progressDialog = null;
 			}	
 			new GetImage().execute(); 
+			Toast.makeText(SunMarkerActivity.this, getString(R.string.zoomsMsg), Toast.LENGTH_LONG).show();
+			Toast.makeText(SunMarkerActivity.this, getString(R.string.markPinMsg), Toast.LENGTH_LONG).show();
 		}
 
 	}
@@ -236,7 +239,7 @@ public class SunMarkerActivity extends Activity{
 				progressDialog = new ProgressDialog(SunMarkerActivity.this);
 			else if (progressDialog.isShowing())
 				progressDialog.dismiss();
-			progressDialog.setMessage("Loading image ...");
+			progressDialog.setMessage(getString(R.string.loadingImageMsg));
 			progressDialog.show();
 		}
 
@@ -282,7 +285,7 @@ public class SunMarkerActivity extends Activity{
 			if (oldDrawable != null && oldDrawable.getBitmap() != null)
 				oldDrawable.getBitmap().recycle();
 			imgTouchable.resetAttributes();
-			Toast.makeText(SunMarkerActivity.this, "Image #" + (currentImage+1), Toast.LENGTH_LONG).show();
+			Toast.makeText(SunMarkerActivity.this, getString(R.string.newImageMsg) + (currentImage+1), Toast.LENGTH_LONG).show();
 		}
 
 

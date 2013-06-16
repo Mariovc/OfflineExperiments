@@ -24,7 +24,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@android:color/black"
-        android:text="@string/usernameMsg"
+        android:text="@string/usernameTitle"
         android:textColor="@android:color/white" />
 
     <EditText
@@ -43,7 +43,7 @@
         android:layout_height="wrap_content"
         android:background="@android:color/black"
         android:layout_marginTop="8dp"
-        android:text="@string/passwordMsg"
+        android:text="@string/passwordTitle"
         android:textColor="@android:color/white" />
 
     <EditText
@@ -61,7 +61,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:checked="true"
-        android:text="@string/remembermeMsg"
+        android:text="@string/remembermeTitle"
         android:textColor="@android:color/white" />
 
     <Button
