@@ -36,7 +36,9 @@
     <string name="loadingIDsMsg">Getting images &#8230;</string>
     <string name="zoomsMsg">You can zoom with two fingers</string>
     <string name="markPinMsg">Mark a sunspot group by clicking on it</string>
-    <string name="sunspotNumberMsg">Indicate the number of individual sunspots with the buttons bellow</string>
+    <string name="sunspotNumberMsg">Indicate the number of individual sunspots with the increase and decrease buttons</string>
+    <string name="acceptBtn">Accept</string>
+    <string name="tutorialTitle">Instrucctions</string>
     
     
 </resources>

@@ -53,8 +53,7 @@
         android:ems="10"
         android:hint="@string/passwordHint"
         android:inputType="textPassword"
-        android:shadowColor="@color/white"
-        android:text="hola" />
+        android:shadowColor="@color/white" />
 
     <CheckBox
         android:id="@+id/rememberMe"

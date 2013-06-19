@@ -49,7 +49,8 @@ public final class R {
         public static final int next_button=0x7f02000e;
         public static final int plus_btn=0x7f02000f;
         public static final int plus_btn_sel=0x7f020010;
-        public static final int wallpaper=0x7f020011;
+        public static final int sunspots=0x7f020011;
+        public static final int wallpaper=0x7f020012;
     }
     public static final class id {
         public static final int Button01=0x7f090017;
@@ -93,6 +94,7 @@ public final class R {
         public static final int login=0x7f080000;
     }
     public static final class string {
+        public static final int acceptBtn=0x7f06001e;
         public static final int action_settings=0x7f060001;
         public static final int app_name=0x7f060000;
         public static final int asteroidsExperiment=0x7f06000c;
@@ -117,6 +119,7 @@ public final class R {
         public static final int passwordTitle=0x7f060004;
         public static final int remembermeTitle=0x7f060006;
         public static final int sunspotNumberMsg=0x7f06001d;
+        public static final int tutorialTitle=0x7f06001f;
         public static final int usernameHint=0x7f060003;
         public static final int usernameTitle=0x7f060002;
         public static final int wolfExperiment=0x7f06000b;

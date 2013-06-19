@@ -23,7 +23,9 @@ import org.kxml2.kdom.Element;
 import org.kxml2.kdom.Node;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PointF;
@@ -71,7 +73,7 @@ public class SunMarkerActivity extends Activity{
 
 		buttons = (RelativeLayout) findViewById(R.id.Buttons);
 		buttons.setVisibility(buttonsVisibility); 
-		
+
 		Bundle extras = getIntent().getExtras();
 		username = extras.getString("username");
 		sha1Password = extras.getString("password");
@@ -100,7 +102,8 @@ public class SunMarkerActivity extends Activity{
 	public void displayButtons () {
 		buttonsVisibility = RelativeLayout.VISIBLE;
 		buttons.setVisibility(buttonsVisibility);
-		Toast.makeText(SunMarkerActivity.this, getString(R.string.sunspotNumberMsg), Toast.LENGTH_LONG).show();
+		simpleMessage(getString(R.string.tutorialTitle), getString(R.string.sunspotNumberMsg));
+		//Toast.makeText(SunMarkerActivity.this, getString(R.string.sunspotNumberMsg), Toast.LENGTH_LONG).show();
 	}
 
 	public void hideButtons () {
@@ -111,8 +114,12 @@ public class SunMarkerActivity extends Activity{
 	@Override
 	protected void onResume(){
 		super.onResume();
-		if (loadImage)
+		if (loadImage) {
+			//imgTouchable.setImageResource(R.drawable.sunspots);
+			//simpleMessage(getString(R.string.tutorialTitle), getString(R.string.zoomsMsg));
+			//simpleMessage(getString(R.string.tutorialTitle), getString(R.string.markPinMsg));
 			new GetIDs().execute();
+		}
 	}
 
 
@@ -224,8 +231,10 @@ public class SunMarkerActivity extends Activity{
 				progressDialog = null;
 			}	
 			new GetImage().execute(); 
-			Toast.makeText(SunMarkerActivity.this, getString(R.string.zoomsMsg), Toast.LENGTH_LONG).show();
-			Toast.makeText(SunMarkerActivity.this, getString(R.string.markPinMsg), Toast.LENGTH_LONG).show();
+			simpleMessage(getString(R.string.tutorialTitle), getString(R.string.zoomsMsg));
+			simpleMessage(getString(R.string.tutorialTitle), getString(R.string.markPinMsg));
+			//Toast.makeText(SunMarkerActivity.this, getString(R.string.zoomsMsg), Toast.LENGTH_LONG).show();
+			//Toast.makeText(SunMarkerActivity.this, getString(R.string.markPinMsg), Toast.LENGTH_LONG).show();
 		}
 
 	}
@@ -235,10 +244,9 @@ public class SunMarkerActivity extends Activity{
 		// This function is called at the beginning, before doInBackground
 		@Override
 		protected void onPreExecute() {
-			if(progressDialog == null)
-				progressDialog = new ProgressDialog(SunMarkerActivity.this);
-			else if (progressDialog.isShowing())
+			if(progressDialog != null)
 				progressDialog.dismiss();
+			progressDialog = new ProgressDialog(SunMarkerActivity.this);
 			progressDialog.setMessage(getString(R.string.loadingImageMsg));
 			progressDialog.show();
 		}
@@ -279,7 +287,7 @@ public class SunMarkerActivity extends Activity{
 				progressDialog.dismiss();
 				progressDialog = null;
 			}	
-			
+
 			BitmapDrawable oldDrawable = (BitmapDrawable)imgTouchable.getDrawable();
 			imgTouchable.setImageBitmap(bitmap);
 			if (oldDrawable != null && oldDrawable.getBitmap() != null)
@@ -378,4 +386,18 @@ public class SunMarkerActivity extends Activity{
 		}
 		javax.net.ssl.HttpsURLConnection.setDefaultSSLSocketFactory(context.getSocketFactory());
 	}
+
+
+	private void simpleMessage (String title, String message) {
+		final AlertDialog.Builder simpleMessage = new AlertDialog.Builder(this);
+		  simpleMessage.setTitle(title);
+		  simpleMessage.setMessage(message);
+		  simpleMessage.setPositiveButton(getString(R.string.acceptBtn),
+		    new DialogInterface.OnClickListener() {
+		     public void onClick(DialogInterface dialog, int which) {
+		     }
+		    });
+		  simpleMessage.show();
+	}
+
 }

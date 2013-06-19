@@ -36,7 +36,9 @@
     <string name="loadingIDsMsg">Obteniendo imágenes &#8230;</string>
     <string name="zoomsMsg">Puedes hacer zoom sobre la imagen con dos dedos</string>
     <string name="markPinMsg">Marca un grupo de manchas solares haciendo clic en él</string>
-    <string name="sunspotNumberMsg">Indica el número de manchas solares individuales con los botones de abajo</string>
+    <string name="sunspotNumberMsg">Indica el número de manchas solares individuales con los botones incrementar y decrementar</string>
+    <string name="acceptBtn">Aceptar</string>
+    <string name="tutorialTitle">Instrucciones</string>
     
     
 </resources>
