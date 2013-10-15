@@ -16,12 +16,15 @@
     <string name="experimentsTitle">Experimentos</string>
     <string name="wolfExperiment">Manchas solares</string>
     <string name="asteroidsExperiment">Asteroides</string>
+    <string name="unimplementedExperimentMsg">Experimento no implementado</string>
 	
     <string name="wolfText">Número de Wolf: R =&#160;</string>
+    <string name="defaultDate">Fecha</string>
     <string name="deleteBtn">Borrar</string>
     <string name="increaseBtn">Incrementar</string>
     <string name="decreaseBtn">Decrementar</string>
     <string name="nextBtn">Siguiente</string>
+    <string name="cancelBtn">Cancelar</string>
     
     
     <string name="authenticatingMsg">Autenticando &#8230;</string>
@@ -29,6 +32,13 @@
     <string name="wrongLoginMsg">Usuario o contraseña incorrecta</string>
     <string name="noInternetMsg">Sin conexión a Internet</string>
     <string name="noAccessMsg">No se pudo acceder al servidor: </string>
+    
+    
+    <string name="selectDateMsg">Selecciona un día para empezar</string>
+    <string name="noImagesForThisDateMsg">No hay imágenes para este día</string>
+    <string name="gettingImageMsg">Obteniendo nueva imagen &#8230;</string>
+    <string name="sendingResultsMsg">Enviando resultados &#8230;</string>
+    
     
     <string name="newImageMsg">Imagen #</string>
     <string name="noMoreImagesMsg">No hay más imágenes por hoy</string>
@@ -41,4 +51,8 @@
     <string name="tutorialTitle">Instrucciones</string>
     
     
+    <string name="sendResultsTitle">Manchas solares</string>
+    <string name="sendResultsMsg">¿Desea enviar los resultados de esta imagen?</string>
+    <string name="yes">Sí</string>
+    <string name="no">No</string>
 </resources>

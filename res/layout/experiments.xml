@@ -35,7 +35,9 @@
             android:id="@+id/button2"
             android:layout_width="180dp"
             android:layout_height="wrap_content"
+            android:onClick="launchFindAsteroids"
             android:text="@string/asteroidsExperiment" />
+
     </LinearLayout>
 
 </LinearLayout>

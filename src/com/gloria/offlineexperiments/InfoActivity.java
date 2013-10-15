@@ -1,3 +1,8 @@
+/**
+ * @author Mario Velasco Casquero
+ * @version 2.00
+ */
+
 package com.gloria.offlineexperiments;
 
 import android.app.Activity;

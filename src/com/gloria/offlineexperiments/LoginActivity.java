@@ -1,28 +1,44 @@
+/**
+ * @author Mario Velasco Casquero
+ * @version 2.00
+ */
+
 package com.gloria.offlineexperiments;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.UnknownHostException;
-import java.security.KeyManagementException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.SocketTimeoutException;
+import java.security.KeyStore;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLSession;
-import javax.net.ssl.TrustManager;
-
-import org.ksoap2.SoapEnvelope;
-import org.ksoap2.serialization.SoapObject;
-import org.ksoap2.serialization.SoapSerializationEnvelope;
-import org.ksoap2.transport.HttpsTransportSE;
-import org.kxml2.kdom.Element;
-import org.kxml2.kdom.Node;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpVersion;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.conn.ClientConnectionManager;
+import org.apache.http.conn.scheme.PlainSocketFactory;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.scheme.SchemeRegistry;
+import org.apache.http.conn.ssl.SSLSocketFactory;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpParams;
+import org.apache.http.params.HttpProtocolParams;
+import org.apache.http.protocol.HTTP;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -36,17 +52,9 @@ import android.widget.Toast;
 
 public class LoginActivity extends Activity {
 
-	private static final String NAMESPACE = "http://user.repository.services.gs.gloria.eu/";
-	private static String HOST="saturno.datsi.fi.upm.es";
-	private static int PORT=8443; 
-	private static String WSDL_LOCATION="/GLORIA/services/UserRepositoryPort?wsdl";
-	private static int TIMEOUT=5000;
-	private static String METHOD_NAME = "authenticateUser";
-	private static final String SOAP_ACTION =  "";
-
-	private static TrustManager[] trustManagers;
 	private String username = "";
 	private String password = "";
+	private String authorizationToken = "";
 	
 	
 	@Override
@@ -135,38 +143,72 @@ public class LoginActivity extends Activity {
 		protected Boolean doInBackground(Void... voids) {
 			boolean response = false;
 							
-			SoapObject bodyRequest = buildBodyRequest();
-			Element[] header = buildHeader();
-			SoapSerializationEnvelope envelope = buildRequest(header, bodyRequest);
-
-			Log.d("DEBUG",envelope.bodyOut.toString());
-			allowAllSSL();
-
-			System.setProperty("http.keepAlive", "false");
-			HttpsTransportSE httpsConnection = new HttpsTransportSE(HOST,PORT, WSDL_LOCATION, TIMEOUT);
-			httpsConnection.debug = true;
-
+			disableConnectionReuseIfNecessary();
+			HttpClient httpClient = null;
 			try {
-				httpsConnection.call(SOAP_ACTION, envelope);
-				SoapObject responseSOAP = (SoapObject) envelope.bodyIn;
-				String resultValue = responseSOAP.getProperty(0).toString();
-				if (resultValue.equals("true")) {
-					Log.d("DEBUG","AUTHENTICATEUSER RES- user authenticated");
-					response = true;
-				}
-				else {
-					Log.d("DEBUG","AUTHENTICATEUSER RES- invalid username or password");
-					Log.d("DEBUG",httpsConnection.requestDump);
+				// create connection
+				httpClient = getNewHttpClient();
+				HttpGet getRequest =  new HttpGet("https://venus.datsi.fi.upm.es:8443/GLORIAAPI/experiments/offline/list");
+				getRequest.setHeader("content-type", "application/json");
+				String accessToken = username + ":" + password;
+				byte[] accessTokenBytes = accessToken.getBytes("iso-8859-1");
+				authorizationToken = Base64.encodeBase64String(accessTokenBytes);
+				getRequest.setHeader("Authorization", "Basic " + authorizationToken);
+				Log.d("DEBUG", "Authorization: " + getRequest.getFirstHeader("Authorization").getValue());
+				Log.d("DEBUG", "opnening connection");
+				HttpResponse resp = httpClient.execute(getRequest);
+				int statusCode = resp.getStatusLine().getStatusCode();
+				Log.d("DEBUG", "status code: " + statusCode);
+
+				// handle issues
+				if (statusCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
+					Log.d("DEBUG", "Invalid user or password");
 					errorResponse = getString(R.string.wrongLoginMsg);
-					response = false;
-				}	
-			} catch (UnknownHostException e){
-				errorResponse = getString(R.string.noInternetMsg);
-			} catch (Exception exception) {
+					return response;
+				} else if (statusCode != HttpURLConnection.HTTP_OK) {
+					// handle any other errors, like 404, 500,..
+					Log.d("DEBUG", "Unknown error");
+					errorResponse = getString(R.string.defaultErrorMsg);
+					return response;
+				}
+
+				// Get response
+				String respStr = EntityUtils.toString(resp.getEntity());
+				Log.d("DEBUG", "response: " + respStr);
+				JSONArray jsonArray = new JSONArray(respStr);
+				String experiment = "";
+				int i = 0;
+				while (!response && i < jsonArray.length()) {
+					experiment = jsonArray.optString(i);
+					if (experiment.compareTo("WOLF") == 0)
+						response = true;
+					else
+						i++;
+				}
+				Log.d("DEBUG", "valid username, experiment: " + experiment);
+
+			/*}catch (UnknownHostException e){
+					errorResponse = getString(R.string.noInternetMsg);
+					} catch (Exception exception) {
 				Log.d("DEBUG","AUTHENTICATEUSER EXC - "+exception.toString());
 				Log.d("DEBUG",httpsConnection.requestDump);
-				errorResponse = getString(R.string.noAccessMsg) + exception.toString();
-			}
+				errorResponse = getString(R.string.noAccessMsg) + exception.toString();*/
+			} catch (MalformedURLException e) {
+				Log.d("DEBUG", "URL is invalid");
+			} catch (SocketTimeoutException e) {
+				Log.d("DEBUG", "data retrieval or connection timed out");
+			} catch (IOException e) {
+				Log.d("DEBUG", "IO exception");
+				errorResponse = getString(R.string.noInternetMsg);
+				// could not read response body 
+				// (could not create input stream)
+			} catch (JSONException e) {
+				Log.d("DEBUG", "JSON exception"); // response body is no valid JSON string
+			} finally {
+				if (httpClient != null) {
+					httpClient.getConnectionManager().shutdown();
+				}
+			}       
 
 			publishProgress();
 			return response;
@@ -182,12 +224,15 @@ public class LoginActivity extends Activity {
 			
 			if (authenticated) {
 				Intent intent = new Intent(LoginActivity.this, ExperimentsActivity.class);
+				intent.putExtra("authorizationToken", authorizationToken);
+				
 				intent.putExtra("username", username);
 				try {
 					String sha1Password = sha1(password);
 					intent.putExtra("password", sha1Password);
 					//intent.putExtra("password", password);
 				} catch (Exception e) {}
+				
 				startActivity(intent);
 			}
 			else {
@@ -195,83 +240,49 @@ public class LoginActivity extends Activity {
 			}
 		}
 		
-		private Element[] buildHeader(){
-			Element[] header = new Element[1];
-			header[0] = new Element().createElement("http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd","Security");
-			header[0].setAttribute(null, "mustUnderstand","1"); 
-
-			Element usernametoken = new Element().createElement("http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd", "UsernameToken");
-			header[0].addChild(Node.ELEMENT,usernametoken);
-
-			Element username = new Element().createElement(null, "n0:Username");
-			username.addChild(Node.TEXT,"");
-			usernametoken.addChild(Node.ELEMENT,username);
-
-			Element pass = new Element().createElement(null,"n0:Password");
-			pass.setAttribute(null, "Type", "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText");
-			pass.addChild(Node.TEXT, "");
-			usernametoken.addChild(Node.ELEMENT, pass);
-			
-			return header;
-		}
-		
-		private SoapObject buildBodyRequest(){
-			SoapObject bodyRequest = new SoapObject(NAMESPACE, METHOD_NAME);
-			bodyRequest.addProperty("name", username);
+		private HttpClient getNewHttpClient() {
 			try {
-				String sha1Password = sha1(password);
-				bodyRequest.addProperty("password", sha1Password);
-				//bodyRequest.addProperty("password", password);
+				KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
+				trustStore.load(null, null);
+
+				SSLSocketFactory sf = new MySSLSocketFactory(trustStore);
+				sf.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+
+				HttpParams params = new BasicHttpParams();
+				HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
+				HttpProtocolParams.setContentCharset(params, HTTP.UTF_8);
+
+				SchemeRegistry registry = new SchemeRegistry();
+				registry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
+				registry.register(new Scheme("https", sf, 443));
+
+				ClientConnectionManager ccm = new ThreadSafeClientConnManager(params, registry);
+
+				return new DefaultHttpClient(ccm, params);
 			} catch (Exception e) {
-				errorResponse = e.toString();
+				return new DefaultHttpClient();
 			}
-			
-			return bodyRequest;
+		}
+
+
+
+		/**
+		 * required in order to prevent issues in earlier Android version.
+		 */
+		private void disableConnectionReuseIfNecessary() {
+			// see HttpURLConnection API doc
+			if (Integer.parseInt(Build.VERSION.SDK) 
+					< Build.VERSION_CODES.FROYO) {
+				System.setProperty("http.keepAlive", "false");
+			}
 		}
 		
-		private SoapSerializationEnvelope buildRequest(Element[] header, SoapObject bodyRequest) {
-			SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER11); 
-			envelope.implicitTypes = true; // omit attribute types such as i:type="d:string"
-			envelope.dotNet = false;	// set false to .Net encoding
-			envelope.setAddAdornments(false); // omit adornments such as id="o0" c:root="1"
-			envelope.setOutputSoapObject(bodyRequest); // Add body to the request
-			envelope.headerOut = header; // Add header to the request
-			
-			return envelope;
+		private String sha1(String text) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+			MessageDigest md = MessageDigest.getInstance("SHA-1");
+			md.update(text.getBytes("iso-8859-1"), 0, text.length());
+			byte[] sha1hash = md.digest();
+			return Base64.encodeBase64String(sha1hash);
 		}
 	}
 	
-
-
-	public static void allowAllSSL() {
-		javax.net.ssl.HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier() {
-			public boolean verify(String hostname, SSLSession session) {
-				return true;
-			}
-		});
-
-		javax.net.ssl.SSLContext context = null;
-
-		if (trustManagers == null) {
-			trustManagers = new javax.net.ssl.TrustManager[] { new _FakeX509TrustManager() };
-		}
-
-		try {
-			context = javax.net.ssl.SSLContext.getInstance("TLS");
-			context.init(null, trustManagers, new SecureRandom());
-		} catch (NoSuchAlgorithmException e) {
-			Log.e("allowAllSSL", e.toString());
-		} catch (KeyManagementException e) {
-			Log.e("allowAllSSL", e.toString());
-		}
-		javax.net.ssl.HttpsURLConnection.setDefaultSSLSocketFactory(context.getSocketFactory());
-	}
-	
-	
-	public static String sha1(String text) throws NoSuchAlgorithmException, UnsupportedEncodingException {
-		MessageDigest md = MessageDigest.getInstance("SHA-1");
-		md.update(text.getBytes("iso-8859-1"), 0, text.length());
-		byte[] sha1hash = md.digest();
-		return Base64.encodeBase64String(sha1hash);
-	}
 }

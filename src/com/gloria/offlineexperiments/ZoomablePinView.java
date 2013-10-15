@@ -1,3 +1,8 @@
+/**
+ * @author Mario Velasco Casquero
+ * @version 2.00
+ */
+
 package com.gloria.offlineexperiments;
 
 import android.content.Context;
@@ -107,6 +112,14 @@ public class ZoomablePinView extends ImageView{
 
 	public int getNumber() {
 		return number;
+	}
+
+	public float getRealPosX() {
+		return realPosX;
+	}
+
+	public float getRealPosY() {
+		return realPosY;
 	}
 
 	public void setNumber(int number) {

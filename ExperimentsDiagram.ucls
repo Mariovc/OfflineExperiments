@@ -31,7 +31,7 @@
       <operations public="false" package="false" protected="false" private="false" static="true"/>    
     </display>  
   </class>  
-  <class id="4" language="java" name="com.gloria.offlineexperiments.SunMarkerActivity.GetIDs" 
+  <class id="4" language="java" name="com.gloria.offlineexperiments.SunMarkerActivity.GetContext" 
     project="OfflineExperiments" file="/OfflineExperiments/src/com/gloria/offlineexperiments/SunMarkerActivity.java" 
     binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="347" y="326"/>    

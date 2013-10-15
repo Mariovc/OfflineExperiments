@@ -16,12 +16,15 @@
     <string name="experimentsTitle">Experiments</string>
     <string name="wolfExperiment">Detect sunspots</string>
     <string name="asteroidsExperiment">Find asteroids</string>
+    <string name="unimplementedExperimentMsg">Unimplemented experiment</string>
 	
     <string name="wolfText">Wolf Number: R =&#160;</string>
+    <string name="defaultDate">Date</string>
     <string name="deleteBtn">Delete</string>
     <string name="increaseBtn">Increase</string>
     <string name="decreaseBtn">Decrease</string>
     <string name="nextBtn">Next</string>
+    <string name="cancelBtn">Cancel</string>
     
     
     <string name="authenticatingMsg">Authenticating &#8230;</string>
@@ -29,6 +32,13 @@
     <string name="wrongLoginMsg">Invalid username or password</string>
     <string name="noInternetMsg">No Internet connection</string>
     <string name="noAccessMsg">Cannot access the server: </string>
+    
+    
+    <string name="selectDateMsg">Select a date to start</string>
+    <string name="noImagesForThisDateMsg">There are no images for this date</string>
+    <string name="gettingImageMsg">Getting new image &#8230;</string>
+    <string name="sendingResultsMsg">Sending results &#8230;</string>
+    
     
     <string name="newImageMsg">Image #</string>
     <string name="noMoreImagesMsg">There is no more images today</string>
@@ -38,7 +48,13 @@
     <string name="markPinMsg">Mark a sunspot group by clicking on it</string>
     <string name="sunspotNumberMsg">Indicate the number of individual sunspots with the increase and decrease buttons</string>
     <string name="acceptBtn">Accept</string>
-    <string name="tutorialTitle">Instrucctions</string>
+    <string name="tutorialTitle">Instructions</string>
+    
+    
+    <string name="sendResultsTitle">Wolf experiment</string>
+    <string name="sendResultsMsg">Do you want to send results for this image?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
     
     
 </resources>

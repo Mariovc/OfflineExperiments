@@ -155,6 +155,16 @@
                     android:background="@color/black"
                     android:text="@string/wolfText"
                     android:textColor="@color/white" />
+
+                <TextView
+                    android:id="@+id/dateDisplay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/btn_margin"
+                    android:background="@color/black"
+                    android:text="@string/defaultDate"
+                    android:textColor="@color/white" />
+
             </LinearLayout>
 
             <LinearLayout
@@ -187,6 +197,7 @@
                     android:text="@string/nextBtn"
                     android:textAppearance="?android:attr/textAppearance"
                     android:textColor="@color/white" />
+
             </LinearLayout>
         </LinearLayout>
     </RelativeLayout>
