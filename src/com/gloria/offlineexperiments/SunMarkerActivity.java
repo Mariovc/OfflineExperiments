@@ -255,7 +255,7 @@ public class SunMarkerActivity extends Activity{
 		buttons.setVisibility(buttonsVisibility);
 	}
 
-	private void lockScreen () {
+	/*private void lockScreen () {
 		if (getResources().getConfiguration().orientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT){
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 			Log.d("DEBUG", "locking screen PORTRAIT");
@@ -269,7 +269,7 @@ public class SunMarkerActivity extends Activity{
 	private void unlockScreen () {
 		Log.d("DEBUG", "unlocking screen");
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
-	}
+	}*/
 
 
 	/* *****************************************
@@ -280,7 +280,6 @@ public class SunMarkerActivity extends Activity{
 
 		@Override
 		protected Integer doInBackground(Void... voids) {
-			lockScreen();
 			Integer reservationID = null;
 			disableConnectionReuseIfNecessary();
 			try { 
@@ -312,7 +311,6 @@ public class SunMarkerActivity extends Activity{
 		@Override
 		protected void onPostExecute(Integer reservationID){
 			contextID = reservationID;
-			unlockScreen();
 		}
 
 	}
@@ -322,7 +320,6 @@ public class SunMarkerActivity extends Activity{
 		// This function is called at the beginning, before doInBackground
 		@Override
 		protected void onPreExecute() {
-			lockScreen();
 			loadingDate = true;
 		}
 
@@ -358,7 +355,6 @@ public class SunMarkerActivity extends Activity{
 		@Override
 		protected void onPostExecute(Void nothing) {
 			loadingDate = false;
-			unlockScreen();
 		}
 	}
 
@@ -368,7 +364,6 @@ public class SunMarkerActivity extends Activity{
 		// This function is called at the beginning, before doInBackground
 		@Override
 		protected void onPreExecute() {
-			lockScreen();
 			if(progressDialog != null)
 				progressDialog.dismiss();
 			progressDialog = new ProgressDialog(SunMarkerActivity.this);
@@ -433,7 +428,6 @@ public class SunMarkerActivity extends Activity{
 			else {
 				Toast.makeText(SunMarkerActivity.this, getString(R.string.noImagesForThisDateMsg), Toast.LENGTH_LONG).show();
 			}
-			unlockScreen();
 		}
 
 		private Bitmap loadBitmap(String url) {
@@ -459,7 +453,6 @@ public class SunMarkerActivity extends Activity{
 		// This function is called at the beginning, before doInBackground
 		@Override
 		protected void onPreExecute() {
-			lockScreen();
 			if(progressDialog != null)
 				progressDialog.dismiss();
 			progressDialog = new ProgressDialog(SunMarkerActivity.this);
