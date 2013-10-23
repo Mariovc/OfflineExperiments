@@ -50,13 +50,11 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.PointF;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -72,10 +70,9 @@ public class SunMarkerActivity extends Activity{
 
 	private String authorizationToken;
 
-	private boolean loadImage = true;
+	//private boolean loadImage = true;
 	private int imageID = -1;
 	private int contextID = -1;
-	private boolean loadingDate = false;
 	private HttpClient httpClient = null;
 
 	private ZoomableImageView imgTouchable;
@@ -86,7 +83,7 @@ public class SunMarkerActivity extends Activity{
 	static final int DATE_DIALOG_ID = 0;
 	private int displayedYear;
 	private int displayedMonth;
-	private int displayedDay;
+	private int displayedDay; 
 	private int auxYear;
 	private int auxMonth;
 	private int auxDay;
@@ -102,10 +99,11 @@ public class SunMarkerActivity extends Activity{
 	@Override 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Log.d("DEBUG", "onCreate");
 		setContentView(R.layout.sun_marker);
 		imgTouchable = (ZoomableImageView) findViewById(R.id.zoomable_image);
-		imgTouchable.setMaxZoom(4f); //change the max level of zoom, default is 3f
 		imgTouchable.setWolfNumberText((TextView) findViewById(R.id.wolfNumberText));
+		imgTouchable.setMaxZoom(4f); //change the max level of zoom, default is 3f
 
 		buttons = (RelativeLayout) findViewById(R.id.Buttons);
 		buttons.setVisibility(buttonsVisibility); 
@@ -121,95 +119,66 @@ public class SunMarkerActivity extends Activity{
 		displayedMonth = auxMonth = calendar.get(Calendar.MONTH);
 		displayedDay = auxDay = calendar.get(Calendar.DAY_OF_MONTH);
 		updateDisplay();
-	}
 
-	@Override
-	protected void onSaveInstanceState(Bundle savedState){
-		super.onSaveInstanceState(savedState);
-		ArrayList<ZoomablePinView> pins = imgTouchable.getPins();
-		savedState.putInt("numPins", pins.size());
-		for (int i = 0; i < pins.size(); i++) {
-			String pinName = "pin" + i;
-			savedState.putInt(pinName + "number", pins.get(i).getNumber());
-			PointF pos = pins.get(i).getRealPosition();
-			savedState.putFloat(pinName + "posX", pos.x);
-			savedState.putFloat(pinName + "posY", pos.y);
-		}
-		savedState.putInt("selectedPin", imgTouchable.getSelectedPin());
-		savedState.putInt("buttonsVisibility", buttonsVisibility);
-		if (imgTouchable.getDrawable() != null){
-			Bitmap bitmap = ((BitmapDrawable)imgTouchable.getDrawable()).getBitmap();
-			savedState.putParcelable("bitmap", bitmap);
-		}
-
-		savedState.putInt("displayedDay", displayedDay);
-		savedState.putInt("displayedMonth", displayedMonth);
-		savedState.putInt("displayedYear", displayedYear);
-		savedState.putInt("auxDay", auxDay);
-		savedState.putInt("auxMonth", auxMonth);
-		savedState.putInt("auxYear", auxYear);
-
-		savedState.putInt("imageID", imageID);
-		savedState.putInt("contextID", contextID);
-		savedState.putBoolean("loadingDate", loadingDate);
-		savedState.putString("authorizationToken", authorizationToken);
-	}
-
-	@Override
-	protected void onRestoreInstanceState(Bundle savedState){
-		super.onRestoreInstanceState(savedState);
-		ArrayList<ZoomablePinView> pins = new ArrayList<ZoomablePinView>();
-		int numPins = savedState.getInt("numPins");
-		for (int i = 0; i < numPins; i++) {
-			ZoomablePinView pin = new ZoomablePinView(this);
-			pin.setNumber(savedState.getInt("pin" + i + "number"));
-			pin.setImageBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.marker));
-			float posX = savedState.getFloat("pin" + i + "posX");
-			float posY = savedState.getFloat("pin" + i + "posY");
-			pin.setRealPosition(posX, posY);
-			pins.add(pin);
-		}
-		imgTouchable.setPins(pins);
-		imgTouchable.setSelectedPin(savedState.getInt("selectedPin"));
-		Bitmap bitmap = savedState.getParcelable("bitmap");
-		imgTouchable.setImageBitmap(bitmap);
-		loadImage = false;
-		imgTouchable.setReload(true);
-		buttonsVisibility = savedState.getInt("buttonsVisibility");
-		buttons.setVisibility(buttonsVisibility);
-
-		displayedDay = savedState.getInt("displayedDay");
-		displayedMonth = savedState.getInt("displayedMonth");
-		displayedYear = savedState.getInt("displayedYear");
-		auxYear = savedState.getInt("auxYear");
-		auxDay = savedState.getInt("auxDay");
-		auxMonth = savedState.getInt("auxMonth");
-		updateDisplay();
-
-		imageID = savedState.getInt("imageID");
-		contextID = savedState.getInt("contextID");
-		loadingDate = savedState.getBoolean("loadingDate");
-		authorizationToken = savedState.getString("authorizationToken");
+		Toast.makeText(this, getString(R.string.selectDateMsg), Toast.LENGTH_LONG).show();
+		showDialog(DATE_DIALOG_ID);
+		new GetContext().execute();
 	}
 
 	@Override
 	protected void onResume(){
 		super.onResume();
-		if (loadImage) {
-			Toast.makeText(this, getString(R.string.selectDateMsg), Toast.LENGTH_LONG).show();
-			showDialog(DATE_DIALOG_ID);
-			new GetContext().execute();
-		}
-
+		Log.d("DEBUG", "onResume");
 	}
 
+	@Override
+	protected void onPause() {
+		Log.d("DEBUG", "onPause");
+		super.onPause();
+	}
 
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {  
+		super.onConfigurationChanged(newConfig);
+		Log.d("DEBUG", "onConfigChanged");
+		
+		// Set views to new orientation 
+		// Remove views from old parents (Unlink)
+		RelativeLayout imgLayout = (RelativeLayout) findViewById(R.id.image_layout);
+		ArrayList<ZoomablePinView> pins = imgTouchable.getPins();
+		for (int i=0; i < pins.size(); i++){
+			imgLayout.removeView(pins.get(i));
+		}
+		imgLayout.removeView(imgTouchable);
+
+        setContentView(R.layout.sun_marker); // set layout with new orientation
+        
+        // set views to new layout
+		imgLayout = (RelativeLayout) findViewById(R.id.image_layout);
+		imgLayout.addView(imgTouchable);
+		for (int i=0; i < pins.size(); i++){
+			imgTouchable.addPin(pins.get(i));
+		}
+		imgTouchable.setPins(pins);
+		imgTouchable.selectPin(imgTouchable.getSelectedPin());
+		imgTouchable.setWolfNumberText((TextView) findViewById(R.id.wolfNumberText));
+		buttons = (RelativeLayout) findViewById(R.id.Buttons);
+		buttons.setVisibility(buttonsVisibility); 
+		mDateDisplay = (TextView) findViewById(R.id.dateDisplay);
+		updateDisplay();
+		
+		// reset parameters
+		imgTouchable.saveScale = 1f;
+	}
 
 	/* *****************************************
 	 ********** Interface functions **********
 	 ***************************************** */
 
 	public void nextImage (View view) {
+		auxYear = displayedYear;                   
+		auxMonth = displayedMonth;                   
+		auxDay = displayedDay;  
 		if (imageID > -1)
 			displaySendResultsDialog();
 		else 
@@ -255,21 +224,6 @@ public class SunMarkerActivity extends Activity{
 		buttons.setVisibility(buttonsVisibility);
 	}
 
-	/*private void lockScreen () {
-		if (getResources().getConfiguration().orientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT){
-			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-			Log.d("DEBUG", "locking screen PORTRAIT");
-		}
-		else if (getResources().getConfiguration().orientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE){
-			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-			Log.d("DEBUG", "locking screen LANDSCAPE");
-		}
-	}
-
-	private void unlockScreen () {
-		Log.d("DEBUG", "unlocking screen");
-		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
-	}*/
 
 
 	/* *****************************************
@@ -281,7 +235,6 @@ public class SunMarkerActivity extends Activity{
 		@Override
 		protected Integer doInBackground(Void... voids) {
 			Integer reservationID = null;
-			disableConnectionReuseIfNecessary();
 			try { 
 				reservationID = getContextID();
 				if (reservationID < 0) {
@@ -315,49 +268,6 @@ public class SunMarkerActivity extends Activity{
 
 	}
 
-	private class SetDate extends AsyncTask<Void, Void, Void> {
-
-		// This function is called at the beginning, before doInBackground
-		@Override
-		protected void onPreExecute() {
-			loadingDate = true;
-		}
-
-
-		@Override
-		protected Void doInBackground(Void... voids) {
-			while (contextID == -1){}
-			disableConnectionReuseIfNecessary();
-			try {
-
-				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd",Locale.getDefault());
-				Calendar calendar = new GregorianCalendar(auxYear, auxMonth, auxDay);
-				setDate("\"" + dateFormat.format(calendar.getTime()) + "T0:00:00\"");
-
-			} catch (MalformedURLException e) {
-				Log.d("DEBUG", "URL is invalid");
-			} catch (SocketTimeoutException e) {
-				Log.d("DEBUG", "data retrieval or connection timed out");
-			} catch (IOException e) {
-				Log.d("DEBUG", "IO exception");
-			}  finally {
-				if (httpClient != null) {
-					httpClient.getConnectionManager().shutdown();
-				}
-			}       
-
-			publishProgress();
-			return null;
-		}
-
-
-		// This function is called when doInBackground is done
-		@Override
-		protected void onPostExecute(Void nothing) {
-			loadingDate = false;
-		}
-	}
-
 	private class GetImage extends AsyncTask<Void, Void, Bitmap> {
 		private ProgressDialog progressDialog = null;
 
@@ -374,11 +284,14 @@ public class SunMarkerActivity extends Activity{
 
 		@Override
 		protected Bitmap doInBackground(Void... voids) {
-			while(loadingDate){}
+			while(contextID == -1){}
 			Bitmap bitmap = null;
 
-			disableConnectionReuseIfNecessary();
 			try {
+				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd",Locale.getDefault());
+				Calendar calendar = new GregorianCalendar(auxYear, auxMonth, auxDay);
+				setDate("\"" + dateFormat.format(calendar.getTime()) + "T0:00:00\"");
+				
 				loadURL();
 				int auxImageID = imageID;
 				String url = getURL(); 			// get URL and image ID
@@ -463,8 +376,6 @@ public class SunMarkerActivity extends Activity{
 
 		@Override
 		protected Void doInBackground(Void... voids) {
-			while(loadingDate){}
-			disableConnectionReuseIfNecessary();
 			try { 
 
 				sendResults();
@@ -715,25 +626,12 @@ public class SunMarkerActivity extends Activity{
 		}
 	}
 
-	/**
-	 * required in order to prevent issues in earlier Android version.
-	 */
-	private void disableConnectionReuseIfNecessary() {
-		// see HttpURLConnection API doc
-		if (Integer.parseInt(Build.VERSION.SDK) 
-				< Build.VERSION_CODES.FROYO) {
-			System.setProperty("http.keepAlive", "false");
-		}
-	}
 
 
-
-
-
+	
 	/* *****************************************
-	 ************ Menu options ***************
+	 ************ Calendar *******************
 	 ***************************************** */
-
 
 	private void updateDisplay() {       
 		DateFormat formatter = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault());
@@ -752,7 +650,6 @@ public class SunMarkerActivity extends Activity{
 			auxYear = year;                   
 			auxMonth = monthOfYear;                   
 			auxDay = dayOfMonth;     
-			new SetDate().execute();
 			if (imageID > -1)
 				displaySendResultsDialog();
 			else 
@@ -781,6 +678,12 @@ public class SunMarkerActivity extends Activity{
 		return null;
 	}
 
+	
+	
+	/* *****************************************
+	 ************ Menu options ***************
+	 ***************************************** */
+	
 	@Override 
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
@@ -793,7 +696,7 @@ public class SunMarkerActivity extends Activity{
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.setDate:
-			showDialog(DATE_DIALOG_ID);
+			showDialog(DATE_DIALOG_ID, null);
 			break;
 		}
 		return true; /** true -> the action will not be propagate*/

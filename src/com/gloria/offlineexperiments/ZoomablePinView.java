@@ -8,6 +8,7 @@ package com.gloria.offlineexperiments;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.PointF;
 import android.graphics.Typeface;
 import android.widget.ImageView;
@@ -26,6 +27,13 @@ public class ZoomablePinView extends ImageView{
 	public ZoomablePinView(Context context) {
 		super(context);
 		setImageBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.marker_selected));
+	}
+	
+	
+	@Override
+	protected void onDraw(Canvas canvas) {
+		setMargins();
+		super.onDraw(canvas);
 	}
 
 	@Override
@@ -58,11 +66,6 @@ public class ZoomablePinView extends ImageView{
 		float posYOnScreen = centerFocus.y + deltaY;
 		this.realPosX = (posXOnScreen - redundantXSpace) / scale;
 		this.realPosY = (posYOnScreen - redundantYSpace) / scale;
-	}
-	
-	public void setRealPosition (float realPosX, float realPosY) {
-		this.realPosX = realPosX;
-		this.realPosY = realPosY;
 	}
 
 	public void moveOnZoom (float focusX, float focusY, float scale) {

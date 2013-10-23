@@ -9,6 +9,7 @@ package com.gloria.offlineexperiments;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.graphics.drawable.Drawable;
@@ -70,7 +71,14 @@ public class ZoomableImageView extends ImageView {
 	//observatory factor or the personal reduction coefficient
 	private static final int K = 1;
 
-	private boolean reloadPins = false;
+	
+	@Override
+	protected void onDraw(Canvas canvas) {
+		super.onDraw(canvas);
+		for (int i=0; i < pins.size(); i++){
+			pins.get(i).draw(canvas);
+		}
+	}
 
 	public ZoomableImageView(Context context) {
 		super(context);
@@ -245,9 +253,11 @@ public class ZoomableImageView extends ImageView {
 		return delta;
 	}
 
+
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+		Log.d("DEBUG", "onMeasure");
 		viewWidth = MeasureSpec.getSize(widthMeasureSpec);
 		viewHeight = MeasureSpec.getSize(heightMeasureSpec);
 
@@ -265,7 +275,6 @@ public class ZoomableImageView extends ImageView {
 
 		if (saveScale == 1) {
 			//Fit to screen.
-			float scale;
 
 			Drawable drawable = getDrawable();
 			if (drawable == null || drawable.getIntrinsicWidth() == 0 || drawable.getIntrinsicHeight() == 0)
@@ -277,7 +286,7 @@ public class ZoomableImageView extends ImageView {
 
 			float scaleX = (float) viewWidth / (float) bmWidth;
 			float scaleY = (float) viewHeight / (float) bmHeight;
-			this.scale = scale = Math.min(scaleX, scaleY);
+			this.scale = Math.min(scaleX, scaleY);
 			matrix.setScale(scale, scale);
 
 			// Center the image
@@ -292,23 +301,14 @@ public class ZoomableImageView extends ImageView {
 			origHeight = viewHeight - 2 * redundantYSpace;
 			setImageMatrix(matrix);
 
-			
+
 			// reload saved state
-			if (reloadPins) {
-				ViewGroup parent = (ViewGroup) getParent();
-				for (int i = 0; i < pins.size(); i++) {
-					ZoomablePinView pin = pins.get(i);
-					pin.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-							ViewGroup.LayoutParams.WRAP_CONTENT));
-					parent.addView(pin);
-					TextView numberView = new TextView(context);
-					parent.addView(numberView);
-					pin.setNumberView(numberView);
-					pin.setPosition(scale, redundantXSpace, redundantYSpace);
-				}
-				selectPin(selectedPin);
-				reloadPins = false;
+			for (int i = 0; i < pins.size(); i++) {
+				ZoomablePinView pin = pins.get(i);
+				pin.setPosition(scale, redundantXSpace, redundantYSpace);
 			}
+			selectPin(selectedPin);
+			
 		}
 		fixTrans();
 	}
@@ -346,6 +346,14 @@ public class ZoomableImageView extends ImageView {
 		calculateWolfNumber();
 		if (pins.size() == 1) 
 			((SunMarkerActivity) context).displayButtons();
+	}
+	
+	public void addPin(ZoomablePinView pin) {
+		ViewGroup parent = (ViewGroup) getParent();
+		parent.addView(pin);
+		TextView numberView = new TextView(context);
+		parent.addView(numberView);
+		pin.setNumberView(numberView);
 	}
 
 	public void removePin(){
@@ -450,15 +458,17 @@ public class ZoomableImageView extends ImageView {
 			wolfNumberTextView.setText(wolfNumberText + wolfNumber);
 		}
 	}
-	
+
 	public void resetAttributes(){
 		int numPins = pins.size();
 		for (int i = 0; i < numPins; i++) {
 			removePin();
 		}
-		centerFocus = centerPointView;
+		centerFocus.x = centerPointView.x;
+		centerFocus.y = centerPointView.y;
 		saveScale = 1f;
 	}
+
 
 	public void setWolfNumberText (TextView textView) {
 		this.wolfNumberTextView = textView;
@@ -483,10 +493,6 @@ public class ZoomableImageView extends ImageView {
 		this.selectedPin = selectedPin;
 	}
 
-	public void setReload(boolean reload) {
-		this.reloadPins = reload;
-	}
-
 	public int getRealWidth() {
 		return getDrawable().getIntrinsicWidth();
 	}
@@ -494,5 +500,6 @@ public class ZoomableImageView extends ImageView {
 	public int getRealHeight() {
 		return getDrawable().getIntrinsicHeight();
 	}
+
 
 }
