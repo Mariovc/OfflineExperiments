@@ -8,5 +8,9 @@
     <dimen name="btn_margin">4dp</dimen>
     <dimen name="between_btn_margin">8dp</dimen>
     <dimen name="increase_decrease_margin">16dp</dimen>
+    <dimen name="standard_padding">10dp</dimen>
+    <dimen name="standard_separation">16dp</dimen>
+    <dimen name="login_btn_lateral_padding">50dp</dimen>
+    <dimen name="background_rounding">7dp</dimen>
 
 </resources>

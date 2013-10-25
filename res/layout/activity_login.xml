@@ -1,74 +1,100 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/LinearLayout1"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/wallpaper"
-    android:gravity="center"
     android:orientation="vertical"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".LoginActivity" >
+    android:paddingTop="@dimen/activity_vertical_margin" >
 
-    <ImageView
-        android:id="@+id/imageView1"
+    <com.gloria.offlineexperiments.ui.TooltipImageButton
+        android:id="@+id/infoButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:contentDescription="@string/app_name"
-        android:src="@drawable/gloria_logo" />
+        android:layout_gravity="right"
+        android:background="#00000000"
+        android:contentDescription="@string/informationTitle"
+        android:src="@android:drawable/ic_menu_info_details" />
 
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@android:color/black"
-        android:text="@string/usernameTitle"
-        android:textColor="@android:color/white" />
+    <FrameLayout
+        android:id="@+id/logoContainer"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_gravity="center"
+        android:layout_weight="1" >
 
-    <EditText
-        android:id="@+id/username"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="@string/usernameHint" >
+        <ImageView
+            android:id="@+id/imageView1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:contentDescription="@string/app_name"
+            android:padding="@dimen/standard_padding"
+            android:scaleType="fitCenter"
+            android:src="@drawable/app_logo" />
+    </FrameLayout>
 
-        <requestFocus />
-    </EditText>
+    <FrameLayout
+        android:id="@+id/fieldsContainer"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/standard_separation"
+        android:layout_weight="1" >
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@android:color/black"
-        android:layout_marginTop="8dp"
-        android:text="@string/passwordTitle"
-        android:textColor="@android:color/white" />
+        <LinearLayout
+            android:id="@+id/fieldsLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/rounded_background"
+            android:orientation="vertical"
+            android:padding="@dimen/standard_padding"
+            tools:context=".LoginActivity"
+            tools:ignore="UselessParent" >
 
-    <EditText
-        android:id="@+id/password"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="@string/passwordHint"
-        android:inputType="textPassword"
-        android:shadowColor="@color/white" />
+            <EditText
+                android:id="@+id/username"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="@string/usernameHint" >
 
-    <CheckBox
-        android:id="@+id/rememberMe"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:checked="true"
-        android:text="@string/remembermeTitle"
-        android:textColor="@android:color/white" />
+                <requestFocus />
+            </EditText>
+
+            <EditText
+                android:id="@+id/password"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="@string/passwordHint"
+                android:inputType="textPassword"
+                android:shadowColor="@color/white" />
+
+            <CheckBox
+                android:id="@+id/rememberMe"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/standard_separation"
+                android:checked="true"
+                android:text="@string/remembermeTitle"
+                android:textColor="@android:color/white" />
+        </LinearLayout>
+    </FrameLayout>
 
     <Button
         android:id="@+id/increase_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/standard_separation"
         android:onClick="authenticate"
+        android:paddingLeft="@dimen/login_btn_lateral_padding"
+        android:paddingRight="@dimen/login_btn_lateral_padding"
         android:text="@string/loginBtn" />
 
 </LinearLayout>
