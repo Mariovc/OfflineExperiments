@@ -42,10 +42,14 @@ public enum TypefaceManager {
 			}
 		} else if (rootView instanceof TextView) {
 			TextView textView = (TextView) rootView;
-			textView.setTypeface(typeface);
+			if (textView.getTypeface() != typeface) {
+				textView.setTypeface(typeface);
+			}
 		} else if (rootView instanceof Button) {
 			Button button = (Button) rootView;
-			button.setTypeface(typeface);
+			if (button.getTypeface() != typeface) {
+				button.setTypeface(typeface);
+			}
 		}
 	}
 }
