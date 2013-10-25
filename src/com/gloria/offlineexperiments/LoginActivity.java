@@ -33,8 +33,6 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import com.gloria.offlineexperiments.ui.fonts.TypefaceManager;
-
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -43,43 +41,41 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
+
+import com.gloria.offlineexperiments.ui.fonts.TypefaceManager;
 
 public class LoginActivity extends Activity {
 
 	private String username = "";
 	private String password = "";
-	private String authorizationToken = "";
-	
-	
+
+	private Button btnLogin = null;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
-		Typeface typeface = TypefaceManager.INSTANCE.getTypeface(getApplicationContext(), TypefaceManager.VERDANA);
-		TypefaceManager.INSTANCE.applyTypefaceToAllViews(this, typeface);
-		
-		ImageView infoButton = (ImageView)findViewById(R.id.infoButton);
-		infoButton.setOnClickListener(new OnClickListener() {
-			public void onClick(View view) {
-				launchInfo();
-			}
-		}); 
-		
+		prepareWidgets();
 	}
-	
-	
-	@Override 
-	protected void onResume(){
+
+	@Override
+	protected void onResume() {
 		super.onResume();
-		loadUser();	
+		loadUser();
 	}
 
 	@Override
@@ -102,20 +98,91 @@ public class LoginActivity extends Activity {
 		CheckBox checkbox = (CheckBox) findViewById(R.id.rememberMe);
 		if (checkbox.isChecked())
 			saveUser();
-		new Authentication().execute(); 
+		new Authentication().execute();
 	}
 
-	
-	private void saveUser(){
-		SharedPreferences settings = getSharedPreferences("LoginGLORIA", MODE_PRIVATE);
+	private void prepareWidgets() {
+		final Typeface typeface = TypefaceManager.INSTANCE.getTypeface(
+				getApplicationContext(), TypefaceManager.VERDANA);
+		TypefaceManager.INSTANCE.applyTypefaceToAllViews(this, typeface);
+
+		btnLogin = (Button) findViewById(R.id.loginButton);
+		final EditText etUsername = (EditText) findViewById(R.id.username);
+		final EditText etPassword = (EditText) findViewById(R.id.password);
+
+		etUsername.addTextChangedListener(new TextWatcher() {
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before,
+					int count) {
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+			}
+
+			@Override
+			public void afterTextChanged(Editable s) {
+				username = (s == null || s.toString() == null) ? "" : s
+						.toString();
+				updateCompleteness();
+			}
+		});
+		etPassword.addTextChangedListener(new TextWatcher() {
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before,
+					int count) {
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+			}
+
+			@Override
+			public void afterTextChanged(Editable s) {
+				password = (s == null || s.toString() == null) ? "" : s
+						.toString();
+				updateCompleteness();
+			}
+		});
+		etPassword.setOnEditorActionListener(new OnEditorActionListener() {
+			@Override
+			public boolean onEditorAction(TextView v, int actionId,
+					KeyEvent event) {
+				if (btnLogin.isEnabled()) {
+					authenticate(btnLogin);
+					return false;
+				}
+				return true;
+			}
+		});
+
+		ImageView infoButton = (ImageView) findViewById(R.id.infoButton);
+		infoButton.setOnClickListener(new OnClickListener() {
+			public void onClick(View view) {
+				launchInfo();
+			}
+		});
+	}
+
+	private void updateCompleteness() {
+		btnLogin.setEnabled(username.trim().length() > 0
+				&& password.trim().length() > 0);
+	}
+
+	private void saveUser() {
+		SharedPreferences settings = getSharedPreferences("LoginGLORIA",
+				MODE_PRIVATE);
 		SharedPreferences.Editor editor = settings.edit();
 		editor.putString("username", this.username);
 		editor.putString("password", this.password);
 		editor.commit();
 	}
-	
-	private void loadUser(){
-		SharedPreferences settings = getSharedPreferences("LoginGLORIA", MODE_PRIVATE);
+
+	private void loadUser() {
+		SharedPreferences settings = getSharedPreferences("LoginGLORIA",
+				MODE_PRIVATE);
 		String username = settings.getString("username", "");
 		EditText usernameText = (EditText) findViewById(R.id.username);
 		usernameText.setText(username);
@@ -123,13 +190,12 @@ public class LoginActivity extends Activity {
 		EditText passwordText = (EditText) findViewById(R.id.password);
 		passwordText.setText(password);
 	}
-	
-	
+
 	private class Authentication extends AsyncTask<Void, Void, Boolean> {
 		private ProgressDialog progressDialog;
 		private String errorResponse = getString(R.string.defaultErrorMsg);
+		private String authorizationToken = "";
 
-		
 		// This function is called at the beginning, before doInBackground
 		@Override
 		protected void onPreExecute() {
@@ -137,24 +203,29 @@ public class LoginActivity extends Activity {
 			progressDialog.setMessage(getString(R.string.authenticatingMsg));
 			progressDialog.show();
 		}
-		
-		
+
 		@Override
 		protected Boolean doInBackground(Void... voids) {
 			boolean response = false;
-							
+
 			disableConnectionReuseIfNecessary();
 			HttpClient httpClient = null;
 			try {
 				// create connection
 				httpClient = getNewHttpClient();
-				HttpGet getRequest =  new HttpGet("https://venus.datsi.fi.upm.es:8443/GLORIAAPI/experiments/offline/list");
+				HttpGet getRequest = new HttpGet(
+						"https://venus.datsi.fi.upm.es:8443/GLORIAAPI/experiments/offline/list");
 				getRequest.setHeader("content-type", "application/json");
 				String accessToken = username + ":" + password;
 				byte[] accessTokenBytes = accessToken.getBytes("iso-8859-1");
-				authorizationToken = Base64.encodeBase64String(accessTokenBytes);
-				getRequest.setHeader("Authorization", "Basic " + authorizationToken);
-				Log.d("DEBUG", "Authorization: " + getRequest.getFirstHeader("Authorization").getValue());
+				authorizationToken = Base64
+						.encodeBase64String(accessTokenBytes);
+				getRequest.setHeader("Authorization", "Basic "
+						+ authorizationToken);
+				Log.d("DEBUG",
+						"Authorization: "
+								+ getRequest.getFirstHeader("Authorization")
+										.getValue());
 				Log.d("DEBUG", "opnening connection");
 				HttpResponse resp = httpClient.execute(getRequest);
 				int statusCode = resp.getStatusLine().getStatusCode();
@@ -187,12 +258,15 @@ public class LoginActivity extends Activity {
 				}
 				Log.d("DEBUG", "valid username, experiment: " + experiment);
 
-			/*}catch (UnknownHostException e){
-					errorResponse = getString(R.string.noInternetMsg);
-					} catch (Exception exception) {
-				Log.d("DEBUG","AUTHENTICATEUSER EXC - "+exception.toString());
-				Log.d("DEBUG",httpsConnection.requestDump);
-				errorResponse = getString(R.string.noAccessMsg) + exception.toString();*/
+				/*
+				 * }catch (UnknownHostException e){ errorResponse =
+				 * getString(R.string.noInternetMsg); } catch (Exception
+				 * exception) {
+				 * Log.d("DEBUG","AUTHENTICATEUSER EXC - "+exception
+				 * .toString()); Log.d("DEBUG",httpsConnection.requestDump);
+				 * errorResponse = getString(R.string.noAccessMsg) +
+				 * exception.toString();
+				 */
 			} catch (MalformedURLException e) {
 				Log.d("DEBUG", "URL is invalid");
 			} catch (SocketTimeoutException e) {
@@ -200,49 +274,52 @@ public class LoginActivity extends Activity {
 			} catch (IOException e) {
 				Log.d("DEBUG", "IO exception");
 				errorResponse = getString(R.string.noInternetMsg);
-				// could not read response body 
+				// could not read response body
 				// (could not create input stream)
 			} catch (JSONException e) {
-				Log.d("DEBUG", "JSON exception"); // response body is no valid JSON string
+				Log.d("DEBUG", "JSON exception"); // response body is no valid
+													// JSON string
 			} finally {
 				if (httpClient != null) {
 					httpClient.getConnectionManager().shutdown();
 				}
-			}       
+			}
 
 			publishProgress();
 			return response;
 		}
-		
 
 		// This function is called when doInBackground is done
 		@Override
-		protected void onPostExecute(Boolean authenticated){
-			if(progressDialog.isShowing()) {
+		protected void onPostExecute(Boolean authenticated) {
+			if (progressDialog.isShowing()) {
 				progressDialog.cancel();
 			}
-			
+
 			if (authenticated) {
-				Intent intent = new Intent(LoginActivity.this, ExperimentsActivity.class);
+				Intent intent = new Intent(LoginActivity.this,
+						ExperimentsActivity.class);
 				intent.putExtra("authorizationToken", authorizationToken);
-				
+
 				intent.putExtra("username", username);
 				try {
 					String sha1Password = sha1(password);
 					intent.putExtra("password", sha1Password);
-					//intent.putExtra("password", password);
-				} catch (Exception e) {}
-				
+					// intent.putExtra("password", password);
+				} catch (Exception e) {
+				}
+
 				startActivity(intent);
-			}
-			else {
-				Toast.makeText(LoginActivity.this, errorResponse, Toast.LENGTH_LONG).show();
+			} else {
+				Toast.makeText(LoginActivity.this, errorResponse,
+						Toast.LENGTH_LONG).show();
 			}
 		}
-		
+
 		private HttpClient getNewHttpClient() {
 			try {
-				KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
+				KeyStore trustStore = KeyStore.getInstance(KeyStore
+						.getDefaultType());
 				trustStore.load(null, null);
 
 				SSLSocketFactory sf = new MySSLSocketFactory(trustStore);
@@ -253,10 +330,12 @@ public class LoginActivity extends Activity {
 				HttpProtocolParams.setContentCharset(params, HTTP.UTF_8);
 
 				SchemeRegistry registry = new SchemeRegistry();
-				registry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
+				registry.register(new Scheme("http", PlainSocketFactory
+						.getSocketFactory(), 80));
 				registry.register(new Scheme("https", sf, 443));
 
-				ClientConnectionManager ccm = new ThreadSafeClientConnManager(params, registry);
+				ClientConnectionManager ccm = new ThreadSafeClientConnManager(
+						params, registry);
 
 				return new DefaultHttpClient(ccm, params);
 			} catch (Exception e) {
@@ -264,25 +343,24 @@ public class LoginActivity extends Activity {
 			}
 		}
 
-
-
 		/**
 		 * required in order to prevent issues in earlier Android version.
 		 */
+		@SuppressWarnings("deprecation")
 		private void disableConnectionReuseIfNecessary() {
 			// see HttpURLConnection API doc
-			if (Integer.parseInt(Build.VERSION.SDK) 
-					< Build.VERSION_CODES.FROYO) {
+			if (Integer.parseInt(Build.VERSION.SDK) < Build.VERSION_CODES.FROYO) {
 				System.setProperty("http.keepAlive", "false");
 			}
 		}
-		
-		private String sha1(String text) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+
+		private String sha1(String text) throws NoSuchAlgorithmException,
+				UnsupportedEncodingException {
 			MessageDigest md = MessageDigest.getInstance("SHA-1");
 			md.update(text.getBytes("iso-8859-1"), 0, text.length());
 			byte[] sha1hash = md.digest();
 			return Base64.encodeBase64String(sha1hash);
 		}
 	}
-	
+
 }

@@ -61,7 +61,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ems="10"
-                android:hint="@string/usernameHint" >
+                android:hint="@string/usernameHint"
+                android:imeOptions="actionNext"
+                android:inputType="textNoSuggestions|textPersonName"
+                android:singleLine="true" >
 
                 <requestFocus />
             </EditText>
@@ -72,6 +75,7 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:hint="@string/passwordHint"
+                android:imeOptions="actionGo"
                 android:inputType="textPassword"
                 android:shadowColor="@color/white" />
 
@@ -87,7 +91,7 @@
     </FrameLayout>
 
     <Button
-        android:id="@+id/increase_btn"
+        android:id="@+id/loginButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
