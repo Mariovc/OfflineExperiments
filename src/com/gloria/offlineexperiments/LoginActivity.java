@@ -33,10 +33,13 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import com.gloria.offlineexperiments.ui.fonts.TypefaceManager;
+
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -44,7 +47,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.Window;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -60,19 +62,17 @@ public class LoginActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		final boolean customTitleSupported = requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 		setContentView(R.layout.activity_login);
-		if ( customTitleSupported ) {
-			getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.titlebar);
-		}
-
+		Typeface typeface = TypefaceManager.INSTANCE.getTypeface(getApplicationContext(), TypefaceManager.VERDANA);
+		TypefaceManager.INSTANCE.applyTypefaceToAllViews(this, typeface);
+		
 		ImageView infoButton = (ImageView)findViewById(R.id.infoButton);
 		infoButton.setOnClickListener(new OnClickListener() {
 			public void onClick(View view) {
 				launchInfo();
 			}
 		}); 
-		 
+		
 	}
 	
 	
