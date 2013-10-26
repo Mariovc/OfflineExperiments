@@ -684,6 +684,7 @@ public class SunMarkerActivity extends Activity{
 					}
 				}
 			});
+			datePicker.setTitle(R.string.selectDateMsg);
 			datePicker.setCancelable(false);
 			datePicker.setCanceledOnTouchOutside(false);
 			return datePicker;
