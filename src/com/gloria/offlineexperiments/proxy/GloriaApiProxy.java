@@ -96,26 +96,10 @@ public class GloriaApiProxy {
 		}
 	}
 
-	public HttpGet getHttpGetRequest(String operation, String authUsername,
-			String authPassword) {
-		String authToken = getAuthorizationTokenFromUserPassword(authUsername,
-				authPassword);
-		return authToken != null ? getHttpGetRequest(operation, authToken)
-				: null;
-	}
-
 	public HttpGet getHttpGetRequest(String operation, String authToken) {
 		HttpGet getRequest = new HttpGet(String.format(operation, contextId));
 		setHeaders(getRequest, authToken);
 		return getRequest;
-	}
-
-	public HttpPost getHttpPostRequest(String operation, String authUsername,
-			String authPassword, HttpEntity entity) {
-		String authToken = getAuthorizationTokenFromUserPassword(authUsername,
-				authPassword);
-		return authToken != null ? getHttpPostRequest(operation, authToken,
-				entity) : null;
 	}
 
 	public HttpPost getHttpPostRequest(String operation, String authToken,
@@ -126,7 +110,7 @@ public class GloriaApiProxy {
 		return postRequest;
 	}
 
-	private String getAuthorizationTokenFromUserPassword(String username,
+	public String getAuthorizationTokenFromUserPassword(String username,
 			String password) {
 		String accessToken = username + ":" + password;
 		byte[] accessTokenBytes;

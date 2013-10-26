@@ -201,10 +201,11 @@ public class LoginActivity extends Activity {
 			disableConnectionReuseIfNecessary();
 			HttpClient httpClient = null;
 			try {
+				authorizationToken = apiProxy.getAuthorizationTokenFromUserPassword(username, password);
 				// create connection
 				httpClient = apiProxy.getHttpClient();
 				HttpGet getRequest = apiProxy.getHttpGetRequest(
-						GloriaApiProxy.OP_EXPERIMENT_LIST, username, password);
+						GloriaApiProxy.OP_EXPERIMENT_LIST, authorizationToken);
 				if (getRequest == null) {
 					errorResponse = getString(R.string.defaultErrorMsg);
 					return false;
