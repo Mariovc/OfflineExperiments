@@ -262,6 +262,7 @@ public class SunMarkerActivity extends Activity{
 		protected void onPreExecute() {
 			progressDialog = new ProgressDialog(SunMarkerActivity.this);
 			progressDialog.setCancelable(false);
+			progressDialog.setCanceledOnTouchOutside(false);
 			progressDialog.setMessage(getString(R.string.requestingAccess));
 			progressDialog.show();
 		}
@@ -337,6 +338,7 @@ public class SunMarkerActivity extends Activity{
 		protected void onPreExecute() {
 			progressDialog = new ProgressDialog(SunMarkerActivity.this);
 			progressDialog.setCancelable(false);
+			progressDialog.setCanceledOnTouchOutside(false);
 			progressDialog.setMessage(getString(R.string.gettingImageMsg));
 			progressDialog.show();
 		}
@@ -432,6 +434,7 @@ public class SunMarkerActivity extends Activity{
 		protected void onPreExecute() {
 			progressDialog = new ProgressDialog(SunMarkerActivity.this);
 			progressDialog.setCancelable(false);
+			progressDialog.setCanceledOnTouchOutside(false);
 			progressDialog.setMessage(getString(R.string.sendingResultsMsg));
 			progressDialog.show();
 		}
@@ -681,15 +684,8 @@ public class SunMarkerActivity extends Activity{
 					}
 				}
 			});
-			datePicker.setOnCancelListener(new DialogInterface.OnCancelListener() {
-				@Override
-				public void onCancel(DialogInterface dialog) {
-					datePickerCancelled = true;
-					if (imageID == -1) {
-						finish();
-					}
-				}
-			});
+			datePicker.setCancelable(false);
+			datePicker.setCanceledOnTouchOutside(false);
 			return datePicker;
 		}
 		return null;
