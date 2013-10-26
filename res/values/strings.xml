@@ -19,7 +19,7 @@
     <string name="asteroidsExperiment">Find asteroids</string>
     <string name="unimplementedExperimentMsg">Unimplemented experiment</string>
 	
-    <string name="instructionsText">Welcome to the GLORIA Solar Activity Experiment!\n\nHelp us to study the solar activity by counting sunspots (dark spots on solar surface). First mark a group, after count the number of individual sunspots. It is very important to mark all sunspot groups on solar surface. The total number of sunspots determines the Wolf Number related with solar activity, and it's very important for solar research. The sun is currently at the maximum of its 11 year cycle so your help is crucial to understand sun evolution.\n\nJust select a date to get sun images for that day, and start contributing!</string>
+    <string name="instructionsText">Welcome to the GLORIA Solar Activity Experiment!\n\nHelp us to study the solar activity by counting sunspots (dark spots on solar surface). First mark a group, after count the number of individual sunspots. It is very important to mark all sunspot groups on solar surface. The total number of sunspots determines the Wolf Number related with solar activity, and it\'s very important for solar research. The sun is currently at the maximum of its 11 year cycle so your help is crucial to understand sun evolution.\n\nJust select a date to get sun images for that day, and start contributing!</string>
     
     <string name="wolfText">Wolf Number: R =&#160;</string>
     <string name="defaultDate">Date</string>
