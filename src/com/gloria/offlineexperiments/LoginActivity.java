@@ -36,6 +36,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -143,7 +144,7 @@ public class LoginActivity extends Activity {
 			@Override
 			public boolean onEditorAction(TextView v, int actionId,
 					KeyEvent event) {
-				if (btnLogin.isEnabled()) {
+				if (actionId == EditorInfo.IME_ACTION_GO && btnLogin.isEnabled()) {
 					authenticate(btnLogin);
 					return false;
 				}
@@ -157,6 +158,8 @@ public class LoginActivity extends Activity {
 				launchInfo();
 			}
 		});
+		
+		updateCompleteness();
 	}
 
 	private void updateCompleteness() {
