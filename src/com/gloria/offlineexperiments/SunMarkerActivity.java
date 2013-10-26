@@ -40,6 +40,7 @@ import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -54,8 +55,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.gloria.offlineexperiments.proxy.GloriaApiProxy;
+import com.gloria.offlineexperiments.ui.fonts.TypefaceManager;
 
 public class SunMarkerActivity extends Activity{
+
+	private static final int DATE_DIALOG_ID = 0;
+	private static final int GET_CONTEXT_TIMEOUT_MS = 15000;
 
 	private String authorizationToken;
 
@@ -67,7 +72,8 @@ public class SunMarkerActivity extends Activity{
 	private int buttonsVisibility = RelativeLayout.INVISIBLE;
 
 	private TextView mDateDisplay;
-	static final int DATE_DIALOG_ID = 0;
+
+	private boolean datePickerCancelled = false;
 	private int displayedYear;
 	private int displayedMonth;
 	private int displayedDay; 
@@ -77,8 +83,10 @@ public class SunMarkerActivity extends Activity{
 	
 	private GloriaApiProxy apiProxy = new GloriaApiProxy();
 
-
-
+	private Object taskLock = new Object();
+	private GetContext getContextTask = null;
+	private GetImage getImageTask = null;
+	private SendResults sendResultsTask = null;
 
 
 	/* *****************************************
@@ -89,17 +97,48 @@ public class SunMarkerActivity extends Activity{
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Log.d("DEBUG", "onCreate");
+
+		Bundle extras = getIntent().getExtras();
+		authorizationToken = extras.getString("authorizationToken");
+		
 		setContentView(R.layout.sun_marker);
+		prepareWidgets();
+
+		getContextTask = new GetContext();
+		getContextTask.execute();
+	}
+	
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		synchronized (taskLock) {
+			if (getContextTask != null) {
+				getContextTask.cancel(true);
+				getContextTask = null;
+			}
+			if (getImageTask != null) {
+				getImageTask.cancel(true);
+				getImageTask = null;
+			}
+			if (sendResultsTask != null) {
+				sendResultsTask.cancel(true);
+				sendResultsTask = null;
+			}
+		}
+	}
+	
+	private void prepareWidgets() {
+		final Typeface typeface = TypefaceManager.INSTANCE.getTypeface(
+				getApplicationContext(), TypefaceManager.VERDANA);
+		TypefaceManager.INSTANCE.applyTypefaceToAllViews(this, typeface);
+		
 		imgTouchable = (ZoomableImageView) findViewById(R.id.zoomable_image);
 		imgTouchable.setWolfNumberText((TextView) findViewById(R.id.wolfNumberText));
 		imgTouchable.setMaxZoom(4f); //change the max level of zoom, default is 3f
 
 		buttons = (RelativeLayout) findViewById(R.id.Buttons);
 		buttons.setVisibility(buttonsVisibility); 
-
-		Bundle extras = getIntent().getExtras();
-		authorizationToken = extras.getString("authorizationToken");
-
+		
 		// calendar settings
 		mDateDisplay = (TextView) findViewById(R.id.dateDisplay);
 		final Calendar calendar = Calendar.getInstance();
@@ -108,11 +147,7 @@ public class SunMarkerActivity extends Activity{
 		displayedMonth = auxMonth = calendar.get(Calendar.MONTH);
 		displayedDay = auxDay = calendar.get(Calendar.DAY_OF_MONTH);
 		updateDisplay();
-
-		Toast.makeText(this, getString(R.string.selectDateMsg), Toast.LENGTH_LONG).show();
-		showDialog(DATE_DIALOG_ID);
-		new GetContext().execute();
-	}
+	}	
 
 	@Override
 	protected void onResume(){
@@ -168,10 +203,12 @@ public class SunMarkerActivity extends Activity{
 		auxYear = displayedYear;                   
 		auxMonth = displayedMonth;                   
 		auxDay = displayedDay;  
-		if (imageID > -1)
+		if (imageID > -1) {
 			displaySendResultsDialog();
-		else 
-			new GetImage().execute();
+		} else {
+			getImageTask = new GetImage();
+			getImageTask.execute();
+		}
 	}
 
 	private void displaySendResultsDialog() {
@@ -179,14 +216,13 @@ public class SunMarkerActivity extends Activity{
 		myAlertDialog.setTitle(R.string.sendResultsTitle);
 		myAlertDialog.setMessage(R.string.sendResultsMsg);
 		myAlertDialog.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-
 			public void onClick(DialogInterface arg0, int arg1) {
 				new SendResults().execute();
 			}});
 		myAlertDialog.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-
 			public void onClick(DialogInterface arg0, int arg1) {
-				new GetImage().execute();
+				getImageTask = new GetImage();
+				getImageTask.execute();
 			}});
 		myAlertDialog.show();
 	}
@@ -220,7 +256,16 @@ public class SunMarkerActivity extends Activity{
 	 ***************************************** */
 
 	private class GetContext extends AsyncTask<Void, Void, Integer> {
+		private ProgressDialog progressDialog = null;
 
+		@Override
+		protected void onPreExecute() {
+			progressDialog = new ProgressDialog(SunMarkerActivity.this);
+			progressDialog.setCancelable(false);
+			progressDialog.setMessage(getString(R.string.requestingAccess));
+			progressDialog.show();
+		}
+		
 		@Override
 		protected Integer doInBackground(Void... voids) {
 			Integer reservationID = null;
@@ -228,7 +273,16 @@ public class SunMarkerActivity extends Activity{
 				reservationID = getContextID();
 				if (reservationID < 0) {
 					applyWolf();
-					reservationID = getContextID();
+					long timeoutMs = System.currentTimeMillis() + GET_CONTEXT_TIMEOUT_MS;
+					while (reservationID < 0 && System.currentTimeMillis() < timeoutMs && !isCancelled()) {
+						try {
+							Thread.sleep(1000);
+						} catch (InterruptedException e) {
+							Log.d("SUN MARKER", "Get Context interrupted", e);
+							break;
+						}
+						reservationID = getContextID();
+					}
 				}
 			} catch (MalformedURLException e) {
 				Log.d("DEBUG", "URL is invalid");
@@ -241,16 +295,36 @@ public class SunMarkerActivity extends Activity{
 			}  finally {
 				apiProxy.shutdown();
 			}
-
-			publishProgress();
 			return reservationID;
 		}
 
 
 		// This function is called when doInBackground is done
 		@Override
-		protected void onPostExecute(Integer reservationID){
-			apiProxy.setContextId(reservationID);
+		protected void onPostExecute(Integer reservationID) {
+			if (progressDialog != null && progressDialog.isShowing()) {
+				try {
+					progressDialog.dismiss();
+				} catch (Exception ex) {
+				}
+				progressDialog = null;
+			}	
+
+			if (!isCancelled()) {
+				if (reservationID != null && reservationID > 0) {
+					apiProxy.setContextId(reservationID);
+					datePickerCancelled = false;
+					showDialog(DATE_DIALOG_ID);
+				} else {
+					// this shouldn't happen - it means the server hasn't given us a context in 12 sec.
+					// let's show that there is a problem with the connection for now
+					Toast.makeText(SunMarkerActivity.this, getString(R.string.noInternetMsg), Toast.LENGTH_LONG).show();
+					finish();
+				}
+			}
+			synchronized (taskLock) {
+				getContextTask = null;
+			}
 		}
 
 	}
@@ -261,17 +335,14 @@ public class SunMarkerActivity extends Activity{
 		// This function is called at the beginning, before doInBackground
 		@Override
 		protected void onPreExecute() {
-			if(progressDialog != null)
-				progressDialog.dismiss();
 			progressDialog = new ProgressDialog(SunMarkerActivity.this);
+			progressDialog.setCancelable(false);
 			progressDialog.setMessage(getString(R.string.gettingImageMsg));
 			progressDialog.show();
 		}
 
-
 		@Override
 		protected Bitmap doInBackground(Void... voids) {
-			while(apiProxy.getContextId() == -1){}
 			Bitmap bitmap = null;
 
 			try {
@@ -280,12 +351,12 @@ public class SunMarkerActivity extends Activity{
 				setDate("\"" + dateFormat.format(calendar.getTime()) + "T0:00:00\"");
 				
 				loadURL();
-				int auxImageID = imageID;
-				String url = getURL(); 			// get URL and image ID
-				if (imageID > -1)
-					bitmap = loadBitmap(url);  //load image from URL
-				else
-					imageID = auxImageID; 		// restore the image ID (removing the id -1)
+				if (!isCancelled()) {
+					String url = getURL(); 			// get URL and image ID
+					if (imageID > -1 && !isCancelled()) {
+						bitmap = loadBitmap(url);  //load image from URL
+					}
+				}
 
 			} catch (MalformedURLException e) {
 				Log.d("DEBUG", "URL is invalid");
@@ -299,7 +370,6 @@ public class SunMarkerActivity extends Activity{
 				apiProxy.shutdown();
 			}       
 
-			publishProgress();
 			return bitmap;
 		}
 
@@ -307,24 +377,33 @@ public class SunMarkerActivity extends Activity{
 		// This function is called when doInBackground is done
 		@Override
 		protected void onPostExecute(Bitmap bitmap){
-			if(progressDialog != null && progressDialog.isShowing()) {
-				progressDialog.dismiss();
+			if (progressDialog != null && progressDialog.isShowing()) {
+				try {
+					progressDialog.dismiss();
+				} catch (Exception ex) {
+				}
 				progressDialog = null;
 			}	
 
-			if (bitmap != null) {
-				BitmapDrawable oldDrawable = (BitmapDrawable)imgTouchable.getDrawable();
-				imgTouchable.setImageBitmap(bitmap);
-				if (oldDrawable != null && oldDrawable.getBitmap() != null)
-					oldDrawable.getBitmap().recycle();
-				imgTouchable.resetAttributes();
-				displayedYear = auxYear;
-				displayedMonth = auxMonth;
-				displayedDay = auxDay;
-				updateDisplay();
+			if (!isCancelled()) {
+				if (bitmap != null) {
+					BitmapDrawable oldDrawable = (BitmapDrawable)imgTouchable.getDrawable();
+					imgTouchable.setImageBitmap(bitmap);
+					if (oldDrawable != null && oldDrawable.getBitmap() != null)
+						oldDrawable.getBitmap().recycle();
+					imgTouchable.resetAttributes();
+					displayedYear = auxYear;
+					displayedMonth = auxMonth;
+					displayedDay = auxDay;
+					updateDisplay();
+				} else {
+					Toast.makeText(SunMarkerActivity.this, getString(R.string.noImagesForThisDateMsg), Toast.LENGTH_LONG).show();
+					datePickerCancelled = false;
+					showDialog(DATE_DIALOG_ID);
+				}
 			}
-			else {
-				Toast.makeText(SunMarkerActivity.this, getString(R.string.noImagesForThisDateMsg), Toast.LENGTH_LONG).show();
+			synchronized (taskLock) {
+				getImageTask = null;
 			}
 		}
 
@@ -351,9 +430,8 @@ public class SunMarkerActivity extends Activity{
 		// This function is called at the beginning, before doInBackground
 		@Override
 		protected void onPreExecute() {
-			if(progressDialog != null)
-				progressDialog.dismiss();
 			progressDialog = new ProgressDialog(SunMarkerActivity.this);
+			progressDialog.setCancelable(false);
 			progressDialog.setMessage(getString(R.string.sendingResultsMsg));
 			progressDialog.show();
 		}
@@ -378,7 +456,6 @@ public class SunMarkerActivity extends Activity{
 				apiProxy.shutdown();
 			}
 
-			publishProgress();
 			return null;
 		}
 
@@ -386,12 +463,20 @@ public class SunMarkerActivity extends Activity{
 		// This function is called when doInBackground is done
 		@Override
 		protected void onPostExecute(Void nothing){
-
-			if(progressDialog != null && progressDialog.isShowing()) {
-				progressDialog.dismiss();
+			if (progressDialog != null && progressDialog.isShowing()) {
+				try {
+					progressDialog.dismiss();
+				} catch (Exception ex) {
+				}
 				progressDialog = null;
-			}	
-			new GetImage().execute();
+			}
+			if (!isCancelled()) {
+				getImageTask = new GetImage();
+				getImageTask.execute();
+			}
+			synchronized (taskLock) {
+				sendResultsTask = null;
+			}
 		}
 
 	}
@@ -498,7 +583,7 @@ public class SunMarkerActivity extends Activity{
 		String respString = EntityUtils.toString(resp.getEntity());
 		JSONObject imageJSON = new JSONObject(respString);
 		String urlStr = imageJSON.optString("jpg");
-		imageID = imageJSON.optInt("id");
+		imageID = imageJSON.optInt("id", -1);
 		Log.d("DEBUG", "url: " + urlStr + " \nID: " + imageID);
 		return urlStr;
 	}
@@ -548,17 +633,6 @@ public class SunMarkerActivity extends Activity{
 		}
 	}
 
-
-
-
-	/* *****************************************
-	 ********** HTTP connection **************
-	 ***************************************** */
-
-
-
-
-
 	
 	/* *****************************************
 	 ************ Calendar *******************
@@ -577,29 +651,41 @@ public class SunMarkerActivity extends Activity{
 
 		public void onDateSet(DatePicker view, int year,
 				int monthOfYear, int dayOfMonth) {
-
-			auxYear = year;                   
-			auxMonth = monthOfYear;                   
-			auxDay = dayOfMonth;     
-			if (imageID > -1)
-				displaySendResultsDialog();
-			else 
-				new GetImage().execute();  
+			if (!datePickerCancelled) {
+				datePickerCancelled = true; // known bug - onDateSet called twice sometimes. This will avoid it
+				auxYear = year;                   
+				auxMonth = monthOfYear;                   
+				auxDay = dayOfMonth;     
+				if (imageID > -1) {
+					displaySendResultsDialog();
+				} else {
+					getImageTask = new GetImage();
+					getImageTask.execute();  
+				}
+			}
 		}
 
 	};
 
 	@Override
-	protected Dialog onCreateDialog(int id)
-	{
+	protected Dialog onCreateDialog(int id) {
 		switch(id)
 		{
 		case DATE_DIALOG_ID:
-			DatePickerDialog datePicker = new DatePickerDialog(this, mDateSetListener, auxYear, auxMonth,auxDay);
+			final DatePickerDialog datePicker = new DatePickerDialog(this, mDateSetListener, auxYear, auxMonth,auxDay);
 			datePicker.setButton(DialogInterface.BUTTON_NEGATIVE, getString(R.string.cancelBtn), new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int which) {
+					datePickerCancelled = true;
 					if (which == DialogInterface.BUTTON_NEGATIVE && imageID == -1) {
-						Log.d("DEBUG", "going back with Cancel");
+						finish();
+					}
+				}
+			});
+			datePicker.setOnCancelListener(new DialogInterface.OnCancelListener() {
+				@Override
+				public void onCancel(DialogInterface dialog) {
+					datePickerCancelled = true;
+					if (imageID == -1) {
 						finish();
 					}
 				}
@@ -608,8 +694,6 @@ public class SunMarkerActivity extends Activity{
 		}
 		return null;
 	}
-
-	
 	
 	/* *****************************************
 	 ************ Menu options ***************
@@ -627,7 +711,8 @@ public class SunMarkerActivity extends Activity{
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.setDate:
-			showDialog(DATE_DIALOG_ID, null);
+			datePickerCancelled = false;
+			showDialog(DATE_DIALOG_ID);
 			break;
 		}
 		return true; /** true -> the action will not be propagate*/
