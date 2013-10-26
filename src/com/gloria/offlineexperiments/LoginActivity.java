@@ -30,6 +30,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -99,7 +100,9 @@ public class LoginActivity extends Activity {
 		btnLogin = (Button) findViewById(R.id.loginButton);
 		final EditText etUsername = (EditText) findViewById(R.id.username);
 		final EditText etPassword = (EditText) findViewById(R.id.password);
-
+		final TextView tvRegister = (TextView) findViewById(R.id.registerTextView);
+		tvRegister.setMovementMethod(LinkMovementMethod.getInstance());
+		
 		etUsername.addTextChangedListener(new TextWatcher() {
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before,

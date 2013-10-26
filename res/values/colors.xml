@@ -2,6 +2,7 @@
 <resources>
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
+    <color name="link_blue">#7070FF</color>
     
     <color name="titlebackgroundcolor">#3232CD</color>
     <color name="titletextcolor">#FFFFFF</color>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">GLORIA experiments</string>
+    <string name="app_name">GLORIA Solar Activity Experiment</string>
     <string name="action_settings">Settings</string>
     <string name="usernameTitle">User name:</string>
     <string name="usernameHint">Username</string>
@@ -9,11 +9,12 @@
     <string name="passwordHint">Password</string>
     <string name="remembermeTitle">Remember me</string>
     <string name="loginBtn">Log in</string>
+    <string name="register"><a href="http://users.gloria-project.eu/">Register</a></string>
     
     <string name="informationTitle">Information</string>
     <string name="loginInfo">This application was created by GLORIA for its users to test our funny experiments. Visit us on http://gloria-project.eu/</string>
     
-    <string name="experimentsTitle">Experiments</string>
+    <string name="experimentsTitle">GLORIA Solar Activity Experiment</string>
     <string name="wolfExperiment">Detect sunspots</string>
     <string name="asteroidsExperiment">Find asteroids</string>
     <string name="unimplementedExperimentMsg">Unimplemented experiment</string>

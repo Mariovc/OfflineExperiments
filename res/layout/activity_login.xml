@@ -27,13 +27,15 @@
             android:src="@android:drawable/ic_menu_info_details" />
 
         <TextView
-            android:id="@+id/textView1"
+            android:id="@+id/registerTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:text="REGISTER"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
+            android:text="@string/register"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/link_blue" />
+
     </RelativeLayout>
 
     <FrameLayout

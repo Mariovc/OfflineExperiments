@@ -9,6 +9,7 @@
     <string name="passwordHint">Contraseña</string>
     <string name="remembermeTitle">Recuérdame</string>
     <string name="loginBtn">Login</string>
+    <string name="register"><a href="http://users.gloria-project.eu/">Registrarse</a></string>
     
     <string name="informationTitle">Información</string>
     <string name="loginInfo">Esta aplicación fue creada por GLORIA para que sus usuarios prueben nuestros entretenidos experimentos. Visítanos en http://gloria-project.eu/</string>
