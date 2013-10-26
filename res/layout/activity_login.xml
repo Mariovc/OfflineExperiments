@@ -83,7 +83,8 @@
                 android:hint="@string/usernameHint"
                 android:imeOptions="actionNext"
                 android:inputType="textNoSuggestions|textPersonName"
-                android:singleLine="true" >
+                android:singleLine="true"
+                android:textColorHint="@color/hint_text_color" >
 
                 <requestFocus />
             </EditText>
@@ -96,7 +97,8 @@
                 android:hint="@string/passwordHint"
                 android:imeOptions="actionGo"
                 android:inputType="textPassword"
-                android:shadowColor="@color/white" />
+                android:shadowColor="@color/white"
+                android:textColorHint="@color/hint_text_color" />
 
             <CheckBox
                 android:id="@+id/rememberMe"
