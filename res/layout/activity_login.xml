@@ -3,21 +3,39 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/wallpaper"
+    android:background="@drawable/background"
     android:orientation="vertical"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin" >
 
-    <com.gloria.offlineexperiments.ui.TooltipImageButton
-        android:id="@+id/infoButton"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:id="@+id/topLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="right"
-        android:background="#00000000"
-        android:contentDescription="@string/informationTitle"
-        android:src="@android:drawable/ic_menu_info_details" />
+        android:layout_gravity="right" >
+
+        <com.gloria.offlineexperiments.ui.TooltipImageButton
+            android:id="@+id/infoButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:background="#00000000"
+            android:contentDescription="@string/informationTitle"
+            android:src="@android:drawable/ic_menu_info_details" />
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:text="REGISTER"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    </RelativeLayout>
 
     <FrameLayout
         android:id="@+id/logoContainer"
@@ -37,13 +55,13 @@
             android:src="@drawable/app_logo" />
     </FrameLayout>
 
-    <FrameLayout
+    <LinearLayout
         android:id="@+id/fieldsContainer"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_gravity="center_horizontal"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:layout_marginTop="@dimen/standard_separation"
-        android:layout_weight="1" >
+        android:orientation="vertical" >
 
         <LinearLayout
             android:id="@+id/fieldsLayout"
@@ -83,18 +101,42 @@
                 android:id="@+id/rememberMe"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/standard_separation"
                 android:checked="true"
                 android:text="@string/remembermeTitle"
                 android:textColor="@android:color/white" />
         </LinearLayout>
-    </FrameLayout>
+
+        <LinearLayout
+            android:id="@+id/logosLayout"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_marginTop="@dimen/standard_separation"
+            android:gravity="right"
+            android:orientation="horizontal" >
+
+            <ImageView
+                android:id="@+id/logoEuImageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/euLogo"
+                android:scaleType="fitEnd"
+                android:src="@drawable/eu_logo" />
+
+            <ImageView
+                android:id="@+id/ImageView01"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/sevenCapLogo"
+                android:scaleType="fitStart"
+                android:src="@drawable/seven_cap_logo" />
+        </LinearLayout>
+    </LinearLayout>
 
     <Button
         android:id="@+id/loginButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
+        android:layout_gravity="center"
         android:layout_marginTop="@dimen/standard_separation"
         android:onClick="authenticate"
         android:paddingLeft="@dimen/login_btn_lateral_padding"

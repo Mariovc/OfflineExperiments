@@ -55,6 +55,8 @@
     <string name="sendResultsMsg">Do you want to send results for this image?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="sevenCapLogo">Seven Capacities CORDIS</string>
+    <string name="euLogo">European Union</string>
     
     
 </resources>
