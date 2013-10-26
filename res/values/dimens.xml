@@ -12,5 +12,5 @@
     <dimen name="standard_separation">16dp</dimen>
     <dimen name="login_btn_lateral_padding">50dp</dimen>
     <dimen name="background_rounding">7dp</dimen>
-
+	<dimen name="instructions_text_size">13sp</dimen>
 </resources>

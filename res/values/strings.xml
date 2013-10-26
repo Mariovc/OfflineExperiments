@@ -19,9 +19,7 @@
     <string name="asteroidsExperiment">Find asteroids</string>
     <string name="unimplementedExperimentMsg">Unimplemented experiment</string>
 	
-    <string name="instructionsText">
-        Welcome to the GLORIA Solar Activity Experiment!\n\nHelp us study the solar activity by identifying and marking sun spot groups. The number of these sun spots determine the Wolf Number, which is very important for solar activity research.\n\nJust select a date to get sun images for that day, and start contributing! 
-        </string>
+    <string name="instructionsText">Welcome to the GLORIA Solar Activity Experiment!\n\nHelp us to study the solar activity by counting sunspots (dark spots on solar surface). First mark a group, after count the number of individual sunspots. It is very important to mark all sunspot groups on solar surface. The total number of sunspots determines the Wolf Number related with solar activity, and it's very important for solar research. The sun is currently at the maximum of its 11 year cycle so your help is crucial to understand sun evolution.\n\nJust select a date to get sun images for that day, and start contributing!</string>
     
     <string name="wolfText">Wolf Number: R =&#160;</string>
     <string name="defaultDate">Date</string>
@@ -39,14 +37,15 @@
     <string name="noAccessMsg">Cannot access the server: </string>
     
     
+    <string name="requestingAccess">Requesting access to experiment...</string>
     <string name="selectDateMsg">Select a date</string>
-    <string name="noImagesForThisDateMsg">There are no images for this date</string>
+    <string name="noImagesForThisDateMsg">There are no images for that date</string>
     <string name="gettingImageMsg">Getting new image &#8230;</string>
     <string name="sendingResultsMsg">Sending results &#8230;</string>
     
     
     <string name="newImageMsg">Image #</string>
-    <string name="noMoreImagesMsg">There is no more images today</string>
+    <string name="noMoreImagesMsg">There are no more images for this day</string>
     <string name="loadingImageMsg">Loading image &#8230;</string>
     <string name="loadingIDsMsg">Getting images &#8230;</string>
     <string name="zoomsMsg">You can zoom with two fingers</string>

@@ -1,7 +1,10 @@
 package com.gloria.offlineexperiments;
 
+import com.gloria.offlineexperiments.ui.fonts.TypefaceManager;
+
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
 
@@ -13,12 +16,14 @@ public class InstructionsActivity extends Activity {
 	/** Called when the activity is first created. */
 	@Override public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.instructions);
-
 		Bundle extras = getIntent().getExtras();
 		username = extras.getString("username");
 		sha1Password = extras.getString("password");
 		authorizationToken = extras.getString("authorizationToken");
+
+		setContentView(R.layout.instructions);
+		prepareWidgets();
+		
 	}
 
 	public void launchSunMarker(View view) {
@@ -28,4 +33,10 @@ public class InstructionsActivity extends Activity {
 		intent.putExtra("authorizationToken", authorizationToken);
 		startActivity(intent);
 	}
+	
+	private void prepareWidgets() {
+		final Typeface typeface = TypefaceManager.INSTANCE.getTypeface(
+				getApplicationContext(), TypefaceManager.VERDANA);
+		TypefaceManager.INSTANCE.applyTypefaceToAllViews(this, typeface);
+	}	
 }

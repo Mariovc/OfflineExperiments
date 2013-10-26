@@ -16,16 +16,32 @@
         android:layout_height="0dp"
         android:layout_weight="1" >
 
-        <TextView
-            android:id="@+id/textView1"
+        <LinearLayout
+            android:id="@+id/borderLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:background="@drawable/rounded_background"
-            android:padding="@dimen/standard_padding"
-            android:text="@string/instructionsText"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:orientation="vertical" >
 
+            <TextView
+                android:id="@+id/textView1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/standard_padding"
+                android:text="@string/instructionsText"
+                android:textSize="@dimen/instructions_text_size" />
+
+            <ImageView
+                android:id="@+id/usageImageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:padding="@dimen/standard_padding"
+                android:scaleType="fitCenter"
+                android:src="@drawable/usage" />
+
+        </LinearLayout>
     </FrameLayout>
 
     <Button
