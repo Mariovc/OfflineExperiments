@@ -30,7 +30,7 @@
     <string name="authenticatingMsg">Autenticando &#8230;</string>
     <string name="defaultErrorMsg">Error inesperado</string>
     <string name="wrongLoginMsg">Usuario o contraseña incorrecta</string>
-    <string name="noInternetMsg">Sin conexión a Internet</string>
+    <string name="noInternetMsg">Imposible contactar con el servidor. Compruebe la conexión a Internet</string>
     <string name="noAccessMsg">No se pudo acceder al servidor: </string>
     
     
