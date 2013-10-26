@@ -29,7 +29,7 @@ public class GloriaApiProxy {
 
 	// private static final String SERVER_URL =
 	// "https://venus.datsi.fi.upm.es:8443/GLORIAAPI/";
-	private static final String SERVER_URL = "https://ws.users.gloria-project.eu:8443/GLORIAAPI/";
+	private static final String SERVER_URL = "https://ws.users.gloria-project.eu:8443/";
 	private static final String EXPERIMENTS = "GLORIAAPI/experiments/";
 
 	public static final String OP_EXPERIMENT_LIST = SERVER_URL + EXPERIMENTS
@@ -49,7 +49,7 @@ public class GloriaApiProxy {
 	public static final String OP_SAVE = SERVER_URL + EXPERIMENTS
 			+ "context/%s/execute/save";
 	
-	private HttpClient cachedHttpClient = null;
+	private HttpClient lastHttpClient = null;
 	private int contextId = -1;
 
 	public int getContextId() {
@@ -61,40 +61,38 @@ public class GloriaApiProxy {
 	}
 
 	public HttpClient getHttpClient() {
-		if (cachedHttpClient != null) {
-			cachedHttpClient.getConnectionManager().shutdown();
-		} else {
-			try {
-				KeyStore trustStore = KeyStore.getInstance(KeyStore
-						.getDefaultType());
-				trustStore.load(null, null);
+		shutdown();
+		try {
+			KeyStore trustStore = KeyStore.getInstance(KeyStore
+					.getDefaultType());
+			trustStore.load(null, null);
 
-				SSLSocketFactory sf = new MySSLSocketFactory(trustStore);
-				sf.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+			SSLSocketFactory sf = new MySSLSocketFactory(trustStore);
+			sf.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
 
-				HttpParams params = new BasicHttpParams();
-				HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
-				HttpProtocolParams.setContentCharset(params, HTTP.UTF_8);
+			HttpParams params = new BasicHttpParams();
+			HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
+			HttpProtocolParams.setContentCharset(params, HTTP.UTF_8);
 
-				SchemeRegistry registry = new SchemeRegistry();
-				registry.register(new Scheme("http", PlainSocketFactory
-						.getSocketFactory(), 80));
-				registry.register(new Scheme("https", sf, 443));
+			SchemeRegistry registry = new SchemeRegistry();
+			registry.register(new Scheme("http", PlainSocketFactory
+					.getSocketFactory(), 80));
+			registry.register(new Scheme("https", sf, 443));
 
-				ClientConnectionManager ccm = new ThreadSafeClientConnManager(
-						params, registry);
+			ClientConnectionManager ccm = new ThreadSafeClientConnManager(
+					params, registry);
 
-				cachedHttpClient = new DefaultHttpClient(ccm, params);
-			} catch (Exception e) {
-				cachedHttpClient = new DefaultHttpClient();
-			}
+			lastHttpClient = new DefaultHttpClient(ccm, params);
+		} catch (Exception e) {
+			lastHttpClient = new DefaultHttpClient();
 		}
-		return cachedHttpClient;
+		return lastHttpClient;
 	}
 
 	public void shutdown() {
-		if (cachedHttpClient != null) {
-			cachedHttpClient.getConnectionManager().shutdown();
+		if (lastHttpClient != null) {
+			lastHttpClient.getConnectionManager().shutdown();
+			lastHttpClient = null;
 		}
 	}
 
