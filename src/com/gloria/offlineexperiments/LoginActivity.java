@@ -288,7 +288,7 @@ public class LoginActivity extends Activity {
 
 			if (authenticated) {
 				Intent intent = new Intent(LoginActivity.this,
-						ExperimentsActivity.class);
+						InstructionsActivity.class);
 				intent.putExtra("authorizationToken", authorizationToken);
 
 				intent.putExtra("username", username);

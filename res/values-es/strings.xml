@@ -35,7 +35,7 @@
     <string name="noAccessMsg">No se pudo acceder al servidor: </string>
     
     
-    <string name="selectDateMsg">Selecciona un día para empezar</string>
+    <string name="selectDateMsg">Selecciona una fecha</string>
     <string name="noImagesForThisDateMsg">No hay imágenes para este día</string>
     <string name="gettingImageMsg">Obteniendo nueva imagen &#8230;</string>
     <string name="sendingResultsMsg">Enviando resultados &#8230;</string>

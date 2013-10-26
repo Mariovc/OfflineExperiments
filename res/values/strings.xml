@@ -19,6 +19,10 @@
     <string name="asteroidsExperiment">Find asteroids</string>
     <string name="unimplementedExperimentMsg">Unimplemented experiment</string>
 	
+    <string name="instructionsText">
+        Welcome to the GLORIA Solar Activity Experiment!\n\nHelp us study the solar activity by identifying and marking sun spot groups. The number of these sun spots determine the Wolf Number, which is very important for solar activity research.\n\nJust select a date to get sun images for that day, and start contributing! 
+        </string>
+    
     <string name="wolfText">Wolf Number: R =&#160;</string>
     <string name="defaultDate">Date</string>
     <string name="deleteBtn">Delete</string>
@@ -35,7 +39,7 @@
     <string name="noAccessMsg">Cannot access the server: </string>
     
     
-    <string name="selectDateMsg">Select a date to start</string>
+    <string name="selectDateMsg">Select a date</string>
     <string name="noImagesForThisDateMsg">There are no images for this date</string>
     <string name="gettingImageMsg">Getting new image &#8230;</string>
     <string name="sendingResultsMsg">Sending results &#8230;</string>
