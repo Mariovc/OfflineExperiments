@@ -11,7 +11,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
-import java.security.KeyStore;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -21,24 +20,12 @@ import java.util.GregorianCalendar;
 import java.util.Locale;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.HttpVersion;
 import org.apache.http.ParseException;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.conn.ClientConnectionManager;
-import org.apache.http.conn.scheme.PlainSocketFactory;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpParams;
-import org.apache.http.params.HttpProtocolParams;
-import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -66,14 +53,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.gloria.offlineexperiments.proxy.GloriaApiProxy;
+
 public class SunMarkerActivity extends Activity{
 
 	private String authorizationToken;
 
 	//private boolean loadImage = true;
 	private int imageID = -1;
-	private int contextID = -1;
-	private HttpClient httpClient = null;
 
 	private ZoomableImageView imgTouchable;
 	private RelativeLayout buttons;
@@ -87,6 +74,8 @@ public class SunMarkerActivity extends Activity{
 	private int auxYear;
 	private int auxMonth;
 	private int auxDay;
+	
+	private GloriaApiProxy apiProxy = new GloriaApiProxy();
 
 
 
@@ -250,9 +239,7 @@ public class SunMarkerActivity extends Activity{
 			} catch (IOException e) {
 				Log.d("DEBUG", "IO exception");
 			}  finally {
-				if (httpClient != null) {
-					httpClient.getConnectionManager().shutdown();
-				}
+				apiProxy.shutdown();
 			}
 
 			publishProgress();
@@ -263,7 +250,7 @@ public class SunMarkerActivity extends Activity{
 		// This function is called when doInBackground is done
 		@Override
 		protected void onPostExecute(Integer reservationID){
-			contextID = reservationID;
+			apiProxy.setContextId(reservationID);
 		}
 
 	}
@@ -284,7 +271,7 @@ public class SunMarkerActivity extends Activity{
 
 		@Override
 		protected Bitmap doInBackground(Void... voids) {
-			while(contextID == -1){}
+			while(apiProxy.getContextId() == -1){}
 			Bitmap bitmap = null;
 
 			try {
@@ -309,9 +296,7 @@ public class SunMarkerActivity extends Activity{
 			} catch (IOException e) {
 				Log.d("DEBUG", "IO exception");
 			}  finally {
-				if (httpClient != null) {
-					httpClient.getConnectionManager().shutdown();
-				}
+				apiProxy.shutdown();
 			}       
 
 			publishProgress();
@@ -390,9 +375,7 @@ public class SunMarkerActivity extends Activity{
 			} catch (IOException e) {
 				Log.d("DEBUG", "IO exception");
 			}  finally {
-				if (httpClient != null) {
-					httpClient.getConnectionManager().shutdown();
-				}
+				apiProxy.shutdown();
 			}
 
 			publishProgress();
@@ -422,10 +405,8 @@ public class SunMarkerActivity extends Activity{
 
 	private int getContextID() throws ClientProtocolException, IOException, JSONException {
 		int reservationID = -1;
-		getNewHttpClient();
-		HttpGet getRequest =  new HttpGet("https://venus.datsi.fi.upm.es:8443/GLORIAAPI/experiments/active");
-		getRequest.setHeader("content-type", "application/json");
-		getRequest.setHeader("Authorization", "Basic " + authorizationToken);
+		HttpClient httpClient = apiProxy.getHttpClient();
+		HttpGet getRequest = apiProxy.getHttpGetRequest(GloriaApiProxy.OP_ACTIVE_EXPERIMENTS, authorizationToken);
 
 		HttpResponse resp = httpClient.execute(getRequest);
 		int statusCode = resp.getStatusLine().getStatusCode();
@@ -454,11 +435,8 @@ public class SunMarkerActivity extends Activity{
 	}
 
 	private void applyWolf() throws ClientProtocolException, IOException {
-		getNewHttpClient();
-		HttpGet getRequest =  new HttpGet("https://venus.datsi.fi.upm.es:8443/GLORIAAPI/experiments/offline/apply?experiment=WOLF");
-		getRequest.setHeader("content-type", "application/json");
-		getRequest.setHeader("Authorization", "Basic " + authorizationToken);
-
+		HttpClient httpClient = apiProxy.getHttpClient();
+		HttpGet getRequest = apiProxy.getHttpGetRequest(GloriaApiProxy.OP_APPLY_FOR_WOLF, authorizationToken); 
 		HttpResponse resp = httpClient.execute(getRequest);
 		int statusCode = resp.getStatusLine().getStatusCode();
 		Log.d("DEBUG", "Apply WOLF, status code: " + statusCode);
@@ -471,16 +449,9 @@ public class SunMarkerActivity extends Activity{
 	}
 
 	private void setDate(String date) throws ClientProtocolException, IOException {
-		getNewHttpClient();
-		HttpPost postRequest =  new HttpPost("https://venus.datsi.fi.upm.es:8443/GLORIAAPI/experiments/context/" 
-				+ contextID + "/parameters/date");
-		postRequest.setHeader("content-type", "application/json");
-		postRequest.setHeader("Authorization", "Basic " + authorizationToken);
-
 		StringEntity entity = new StringEntity(date);
-		postRequest.setEntity(entity);
-
-		Log.d("DEBUG", "Authorization: " + postRequest.getFirstHeader("Authorization").getValue());
+		HttpClient httpClient = apiProxy.getHttpClient();
+		HttpPost postRequest = apiProxy.getHttpPostRequest(GloriaApiProxy.OP_SET_DATE, authorizationToken, entity);
 		Log.d("DEBUG", "opnening connection");
 		HttpResponse resp = httpClient.execute(postRequest);
 		int statusCode = resp.getStatusLine().getStatusCode();
@@ -494,12 +465,8 @@ public class SunMarkerActivity extends Activity{
 	}
 
 	private void loadURL() throws ClientProtocolException, IOException{
-		getNewHttpClient();
-		HttpGet getRequest =  new HttpGet("https://venus.datsi.fi.upm.es:8443/GLORIAAPI/experiments/context/" 
-				+ contextID + "/execute/load");
-		getRequest.setHeader("content-type", "application/json");
-		getRequest.setHeader("Authorization", "Basic " + authorizationToken);
-
+		HttpClient httpClient = apiProxy.getHttpClient();
+		HttpGet getRequest = apiProxy.getHttpGetRequest(GloriaApiProxy.OP_LOAD_URL, authorizationToken); 
 		HttpResponse resp = httpClient.execute(getRequest);
 		int statusCode = resp.getStatusLine().getStatusCode();
 		Log.d("DEBUG", "Load, status code: " + statusCode);
@@ -512,11 +479,8 @@ public class SunMarkerActivity extends Activity{
 	}
 
 	private String getURL() throws ParseException, IOException, JSONException{
-		getNewHttpClient();
-		HttpGet getRequest =  new HttpGet("https://venus.datsi.fi.upm.es:8443/GLORIAAPI/experiments/context/" 
-				+ contextID + "/parameters/image");
-		getRequest.setHeader("content-type", "application/json");
-		getRequest.setHeader("Authorization", "Basic " + authorizationToken);
+		HttpClient httpClient = apiProxy.getHttpClient();
+		HttpGet getRequest = apiProxy.getHttpGetRequest(GloriaApiProxy.OP_GET_URL, authorizationToken); 
 
 		Log.d("DEBUG", "Before getting URL");
 		HttpResponse resp = httpClient.execute(getRequest);
@@ -540,12 +504,6 @@ public class SunMarkerActivity extends Activity{
 	}
 
 	private void sendResults() throws ClientProtocolException, IOException, JSONException {
-		getNewHttpClient();
-		HttpPost postRequest =  new HttpPost("https://venus.datsi.fi.upm.es:8443/GLORIAAPI/experiments/context/" 
-				+ contextID + "/parameters/markers");
-		postRequest.setHeader("content-type", "application/json");
-		postRequest.setHeader("Authorization", "Basic " + authorizationToken);
-
 		JSONObject jsonResult = new JSONObject();
 		jsonResult.put("image", imageID);
 		JSONArray jsonSpots = new JSONArray();
@@ -562,8 +520,9 @@ public class SunMarkerActivity extends Activity{
 		jsonResult.put("spots", jsonSpots);
 		Log.d("DEBUG", "Send results: " + jsonResult.toString());
 		StringEntity entity = new StringEntity(jsonResult.toString());
-		postRequest.setEntity(entity);
 
+		HttpClient httpClient = apiProxy.getHttpClient();
+		HttpPost postRequest = apiProxy.getHttpPostRequest(GloriaApiProxy.OP_SET_MARKERS, authorizationToken, entity);
 		HttpResponse resp = httpClient.execute(postRequest);
 		int statusCode = resp.getStatusLine().getStatusCode();
 		Log.d("DEBUG", "Send results, status code: " + statusCode);
@@ -576,12 +535,8 @@ public class SunMarkerActivity extends Activity{
 	}
 
 	private void saveResults() throws ClientProtocolException, IOException{
-		getNewHttpClient();
-		HttpGet getRequest =  new HttpGet("https://venus.datsi.fi.upm.es:8443/GLORIAAPI/experiments/context/" 
-				+ contextID + "/execute/save");
-		getRequest.setHeader("content-type", "application/json");
-		getRequest.setHeader("Authorization", "Basic " + authorizationToken);
-
+		HttpClient httpClient = apiProxy.getHttpClient();
+		HttpGet getRequest = apiProxy.getHttpGetRequest(GloriaApiProxy.OP_SAVE, authorizationToken); 
 		HttpResponse resp = httpClient.execute(getRequest);
 		int statusCode = resp.getStatusLine().getStatusCode();
 		Log.d("DEBUG", "Save, status code: " + statusCode);
@@ -600,31 +555,7 @@ public class SunMarkerActivity extends Activity{
 	 ********** HTTP connection **************
 	 ***************************************** */
 
-	private void getNewHttpClient() {
-		if (httpClient != null)
-			httpClient.getConnectionManager().shutdown();
-		try {
-			KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
-			trustStore.load(null, null);
 
-			SSLSocketFactory sf = new MySSLSocketFactory(trustStore);
-			sf.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
-
-			HttpParams params = new BasicHttpParams();
-			HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
-			HttpProtocolParams.setContentCharset(params, HTTP.UTF_8);
-
-			SchemeRegistry registry = new SchemeRegistry();
-			registry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
-			registry.register(new Scheme("https", sf, 443));
-
-			ClientConnectionManager ccm = new ThreadSafeClientConnManager(params, registry);
-
-			httpClient = new DefaultHttpClient(ccm, params);
-		} catch (Exception e) {
-			httpClient =  new DefaultHttpClient();
-		}
-	}
 
 
 

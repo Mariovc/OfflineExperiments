@@ -3,7 +3,7 @@
  * @version 2.00
  */
 
-package com.gloria.offlineexperiments;
+package com.gloria.offlineexperiments.proxy;
 
 import java.io.IOException;
 import java.net.Socket;

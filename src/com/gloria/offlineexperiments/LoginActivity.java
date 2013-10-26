@@ -10,25 +10,12 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
-import java.security.KeyStore;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.HttpVersion;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.conn.ClientConnectionManager;
-import org.apache.http.conn.scheme.PlainSocketFactory;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.conn.ssl.SSLSocketFactory;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpParams;
-import org.apache.http.params.HttpProtocolParams;
-import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -56,6 +43,7 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
+import com.gloria.offlineexperiments.proxy.GloriaApiProxy;
 import com.gloria.offlineexperiments.ui.fonts.TypefaceManager;
 
 public class LoginActivity extends Activity {
@@ -64,6 +52,8 @@ public class LoginActivity extends Activity {
 	private String password = "";
 
 	private Button btnLogin = null;
+
+	private GloriaApiProxy apiProxy = new GloriaApiProxy();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -212,21 +202,14 @@ public class LoginActivity extends Activity {
 			HttpClient httpClient = null;
 			try {
 				// create connection
-				httpClient = getNewHttpClient();
-				HttpGet getRequest = new HttpGet(
-						"https://venus.datsi.fi.upm.es:8443/GLORIAAPI/experiments/offline/list");
-				getRequest.setHeader("content-type", "application/json");
-				String accessToken = username + ":" + password;
-				byte[] accessTokenBytes = accessToken.getBytes("iso-8859-1");
-				authorizationToken = Base64
-						.encodeBase64String(accessTokenBytes);
-				getRequest.setHeader("Authorization", "Basic "
-						+ authorizationToken);
-				Log.d("DEBUG",
-						"Authorization: "
-								+ getRequest.getFirstHeader("Authorization")
-										.getValue());
-				Log.d("DEBUG", "opnening connection");
+				httpClient = apiProxy.getHttpClient();
+				HttpGet getRequest = apiProxy.getHttpGetRequest(
+						GloriaApiProxy.OP_EXPERIMENT_LIST, username, password);
+				if (getRequest == null) {
+					errorResponse = getString(R.string.defaultErrorMsg);
+					return false;
+				}
+				Log.d("DEBUG", "opening connection");
 				HttpResponse resp = httpClient.execute(getRequest);
 				int statusCode = resp.getStatusLine().getStatusCode();
 				Log.d("DEBUG", "status code: " + statusCode);
@@ -313,33 +296,6 @@ public class LoginActivity extends Activity {
 			} else {
 				Toast.makeText(LoginActivity.this, errorResponse,
 						Toast.LENGTH_LONG).show();
-			}
-		}
-
-		private HttpClient getNewHttpClient() {
-			try {
-				KeyStore trustStore = KeyStore.getInstance(KeyStore
-						.getDefaultType());
-				trustStore.load(null, null);
-
-				SSLSocketFactory sf = new MySSLSocketFactory(trustStore);
-				sf.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
-
-				HttpParams params = new BasicHttpParams();
-				HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
-				HttpProtocolParams.setContentCharset(params, HTTP.UTF_8);
-
-				SchemeRegistry registry = new SchemeRegistry();
-				registry.register(new Scheme("http", PlainSocketFactory
-						.getSocketFactory(), 80));
-				registry.register(new Scheme("https", sf, 443));
-
-				ClientConnectionManager ccm = new ThreadSafeClientConnManager(
-						params, registry);
-
-				return new DefaultHttpClient(ccm, params);
-			} catch (Exception e) {
-				return new DefaultHttpClient();
 			}
 		}
 
