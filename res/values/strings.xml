@@ -9,7 +9,7 @@
     <string name="passwordHint">Password</string>
     <string name="remembermeTitle">Remember me</string>
     <string name="loginBtn">Log in</string>
-    <string name="register"><a href="http://users.gloria-project.eu/">Register</a></string>
+    <string name="register"><a href="http://users.gloria-project.eu/home?p_p_id=58&amp;p_p_lifecycle=0&amp;p_p_state=maximized&amp;p_p_mode=view&amp;p_p_col_id=column-2&amp;p_p_col_count=2&amp;saveLastPath=0&amp;_58_struts_action=%2Flogin%2Fcreate_account">Register</a></string>
     
     <string name="informationTitle">Information</string>
     <string name="loginInfo">This application was created by GLORIA for its users to test our funny experiments. Visit us on http://gloria-project.eu/</string>
