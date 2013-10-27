@@ -34,6 +34,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -168,6 +169,9 @@ public class SunMarkerActivity extends Activity{
 		wolfNumberLayout.setVisibility(View.INVISIBLE);
 		tvWolfNumber = (TextView) findViewById(R.id.wolfNumberTextView);
 
+		RelativeLayout imgLayout = (RelativeLayout) findViewById(R.id.image_layout);
+		imgLayout.setDrawingCacheEnabled(false);
+
 		groupControlsLayout = findViewById(R.id.groupControls);
 		groupControlsLayout.setVisibility(groupControlsVisibility); 
 		sunspotsNumberPicker = (NumberPicker) findViewById(R.id.sunspotsNumberPicker);
@@ -202,6 +206,7 @@ public class SunMarkerActivity extends Activity{
 				}
 			});
 			imgTouchable.setMaxZoom(4f); //change the max level of zoom, default is 3f
+			imgTouchable.setDrawingCacheEnabled(false);
 
 			// calendar settings
 			final Calendar calendar = Calendar.getInstance();
@@ -244,6 +249,7 @@ public class SunMarkerActivity extends Activity{
 		super.onPause();
 	}
 
+	@SuppressLint("CutPasteId")
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {  
 		super.onConfigurationChanged(newConfig);
@@ -251,15 +257,15 @@ public class SunMarkerActivity extends Activity{
 		
 		// Set views to new orientation 
 		// Remove views from old parents (Unlink)
-		RelativeLayout imgLayout = (RelativeLayout) findViewById(R.id.image_layout);
-		ArrayList<ZoomablePinView> pins = imgTouchable.getPins();
+		final RelativeLayout oldImgLayout = (RelativeLayout) findViewById(R.id.image_layout);
+		final ArrayList<ZoomablePinView> pins = imgTouchable.getPins();
 		for (int i=0; i < pins.size(); i++) {
-			imgLayout.removeView(pins.get(i));
+			oldImgLayout.removeView(pins.get(i));
 		}
-		imgLayout.removeView(imgTouchable);
+		oldImgLayout.removeView(imgTouchable);
 
         setContentView(R.layout.sun_marker); // set layout with new orientation
-		imgLayout = (RelativeLayout) findViewById(R.id.image_layout);
+		final RelativeLayout imgLayout = (RelativeLayout) findViewById(R.id.image_layout);
 		imgLayout.removeAllViews(); // remove "new" imgTouchable which we won't use
 		imgLayout.addView(imgTouchable); // put old back in place
         prepareWidgets(false);
@@ -267,7 +273,6 @@ public class SunMarkerActivity extends Activity{
         // set views to new layout
 		for (int i=0; i < pins.size(); i++){
 			imgTouchable.addPin(pins.get(i));
-			pins.get(i).invalidate();
 		}
 		imgTouchable.setPins(pins);
 		imgTouchable.selectPin(imgTouchable.getSelectedPin());
@@ -280,8 +285,24 @@ public class SunMarkerActivity extends Activity{
 		
 		// reset parameters
 		imgTouchable.saveScale = 1f;
-		imgTouchable.invalidate();
-		imgLayout.invalidate();
+		
+		// okay, this is f**** up - couldn't find out why no invalidate, requestlayout or whatever could get the pins to redraw after config change
+		// even if you call this "refresh" I made (adding and removing one pin) in this method, without the async task to wait, it won't do a thing
+		// this a serious x-file to research with time
+		new AsyncTask<Void, Void, Void>() {
+			@Override
+			protected Void doInBackground(Void... params) {
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+				}
+				return null;
+			}
+			protected void onPostExecute(Void result) {
+				Log.d("IJASDIAD","IJOFOKAOFJFJFOFJO");
+				imgTouchable.refresh();
+			}
+		}.execute();
 	}
 
 	/* *****************************************

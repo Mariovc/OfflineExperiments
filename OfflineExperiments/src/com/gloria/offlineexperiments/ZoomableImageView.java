@@ -369,6 +369,13 @@ public class ZoomableImageView extends ImageView {
 		calculateWolfNumber();
 	}
 	
+	public void refresh() {
+		int previous = selectedPin;
+		addPin(0.0f, 0.0f, centerPointView, centerFocus, saveScale, scale, redundantXSpace, redundantYSpace);
+		removePin();
+		selectPin(previous);
+	}
+	
 	public void addPin(ZoomablePinView pin) {
 		ViewGroup parent = (ViewGroup) getParent();
 		parent.addView(pin);
