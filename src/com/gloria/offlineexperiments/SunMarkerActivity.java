@@ -68,7 +68,7 @@ public class SunMarkerActivity extends Activity{
 	private int imageID = -1;
 
 	private ZoomableImageView imgTouchable;
-	private RelativeLayout buttons;
+	private View buttonsLayout;
 	private int buttonsVisibility = RelativeLayout.INVISIBLE;
 
 	private TextView mDateDisplay;
@@ -136,8 +136,8 @@ public class SunMarkerActivity extends Activity{
 		imgTouchable.setWolfNumberText((TextView) findViewById(R.id.wolfNumberText));
 		imgTouchable.setMaxZoom(4f); //change the max level of zoom, default is 3f
 
-		buttons = (RelativeLayout) findViewById(R.id.Buttons);
-		buttons.setVisibility(buttonsVisibility); 
+		buttonsLayout = findViewById(R.id.buttonsLayout);
+		buttonsLayout.setVisibility(buttonsVisibility); 
 		
 		// calendar settings
 		mDateDisplay = (TextView) findViewById(R.id.dateDisplay);
@@ -186,8 +186,8 @@ public class SunMarkerActivity extends Activity{
 		imgTouchable.setPins(pins);
 		imgTouchable.selectPin(imgTouchable.getSelectedPin());
 		imgTouchable.setWolfNumberText((TextView) findViewById(R.id.wolfNumberText));
-		buttons = (RelativeLayout) findViewById(R.id.Buttons);
-		buttons.setVisibility(buttonsVisibility); 
+		buttonsLayout = findViewById(R.id.buttonsLayout);
+		buttonsLayout.setVisibility(buttonsVisibility); 
 		mDateDisplay = (TextView) findViewById(R.id.dateDisplay);
 		updateDisplay();
 		
@@ -241,12 +241,12 @@ public class SunMarkerActivity extends Activity{
 
 	public void displayButtons () {
 		buttonsVisibility = RelativeLayout.VISIBLE;
-		buttons.setVisibility(buttonsVisibility);
+		buttonsLayout.setVisibility(buttonsVisibility);
 	}
 
 	public void hideButtons () {
 		buttonsVisibility = RelativeLayout.INVISIBLE;
-		buttons.setVisibility(buttonsVisibility);
+		buttonsLayout.setVisibility(buttonsVisibility);
 	}
 
 
