@@ -67,7 +67,7 @@ public class ZoomableImageView extends ImageView {
 	// Center of the focused area in pixels
 	private PointF centerFocus = new PointF();
 	// Center point of TouchImageView
-	private final PointF centerPointView = new PointF();
+	private PointF centerPointView = new PointF();
 
 	private int wolfNumber = 0;
 	//observatory factor or the personal reduction coefficient
@@ -106,6 +106,23 @@ public class ZoomableImageView extends ImageView {
 		setImageMatrix(matrix);
 		setScaleType(ScaleType.MATRIX);
 
+		viewWidth = 0;
+		viewHeight = 0;
+		saveScale = 1f;
+		origWidth = 0.0f;
+		origHeight = 0.0f;
+		oldMeasuredWidth = 0; 
+		oldMeasuredHeight = 0;
+		redundantYSpace = 0.0f; 
+		redundantXSpace = 0.0f;
+		scale = 1; // scale used to fit the image to the screen size;
+		last = new PointF();
+		start = new PointF();
+		mode = NONE;
+		centerFocus = new PointF();
+		centerPointView = new PointF();
+		wolfNumber = 0;
+		
 		setOnTouchListener(new OnTouchListener() {
 
 			@Override
@@ -179,6 +196,8 @@ public class ZoomableImageView extends ImageView {
 		});
 	}
 
+	
+	
 	public void setMaxZoom(float x) {
 		maxScale = x;
 	}
@@ -477,6 +496,7 @@ public class ZoomableImageView extends ImageView {
 		centerFocus.x = centerPointView.x;
 		centerFocus.y = centerPointView.y;
 		saveScale = 1f;
+		sharedConstructing(getContext());
 	}
 
 	public ArrayList<ZoomablePinView> getPins() {

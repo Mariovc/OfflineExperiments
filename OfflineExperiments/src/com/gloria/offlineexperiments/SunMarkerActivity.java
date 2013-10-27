@@ -455,7 +455,6 @@ public class SunMarkerActivity extends Activity{
 			return bitmap;
 		}
 
-
 		// This function is called when doInBackground is done
 		@Override
 		protected void onPostExecute(Bitmap bitmap){
@@ -474,6 +473,7 @@ public class SunMarkerActivity extends Activity{
 					imgTouchable.setImageBitmap(bitmap);
 					if (oldDrawable != null && oldDrawable.getBitmap() != null)
 						oldDrawable.getBitmap().recycle();
+					imgTouchable.requestLayout();
 					displayedYear = auxYear;
 					displayedMonth = auxMonth;
 					displayedDay = auxDay;
