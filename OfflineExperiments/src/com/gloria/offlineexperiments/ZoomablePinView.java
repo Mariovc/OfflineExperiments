@@ -8,6 +8,7 @@ package com.gloria.offlineexperiments;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.PointF;
 import android.graphics.Typeface;
 import android.util.TypedValue;
@@ -30,11 +31,11 @@ public class ZoomablePinView extends ImageView{
 	}
 	
 	
-//	@Override
-//	protected void onDraw(Canvas canvas) {
-//		setMargins();
-//		super.onDraw(canvas);
-//	}
+	@Override
+	protected void onDraw(Canvas canvas) {
+		setMargins();
+		super.onDraw(canvas);
+	}
 
 	@Override
 	public void setImageBitmap(Bitmap bm) { 

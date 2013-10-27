@@ -52,6 +52,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
+import android.view.animation.AnimationUtils;
 import android.widget.DatePicker;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -70,6 +73,7 @@ public class SunMarkerActivity extends Activity{
 
 	//private boolean loadImage = true;
 	private int imageID = -1;
+	private int wolfNumber = -1;
 
 	private ZoomableImageView imgTouchable;
 	private int groupControlsVisibility = View.INVISIBLE;
@@ -84,6 +88,7 @@ public class SunMarkerActivity extends Activity{
 	
 	private View groupControlsLayout = null;
 	private NumberPicker sunspotsNumberPicker = null;
+	private View wolfNumberLayout = null;
 	private TextView tvWolfNumber = null;
 	
 	private GloriaApiProxy apiProxy = new GloriaApiProxy();
@@ -93,6 +98,10 @@ public class SunMarkerActivity extends Activity{
 	private GetImage getImageTask = null;
 	private SendResults sendResultsTask = null;
 
+	private Animation appearAnim = null;
+	private Animation disappearAnim = null;
+	private Animation growAnim = null;
+	
 
 	/* *****************************************
 	 ************** Life cycle ***************
@@ -109,6 +118,24 @@ public class SunMarkerActivity extends Activity{
 		setContentView(R.layout.sun_marker);
 		prepareWidgets();
 
+		appearAnim = AnimationUtils.loadAnimation(this,
+				R.anim.appear);
+		disappearAnim = AnimationUtils.loadAnimation(this,
+				R.anim.disappear);
+		disappearAnim.setAnimationListener(new AnimationListener() {
+			@Override
+			public void onAnimationStart(Animation arg0) {
+			}
+			@Override
+			public void onAnimationRepeat(Animation arg0) {
+			}
+			@Override
+			public void onAnimationEnd(Animation arg0) {
+				groupControlsLayout.setVisibility(groupControlsVisibility);
+			}
+		});
+		growAnim = AnimationUtils.loadAnimation(this, R.anim.grow);
+		
 		getContextTask = new GetContext();
 		getContextTask.execute();
 	}
@@ -137,18 +164,26 @@ public class SunMarkerActivity extends Activity{
 				getApplicationContext(), TypefaceManager.VERDANA);
 		TypefaceManager.INSTANCE.applyTypefaceToAllViews(this, typeface);
 		
+		wolfNumberLayout = findViewById(R.id.wolfNumberLayout);
+		wolfNumberLayout.setVisibility(View.INVISIBLE);
 		tvWolfNumber = (TextView) findViewById(R.id.wolfNumberTextView);
 		
-		imgTouchable = (ZoomableImageView) findViewById(R.id.zoomable_image);
-		imgTouchable.setListener(new ZoomableImageView.ZoomableImageViewListener() {
-			@Override
-			public void onWolfNumberUpdated(int newValue) {
-				if (tvWolfNumber != null) {
-					tvWolfNumber.setText(Integer.toString(newValue));
+		if (imgTouchable == null) {
+			imgTouchable = (ZoomableImageView) findViewById(R.id.zoomable_image);
+			imgTouchable.setListener(new ZoomableImageView.ZoomableImageViewListener() {
+				@Override
+				public void onWolfNumberUpdated(int newValue) {
+					if (tvWolfNumber != null) {
+						if (wolfNumber != newValue) {
+							tvWolfNumber.startAnimation(growAnim);
+							wolfNumber = newValue;
+						}
+						tvWolfNumber.setText(Integer.toString(newValue));
+					}
 				}
-			}
-		});
-		imgTouchable.setMaxZoom(4f); //change the max level of zoom, default is 3f
+			});
+			imgTouchable.setMaxZoom(4f); //change the max level of zoom, default is 3f
+		}
 
 		groupControlsLayout = findViewById(R.id.groupControls);
 		groupControlsLayout.setVisibility(groupControlsVisibility); 
@@ -239,10 +274,12 @@ public class SunMarkerActivity extends Activity{
 		groupControlsLayout.setVisibility(groupControlsVisibility);
 		if (imageID != -1) {
 			updateDateDisplay();
+			wolfNumberLayout.setVisibility(View.VISIBLE);
 		}
 		
 		// reset parameters
 		imgTouchable.saveScale = 1f;
+		
 	}
 
 	/* *****************************************
@@ -279,13 +316,16 @@ public class SunMarkerActivity extends Activity{
 
 	public void displayGroupControls(int sunspotsNumber) {
 		sunspotsNumberPicker.setValue(sunspotsNumber);
-		groupControlsVisibility = View.VISIBLE;
-		groupControlsLayout.setVisibility(groupControlsVisibility);
+		if (groupControlsVisibility != View.VISIBLE) {
+			groupControlsVisibility = View.VISIBLE;
+			groupControlsLayout.startAnimation(appearAnim);
+			groupControlsLayout.setVisibility(groupControlsVisibility);
+		}
 	}
 
 	public void hideGroupControls() {
 		groupControlsVisibility = View.INVISIBLE;
-		groupControlsLayout.setVisibility(groupControlsVisibility);
+		groupControlsLayout.startAnimation(disappearAnim);
 	}
 
 
@@ -436,6 +476,8 @@ public class SunMarkerActivity extends Activity{
 					displayedYear = auxYear;
 					displayedMonth = auxMonth;
 					displayedDay = auxDay;
+					wolfNumberLayout.startAnimation(appearAnim);
+					wolfNumberLayout.setVisibility(View.VISIBLE);
 					updateDateDisplay();
 				} else {
 					Toast.makeText(SunMarkerActivity.this, getString(R.string.noImagesForThisDateMsg), Toast.LENGTH_LONG).show();
