@@ -68,7 +68,7 @@ public class SunMarkerActivity extends Activity{
 
 	private static final int DATE_DIALOG_ID = 0;
 	private static final int GET_CONTEXT_TIMEOUT_MS = 15000;
-	private static final int MAX_SUNSPOTS_PER_GROUP = 10;
+	private static final int MAX_SUNSPOTS_PER_GROUP = 50;
 
 	private String authorizationToken;
 
@@ -293,7 +293,7 @@ public class SunMarkerActivity extends Activity{
 			@Override
 			protected Void doInBackground(Void... params) {
 				try {
-					Thread.sleep(100);
+					Thread.sleep(300);
 				} catch (InterruptedException e) {
 				}
 				return null;
