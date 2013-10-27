@@ -267,6 +267,7 @@ public class SunMarkerActivity extends Activity{
         // set views to new layout
 		for (int i=0; i < pins.size(); i++){
 			imgTouchable.addPin(pins.get(i));
+			pins.get(i).invalidate();
 		}
 		imgTouchable.setPins(pins);
 		imgTouchable.selectPin(imgTouchable.getSelectedPin());
@@ -279,7 +280,8 @@ public class SunMarkerActivity extends Activity{
 		
 		// reset parameters
 		imgTouchable.saveScale = 1f;
-		
+		imgTouchable.invalidate();
+		imgLayout.invalidate();
 	}
 
 	/* *****************************************
