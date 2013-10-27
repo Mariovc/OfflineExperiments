@@ -471,6 +471,7 @@ public class ZoomableImageView extends ImageView {
 	public void resetAttributes(){
 		int numPins = pins.size();
 		for (int i = 0; i < numPins; i++) {
+			selectedPin = 0;
 			removePin();
 		}
 		centerFocus.x = centerPointView.x;

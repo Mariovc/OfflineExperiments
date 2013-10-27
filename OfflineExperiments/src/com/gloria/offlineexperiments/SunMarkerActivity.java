@@ -299,19 +299,20 @@ public class SunMarkerActivity extends Activity{
 	}
 
 	private void displaySendResultsDialog() {
-		AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(SunMarkerActivity.this);
-		myAlertDialog.setTitle(R.string.sendResultsTitle);
-		myAlertDialog.setMessage(R.string.sendResultsMsg);
-		myAlertDialog.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface arg0, int arg1) {
-				new SendResults().execute();
-			}});
-		myAlertDialog.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+		new AlertDialog.Builder(SunMarkerActivity.this)
+			.setTitle(R.string.sendResultsTitle)
+			.setMessage(R.string.sendResultsMsg)
+			.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface arg0, int arg1) {
+					new SendResults().execute();
+				}})
+			.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface arg0, int arg1) {
 				getImageTask = new GetImage();
 				getImageTask.execute();
-			}});
-		myAlertDialog.show();
+			}})
+			.setCancelable(false)
+			.show();
 	}
 
 	public void displayGroupControls(int sunspotsNumber) {
@@ -469,10 +470,10 @@ public class SunMarkerActivity extends Activity{
 			if (!isCancelled()) {
 				if (bitmap != null) {
 					BitmapDrawable oldDrawable = (BitmapDrawable)imgTouchable.getDrawable();
+					imgTouchable.resetAttributes();
 					imgTouchable.setImageBitmap(bitmap);
 					if (oldDrawable != null && oldDrawable.getBitmap() != null)
 						oldDrawable.getBitmap().recycle();
-					imgTouchable.resetAttributes();
 					displayedYear = auxYear;
 					displayedMonth = auxMonth;
 					displayedDay = auxDay;
