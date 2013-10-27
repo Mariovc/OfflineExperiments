@@ -116,7 +116,7 @@ public class SunMarkerActivity extends Activity{
 		authorizationToken = extras.getString("authorizationToken");
 		
 		setContentView(R.layout.sun_marker);
-		prepareWidgets();
+		prepareWidgets(true);
 
 		appearAnim = AnimationUtils.loadAnimation(this,
 				R.anim.appear);
@@ -159,7 +159,7 @@ public class SunMarkerActivity extends Activity{
 		}
 	}
 	
-	private void prepareWidgets() {
+	private void prepareWidgets(boolean initial) {
 		final Typeface typeface = TypefaceManager.INSTANCE.getTypeface(
 				getApplicationContext(), TypefaceManager.VERDANA);
 		TypefaceManager.INSTANCE.applyTypefaceToAllViews(this, typeface);
@@ -167,23 +167,6 @@ public class SunMarkerActivity extends Activity{
 		wolfNumberLayout = findViewById(R.id.wolfNumberLayout);
 		wolfNumberLayout.setVisibility(View.INVISIBLE);
 		tvWolfNumber = (TextView) findViewById(R.id.wolfNumberTextView);
-		
-		if (imgTouchable == null) {
-			imgTouchable = (ZoomableImageView) findViewById(R.id.zoomable_image);
-			imgTouchable.setListener(new ZoomableImageView.ZoomableImageViewListener() {
-				@Override
-				public void onWolfNumberUpdated(int newValue) {
-					if (tvWolfNumber != null) {
-						if (wolfNumber != newValue) {
-							tvWolfNumber.startAnimation(growAnim);
-							wolfNumber = newValue;
-						}
-						tvWolfNumber.setText(Integer.toString(newValue));
-					}
-				}
-			});
-			imgTouchable.setMaxZoom(4f); //change the max level of zoom, default is 3f
-		}
 
 		groupControlsLayout = findViewById(R.id.groupControls);
 		groupControlsLayout.setVisibility(groupControlsVisibility); 
@@ -204,12 +187,29 @@ public class SunMarkerActivity extends Activity{
 			}
 		});
 		
-		// calendar settings
-		final Calendar calendar = Calendar.getInstance();
-		//calendar.add(Calendar.DAY_OF_YEAR, -2);
-		displayedYear = auxYear = calendar.get(Calendar.YEAR);
-		displayedMonth = auxMonth = calendar.get(Calendar.MONTH);
-		displayedDay = auxDay = calendar.get(Calendar.DAY_OF_MONTH);
+		if (initial) {
+			imgTouchable = (ZoomableImageView) findViewById(R.id.zoomable_image);
+			imgTouchable.setListener(new ZoomableImageView.ZoomableImageViewListener() {
+				@Override
+				public void onWolfNumberUpdated(int newValue) {
+					if (tvWolfNumber != null) {
+						if (wolfNumber != newValue) {
+							tvWolfNumber.startAnimation(growAnim);
+							wolfNumber = newValue;
+						}
+						tvWolfNumber.setText(Integer.toString(newValue));
+					}
+				}
+			});
+			imgTouchable.setMaxZoom(4f); //change the max level of zoom, default is 3f
+
+			// calendar settings
+			final Calendar calendar = Calendar.getInstance();
+			//calendar.add(Calendar.DAY_OF_YEAR, -2);
+			displayedYear = auxYear = calendar.get(Calendar.YEAR);
+			displayedMonth = auxMonth = calendar.get(Calendar.MONTH);
+			displayedDay = auxDay = calendar.get(Calendar.DAY_OF_MONTH);
+		}
 	}	
 
 	private void showDeleteDialog() {
@@ -262,7 +262,7 @@ public class SunMarkerActivity extends Activity{
 		imgLayout = (RelativeLayout) findViewById(R.id.image_layout);
 		imgLayout.removeAllViews(); // remove "new" imgTouchable which we won't use
 		imgLayout.addView(imgTouchable); // put old back in place
-        prepareWidgets();
+        prepareWidgets(false);
         
         // set views to new layout
 		for (int i=0; i < pins.size(); i++){
