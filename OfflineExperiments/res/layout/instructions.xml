@@ -29,11 +29,12 @@
 
     <ImageView
         android:id="@+id/usageImageView"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/small_separation"
+        android:contentDescription="@string/instructionsImgAlt"
         android:scaleType="fitCenter"
-        android:src="@drawable/usage" android:contentDescription="@string/instructionsImgAlt"/>
+        android:src="@drawable/usage" />
 
     <Button
         android:id="@+id/loginButton"

@@ -12,7 +12,7 @@
     <string name="register"><a href="http://users.gloria-project.eu/home?p_p_id=58&amp;p_p_lifecycle=0&amp;p_p_state=maximized&amp;p_p_mode=view&amp;p_p_col_id=column-2&amp;p_p_col_count=2&amp;saveLastPath=0&amp;_58_struts_action=%2Flogin%2Fcreate_account">Registrarse</a></string>
     
     <string name="informationTitle">Información</string>
-    <string name="loginInfo">Esta aplicación fue creada por GLORIA para que sus usuarios prueben nuestros entretenidos experimentos. Visítanos en http://gloria-project.eu/</string>
+    <string name="loginInfo">GLORIA es un proyecto europeo para la construcción de una red de telescopios robóticos. Participa y ayuda a los astrónomos a descubrir los misterios del Universo. Gracias a tu ayuda, seremos capaz de medir la actividad del Sol.\n\nVisítanos en <a href="http://gloria-project.eu/">http://gloria-project.eu</a></string>
     
     <string name="experimentsTitle">Experimentos</string>
     <string name="wolfExperiment">Manchas solares</string>
@@ -22,8 +22,11 @@
     <string name="instructionsText">¡Bienvenido a GLORIA Solar Activity Experiment!\n\nAyúdanos a estudiar la actividad solar contando manchas solares (puntos oscuros en la superficie del Sol). Marca un grupo, y cuenta las manchas individuales. Es muy importante marcar todos los grupos de manchas. El número total determina el Número de Wolf relacionado con la actividad solar, y es muy importante para la investigación solar. El Sol está en el máximo de su ciclo de 11 años, y tu ayuda es crucial para entender la evolución solar.\n\nElige una fecha para buscar imágenes del sol de ese día, ¡y empieza a contribuir!</string>
     <string name="instructionsImgAlt">Imagen de ayuda</string>
     
-    <string name="wolfText">Número de Wolf: R =&#160;</string>
+    <string name="wolfText">Número\nde Wolf</string>
+    <string name="wolfPreffix">R =</string>
+    <string name="wolfDefaultValue">0</string>
     <string name="defaultDate">Fecha</string>
+    <string name="setDate">Cambiar Fecha</string>
     <string name="deleteBtn">Borrar</string>
     <string name="increaseBtn">Incrementar</string>
     <string name="decreaseBtn">Decrementar</string>
@@ -56,8 +59,10 @@
     <string name="tutorialTitle">Instrucciones</string>
     <string name="groupSunspots">Manchas\nen grupo</string>
     <string name="deleteGroup">¿Eliminar grupo?</string>    
-    <string name="sendResultsTitle">Manchas solares</string>
+    <string name="sendResultsTitle">Enviar Resultados</string>
     <string name="sendResultsMsg">¿Deseas enviar los resultados de esta imagen?</string>
     <string name="yes">Sí</string>
     <string name="no">No</string>
+    <string name="sevenCapLogo">Seven Capacities CORDIS</string>
+    <string name="euLogo">Unión Europea</string>    
 </resources>

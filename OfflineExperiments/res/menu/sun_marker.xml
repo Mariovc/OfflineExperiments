@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >@android:drawable/ic_menu_preferences
-    <item android:id="@+id/setDate" android:title="Set Date" android:icon="@android:drawable/ic_menu_today"></item>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:id="@+id/setDate" android:title="@string/setDate" android:icon="@android:drawable/ic_menu_today"></item>
     
 
 </menu>

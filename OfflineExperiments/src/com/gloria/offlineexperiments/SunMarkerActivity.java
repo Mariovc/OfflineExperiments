@@ -179,7 +179,7 @@ public class SunMarkerActivity extends Activity{
 			public void onValueChange(NumberPicker picker, final int oldVal, final int newVal) {
 				if (oldVal > 0) {
 					if (newVal == 0) {
-						showDeleteDialog();
+						showDeleteDialog(null);
 					} else {
 						imgTouchable.setPinNumber(newVal);
 					}
@@ -212,7 +212,7 @@ public class SunMarkerActivity extends Activity{
 		}
 	}	
 
-	private void showDeleteDialog() {
+	public void showDeleteDialog(View view) {
 		// delete?
 		new AlertDialog.Builder(SunMarkerActivity.this)
 		.setTitle(R.string.deleteGroup)

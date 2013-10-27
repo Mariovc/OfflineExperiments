@@ -26,29 +26,48 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:background="@android:drawable/zoom_plate"
-        android:orientation="vertical"
-        android:padding="@dimen/small_padding" >
+        android:layout_alignParentLeft="true" 
+        android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/textView2"
+        <LinearLayout
+            android:id="@+id/groupColumn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/small_separation"
-            android:gravity="center_horizontal"
-            android:text="@string/groupSunspots"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textSize="13sp" />
+            android:background="@android:drawable/zoom_plate"
+            android:orientation="vertical"
+            android:padding="@dimen/small_padding" >
 
-        <net.simonvt.numberpicker.NumberPicker
-            android:id="@+id/sunspotsNumberPicker"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/small_separation" >
-        </net.simonvt.numberpicker.NumberPicker>
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/small_separation"
+                android:gravity="center_horizontal"
+                android:text="@string/groupSunspots"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textSize="13sp" />
+
+            <net.simonvt.numberpicker.NumberPicker
+                android:id="@+id/sunspotsNumberPicker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/small_separation" >
+            </net.simonvt.numberpicker.NumberPicker>
+        </LinearLayout>
+
+        <com.gloria.offlineexperiments.ui.TooltipImageButton
+            android:id="@+id/deleteButton"
+            android:layout_width="@dimen/next_button_size"
+            android:layout_height="@dimen/next_button_size"
+            android:layout_gravity="bottom|left"
+            android:layout_margin="@dimen/btn_margin"
+            android:background="@drawable/delete_button"
+            android:contentDescription="@string/deleteBtn"
+            android:onClick="showDeleteDialog"
+            android:scaleType="fitCenter" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -109,8 +128,10 @@
         android:layout_width="@dimen/next_button_size"
         android:layout_height="@dimen/next_button_size"
         android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
         android:layout_margin="@dimen/btn_margin"
         android:background="@drawable/next_button"
+        android:contentDescription="@string/nextBtn"
         android:onClick="nextImage"
         android:scaleType="fitCenter" />
 

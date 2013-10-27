@@ -12,20 +12,21 @@
     <string name="register"><a href="http://users.gloria-project.eu/home?p_p_id=58&amp;p_p_lifecycle=0&amp;p_p_state=maximized&amp;p_p_mode=view&amp;p_p_col_id=column-2&amp;p_p_col_count=2&amp;saveLastPath=0&amp;_58_struts_action=%2Flogin%2Fcreate_account">Register</a></string>
     
     <string name="informationTitle">Information</string>
-    <string name="loginInfo">This application was created by GLORIA for its users to test our funny experiments. Visit us on http://gloria-project.eu/</string>
+    <string name="loginInfo">GLORIA is an European project for the creation of a global network of robotic telescopes. Join and help astronomers understand the mysteries of the Universe. Thanks to your help, we will be able to measure solar activity.\n\nVisit us on <a href="http://gloria-project.eu/">http://gloria-project.eu</a></string>
     
     <string name="experimentsTitle">GLORIA Solar Activity Experiment</string>
     <string name="wolfExperiment">Detect sunspots</string>
     <string name="asteroidsExperiment">Find asteroids</string>
     <string name="unimplementedExperimentMsg">Unimplemented experiment</string>
 	
-    <string name="instructionsText">Welcome to the GLORIA Solar Activity Experiment!\n\nHelp us to study the solar activity by counting sunspots (dark spots on solar surface). First mark a group, after count the number of individual sunspots. It is very important to mark all sunspot groups on solar surface. The total number of sunspots determines the Wolf Number related with solar activity, and it\'s very important for solar research. The sun is currently at the maximum of its 11 year cycle so your help is crucial to understand sun evolution.\n\nJust select a date to get sun images for that day, and start contributing!</string>
+    <string name="instructionsText">Welcome to the GLORIA Solar Activity Experiment!\n\nHelp us to study the solar activity by counting sunspots (dark spots on solar surface). First mark a group, after count the number of individual sunspots. It is very important to mark all sunspot groups on solar surface. The total number of sunspots determines the Wolf Number related with solar activity, and it\'s very important for solar research. The Sun is currently at the maximum of its 11 year cycle so your help is crucial to understand sun evolution.\n\nJust select a date to get sun images for that day, and start contributing!</string>
     <string name="instructionsImgAlt">Guidance image</string>
     
     <string name="wolfText">Wolf\nNumber</string>
     <string name="wolfPreffix">R =</string>
     <string name="wolfDefaultValue">0</string>
     <string name="defaultDate">Date</string>
+    <string name="setDate">Set Date</string>
     <string name="deleteBtn">Delete</string>
     <string name="increaseBtn">Increase</string>
     <string name="decreaseBtn">Decrease</string>
@@ -58,12 +59,10 @@
     <string name="tutorialTitle">Instructions</string>
     <string name="groupSunspots">Group\nsunspots</string>
     <string name="deleteGroup">Delete group?</string>
-    <string name="sendResultsTitle">Wolf experiment</string>
+    <string name="sendResultsTitle">Send Results</string>
     <string name="sendResultsMsg">Do you want to send results for this image?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="sevenCapLogo">Seven Capacities CORDIS</string>
     <string name="euLogo">European Union</string>
-    
-    
 </resources>
