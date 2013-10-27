@@ -6,12 +6,16 @@
     <dimen name="pin_number_text_size">22sp</dimen>
     <dimen name="pin_number_text_size_two_digits">20sp</dimen>
     <dimen name="titlebar_margin">16dp</dimen>
-    <dimen name="btn_margin">4dp</dimen>
+    <dimen name="btn_margin">6dp</dimen>
     <dimen name="between_btn_margin">8dp</dimen>
     <dimen name="increase_decrease_margin">16dp</dimen>
     <dimen name="standard_padding">10dp</dimen>
     <dimen name="standard_separation">16dp</dimen>
+    <dimen name="small_padding">5dp</dimen>
+    <dimen name="small_separation">8dp</dimen>
     <dimen name="login_btn_lateral_padding">50dp</dimen>
     <dimen name="background_rounding">8dp</dimen>
 	<dimen name="instructions_text_size">13sp</dimen>
+	<dimen name="wolf_number_size">30sp</dimen>
+	<dimen name="next_button_size">40dp</dimen>
 </resources>

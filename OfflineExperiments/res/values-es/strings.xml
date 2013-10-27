@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">experimentos GLORIA</string>
+    <string name="app_name">GLORIA Solar Activity Experiment</string>
     <string name="action_settings">Preferencias</string>
     <string name="usernameTitle">Nombre de usuario:</string>
     <string name="usernameHint">Usuario</string>
@@ -28,7 +28,7 @@
     <string name="decreaseBtn">Decrementar</string>
     <string name="nextBtn">Siguiente</string>
     <string name="cancelBtn">Cancelar</string>
-    
+    <string name="sunMarkerTitle">Imagen de %s</string>
     
     <string name="authenticatingMsg">Autenticando &#8230;</string>
     <string name="defaultErrorMsg">Error inesperado</string>
@@ -37,7 +37,7 @@
     <string name="noAccessMsg">No se pudo acceder al servidor: </string>
     
     
-    <string name="requestingAccess">Solicitando acceso a experimento...</string>
+    <string name="requestingAccess">Solicitando acceso a experimento…</string>
     <string name="selectDateMsg">Selecciona una fecha</string>
     <string name="noImagesForThisDateMsg">No hay imágenes para ese día</string>
     <string name="gettingImageMsg">Obteniendo nueva imagen &#8230;</string>
@@ -53,7 +53,7 @@
     <string name="sunspotNumberMsg">Indica el número de manchas solares individuales con los botones incrementar y decrementar</string>
     <string name="acceptBtn">Aceptar</string>
     <string name="tutorialTitle">Instrucciones</string>
-    
+    <string name="groupSunspots">Manchas\nen grupo</string>
     <string name="deleteGroup">¿Eliminar grupo?</string>    
     <string name="sendResultsTitle">Manchas solares</string>
     <string name="sendResultsMsg">¿Deseas enviar los resultados de esta imagen?</string>

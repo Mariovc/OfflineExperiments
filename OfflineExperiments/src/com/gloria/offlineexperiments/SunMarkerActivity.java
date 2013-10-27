@@ -74,8 +74,6 @@ public class SunMarkerActivity extends Activity{
 	private ZoomableImageView imgTouchable;
 	private int groupControlsVisibility = View.INVISIBLE;
 
-	private TextView mDateDisplay;
-
 	private boolean datePickerCancelled = false;
 	private int displayedYear;
 	private int displayedMonth;
@@ -86,6 +84,7 @@ public class SunMarkerActivity extends Activity{
 	
 	private View groupControlsLayout = null;
 	private NumberPicker sunspotsNumberPicker = null;
+	private TextView tvWolfNumber = null;
 	
 	private GloriaApiProxy apiProxy = new GloriaApiProxy();
 
@@ -138,8 +137,17 @@ public class SunMarkerActivity extends Activity{
 				getApplicationContext(), TypefaceManager.VERDANA);
 		TypefaceManager.INSTANCE.applyTypefaceToAllViews(this, typeface);
 		
+		tvWolfNumber = (TextView) findViewById(R.id.wolfNumberTextView);
+		
 		imgTouchable = (ZoomableImageView) findViewById(R.id.zoomable_image);
-		imgTouchable.setWolfNumberText((TextView) findViewById(R.id.wolfNumberText));
+		imgTouchable.setListener(new ZoomableImageView.ZoomableImageViewListener() {
+			@Override
+			public void onWolfNumberUpdated(int newValue) {
+				if (tvWolfNumber != null) {
+					tvWolfNumber.setText(Integer.toString(newValue));
+				}
+			}
+		});
 		imgTouchable.setMaxZoom(4f); //change the max level of zoom, default is 3f
 
 		groupControlsLayout = findViewById(R.id.groupControls);
@@ -162,13 +170,11 @@ public class SunMarkerActivity extends Activity{
 		});
 		
 		// calendar settings
-		mDateDisplay = (TextView) findViewById(R.id.dateDisplay);
 		final Calendar calendar = Calendar.getInstance();
 		//calendar.add(Calendar.DAY_OF_YEAR, -2);
 		displayedYear = auxYear = calendar.get(Calendar.YEAR);
 		displayedMonth = auxMonth = calendar.get(Calendar.MONTH);
 		displayedDay = auxDay = calendar.get(Calendar.DAY_OF_MONTH);
-		updateDisplay();
 	}	
 
 	private void showDeleteDialog() {
@@ -186,7 +192,9 @@ public class SunMarkerActivity extends Activity{
 			public void onClick(DialogInterface dialog, int which) {
 				sunspotsNumberPicker.setValue(1);
 			}
-		}).show();
+		})
+		.setCancelable(false)
+		.show();
 	}
 	
 	@Override
@@ -210,7 +218,7 @@ public class SunMarkerActivity extends Activity{
 		// Remove views from old parents (Unlink)
 		RelativeLayout imgLayout = (RelativeLayout) findViewById(R.id.image_layout);
 		ArrayList<ZoomablePinView> pins = imgTouchable.getPins();
-		for (int i=0; i < pins.size(); i++){
+		for (int i=0; i < pins.size(); i++) {
 			imgLayout.removeView(pins.get(i));
 		}
 		imgLayout.removeView(imgTouchable);
@@ -227,11 +235,11 @@ public class SunMarkerActivity extends Activity{
 		}
 		imgTouchable.setPins(pins);
 		imgTouchable.selectPin(imgTouchable.getSelectedPin());
-		imgTouchable.setWolfNumberText((TextView) findViewById(R.id.wolfNumberText));
 		groupControlsLayout = findViewById(R.id.groupControls);
-		groupControlsLayout.setVisibility(groupControlsVisibility); 
-		mDateDisplay = (TextView) findViewById(R.id.dateDisplay);
-		updateDisplay();
+		groupControlsLayout.setVisibility(groupControlsVisibility);
+		if (imageID != -1) {
+			updateDateDisplay();
+		}
 		
 		// reset parameters
 		imgTouchable.saveScale = 1f;
@@ -428,7 +436,7 @@ public class SunMarkerActivity extends Activity{
 					displayedYear = auxYear;
 					displayedMonth = auxMonth;
 					displayedDay = auxDay;
-					updateDisplay();
+					updateDateDisplay();
 				} else {
 					Toast.makeText(SunMarkerActivity.this, getString(R.string.noImagesForThisDateMsg), Toast.LENGTH_LONG).show();
 					datePickerCancelled = false;
@@ -672,12 +680,12 @@ public class SunMarkerActivity extends Activity{
 	 ************ Calendar *******************
 	 ***************************************** */
 
-	private void updateDisplay() {       
+	private void updateDateDisplay() {       
 		DateFormat formatter = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault());
 		Calendar calendar = new GregorianCalendar(displayedYear, displayedMonth, displayedDay);
 		Date date = calendar.getTime();
 
-		mDateDisplay.setText(formatter.format(date));
+		setTitle(getString(R.string.sunMarkerTitle, formatter.format(date)));
 	}
 
 	// the callback received when the user "sets" the date in the dialog

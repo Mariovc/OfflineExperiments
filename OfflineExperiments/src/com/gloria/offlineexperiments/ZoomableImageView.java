@@ -14,7 +14,6 @@ import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
@@ -24,6 +23,10 @@ import android.widget.TextView;
 
 public class ZoomableImageView extends ImageView {
 
+	public interface ZoomableImageViewListener {
+		public void onWolfNumberUpdated(int newValue);
+	};
+	
 	Matrix matrix;
 
 	// We can be in one of these 3 states
@@ -49,7 +52,8 @@ public class ZoomableImageView extends ImageView {
 	float redundantYSpace, redundantXSpace;
 	float scale = 1; // scale used to fit the image to the screen size;
 
-
+	private ZoomableImageViewListener listener = null;
+	
 	ScaleGestureDetector mScaleDetector;
 
 	Context context;
@@ -66,8 +70,6 @@ public class ZoomableImageView extends ImageView {
 	private final PointF centerPointView = new PointF();
 
 	private int wolfNumber = 0;
-	private TextView wolfNumberTextView = null;
-	private String wolfNumberText = "";
 	//observatory factor or the personal reduction coefficient
 	private static final int K = 1;
 
@@ -75,9 +77,6 @@ public class ZoomableImageView extends ImageView {
 	@Override
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
-		for (int i=0; i < pins.size(); i++){
-			pins.get(i).draw(canvas);
-		}
 	}
 
 	public ZoomableImageView(Context context) {
@@ -88,6 +87,14 @@ public class ZoomableImageView extends ImageView {
 	public ZoomableImageView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		sharedConstructing(context);
+	}
+
+	public ZoomableImageViewListener getListener() {
+		return listener;
+	}
+
+	public void setListener(ZoomableImageViewListener listener) {
+		this.listener = listener;
 	}
 
 	private void sharedConstructing(Context context) {
@@ -257,7 +264,6 @@ public class ZoomableImageView extends ImageView {
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-		Log.d("DEBUG", "onMeasure");
 		viewWidth = MeasureSpec.getSize(widthMeasureSpec);
 		viewHeight = MeasureSpec.getSize(heightMeasureSpec);
 
@@ -281,8 +287,6 @@ public class ZoomableImageView extends ImageView {
 				return;
 			int bmWidth = drawable.getIntrinsicWidth();
 			int bmHeight = drawable.getIntrinsicHeight();
-
-			Log.d("bmSize", "bmWidth: " + bmWidth + " bmHeight : " + bmHeight);
 
 			float scaleX = (float) viewWidth / (float) bmWidth;
 			float scaleY = (float) viewHeight / (float) bmHeight;
@@ -454,13 +458,13 @@ public class ZoomableImageView extends ImageView {
 	}
 
 	private void calculateWolfNumber() {
-		if (wolfNumberTextView != null) {
-			int individualSpots = 0;
-			for (int i = 0; i < pins.size(); i++) {
-				individualSpots += pins.get(i).getNumber();
-			}
-			wolfNumber = K * (10 * pins.size() + individualSpots);
-			wolfNumberTextView.setText(wolfNumberText + wolfNumber);
+		int individualSpots = 0;
+		for (int i = 0; i < pins.size(); i++) {
+			individualSpots += pins.get(i).getNumber();
+		}
+		wolfNumber = K * (10 * pins.size() + individualSpots);
+		if (listener != null) {
+			listener.onWolfNumberUpdated(wolfNumber);
 		}
 	}
 
@@ -472,13 +476,6 @@ public class ZoomableImageView extends ImageView {
 		centerFocus.x = centerPointView.x;
 		centerFocus.y = centerPointView.y;
 		saveScale = 1f;
-	}
-
-
-	public void setWolfNumberText (TextView textView) {
-		this.wolfNumberTextView = textView;
-		this.wolfNumberText = textView.getText().toString();
-		calculateWolfNumber();
 	}
 
 	public ArrayList<ZoomablePinView> getPins() {

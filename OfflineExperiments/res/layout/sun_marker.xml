@@ -19,7 +19,6 @@
             android:background="@drawable/tiled_bg"
             android:clickable="true"
             android:scaleType="matrix" />
-
     </RelativeLayout>
 
     <LinearLayout
@@ -27,86 +26,92 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:background="@drawable/rounded_background_lower_right_corner"
+        android:layout_alignParentLeft="true"
+        android:background="@android:drawable/zoom_plate"
         android:orientation="vertical"
-        android:padding="@dimen/standard_padding" >
+        android:padding="@dimen/small_padding" >
 
         <TextView
             android:id="@+id/textView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/small_separation"
             android:gravity="center_horizontal"
-            android:text="Group\nsunspots"
+            android:text="@string/groupSunspots"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textSize="13sp" />
 
         <net.simonvt.numberpicker.NumberPicker
             android:id="@+id/sunspotsNumberPicker"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
-
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/small_separation" >
         </net.simonvt.numberpicker.NumberPicker>
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:orientation="vertical" >
-
-        <TextView
-            android:id="@+id/wolfNumberText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/btn_margin"
-            android:layout_marginTop="@dimen/btn_margin"
-            android:background="@color/black"
-            android:text="@string/wolfText"
-            android:textColor="@color/white" />
-
-        <TextView
-            android:id="@+id/dateDisplay"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/btn_margin"
-            android:background="@color/black"
-            android:text="@string/defaultDate"
-            android:textColor="@color/white" />
-    </LinearLayout>
-
-    <LinearLayout
+        android:id="@+id/wolfNumberContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:gravity="top|center_horizontal"
-        android:onClick="nextImage"
+        android:background="@android:drawable/zoom_plate"
+        android:gravity="center"
         android:orientation="vertical" >
 
-        <Button
-            android:id="@+id/next_btn"
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/btn_margin"
-            android:layout_marginRight="@dimen/btn_margin"
-            android:layout_marginTop="@dimen/btn_margin"
-            android:background="@drawable/next_button"
-            android:onClick="nextImage" />
-
         <TextView
-            android:id="@+id/textView1"
+            android:id="@+id/textView4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/btn_margin"
-            android:layout_marginRight="@dimen/btn_margin"
-            android:background="@color/black"
-            android:text="@string/nextBtn"
-            android:textAppearance="?android:attr/textAppearance"
-            android:textColor="@color/white" />
+            android:layout_marginTop="@dimen/small_separation"
+            android:gravity="center"
+            android:text="@string/wolfText"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/light_grey" />
+
+        <LinearLayout
+            android:id="@+id/wolfNumberLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="@dimen/small_padding" >
+
+            <TextView
+                android:id="@+id/textView1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="@dimen/small_padding"
+                android:text="@string/wolfPreffix"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="@color/light_grey" />
+
+            <TextView
+                android:id="@+id/wolfNumberTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.5"
+                android:gravity="center"
+                android:padding="@dimen/small_padding"
+                android:text="@string/wolfDefaultValue"
+                android:textColor="@color/white"
+                android:textSize="@dimen/wolf_number_size"
+                android:textStyle="bold" />
+
+        </LinearLayout>
     </LinearLayout>
+
+    <com.gloria.offlineexperiments.ui.TooltipImageButton
+        android:id="@+id/next_btn"
+        android:layout_width="@dimen/next_button_size"
+        android:layout_height="@dimen/next_button_size"
+        android:layout_alignParentRight="true"
+        android:layout_margin="@dimen/btn_margin"
+        android:background="@drawable/next_button"
+        android:onClick="nextImage"
+        android:scaleType="fitCenter" />
 
 </RelativeLayout>

@@ -21,14 +21,16 @@
 	
     <string name="instructionsText">Welcome to the GLORIA Solar Activity Experiment!\n\nHelp us to study the solar activity by counting sunspots (dark spots on solar surface). First mark a group, after count the number of individual sunspots. It is very important to mark all sunspot groups on solar surface. The total number of sunspots determines the Wolf Number related with solar activity, and it\'s very important for solar research. The sun is currently at the maximum of its 11 year cycle so your help is crucial to understand sun evolution.\n\nJust select a date to get sun images for that day, and start contributing!</string>
     
-    <string name="wolfText">Wolf Number: R =&#160;</string>
+    <string name="wolfText">Wolf\nNumber</string>
+    <string name="wolfPreffix">R =</string>
+    <string name="wolfDefaultValue">0</string>
     <string name="defaultDate">Date</string>
     <string name="deleteBtn">Delete</string>
     <string name="increaseBtn">Increase</string>
     <string name="decreaseBtn">Decrease</string>
     <string name="nextBtn">Next</string>
     <string name="cancelBtn">Cancel</string>
-    
+    <string name="sunMarkerTitle">Image for %s</string>
     
     <string name="authenticatingMsg">Authenticating &#8230;</string>
     <string name="defaultErrorMsg">Unexpected error</string>
@@ -37,7 +39,7 @@
     <string name="noAccessMsg">Cannot access the server: </string>
     
     
-    <string name="requestingAccess">Requesting access to experiment...</string>
+    <string name="requestingAccess">Requesting access to experiment…</string>
     <string name="selectDateMsg">Select a date</string>
     <string name="noImagesForThisDateMsg">There are no images for that date</string>
     <string name="gettingImageMsg">Getting new image &#8230;</string>
@@ -53,7 +55,7 @@
     <string name="sunspotNumberMsg">Indicate the number of individual sunspots with the increase and decrease buttons</string>
     <string name="acceptBtn">Accept</string>
     <string name="tutorialTitle">Instructions</string>
-    
+    <string name="groupSunspots">Group\nsunspots</string>
     <string name="deleteGroup">Delete group?</string>
     <string name="sendResultsTitle">Wolf experiment</string>
     <string name="sendResultsMsg">Do you want to send results for this image?</string>
