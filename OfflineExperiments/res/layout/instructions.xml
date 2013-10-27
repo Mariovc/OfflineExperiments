@@ -10,46 +10,37 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin" >
 
-    <FrameLayout
-        android:id="@+id/textContainer"
+    <ScrollView
+        android:id="@+id/borderLayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" >
+        android:layout_weight="1"
+        android:background="@drawable/rounded_background"
+        android:fadingEdgeLength="50dp"
+        android:padding="@dimen/small_padding" >
 
-        <LinearLayout
-            android:id="@+id/borderLayout"
+        <TextView
+            android:id="@+id/textView1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:background="@drawable/rounded_background"
-            android:orientation="vertical" >
+            android:text="@string/instructionsText"
+            android:textSize="@dimen/instructions_text_size" />
+    </ScrollView>
 
-            <TextView
-                android:id="@+id/textView1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/standard_padding"
-                android:text="@string/instructionsText"
-                android:textSize="@dimen/instructions_text_size" />
-
-            <ImageView
-                android:id="@+id/usageImageView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:padding="@dimen/standard_padding"
-                android:scaleType="fitCenter"
-                android:src="@drawable/usage" />
-
-        </LinearLayout>
-    </FrameLayout>
+    <ImageView
+        android:id="@+id/usageImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/small_separation"
+        android:scaleType="fitCenter"
+        android:src="@drawable/usage" android:contentDescription="@string/instructionsImgAlt"/>
 
     <Button
         android:id="@+id/loginButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="@dimen/standard_separation"
+        android:layout_marginTop="@dimen/small_separation"
         android:onClick="launchSunMarker"
         android:paddingLeft="@dimen/login_btn_lateral_padding"
         android:paddingRight="@dimen/login_btn_lateral_padding"
