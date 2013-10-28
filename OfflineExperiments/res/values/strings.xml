@@ -20,10 +20,9 @@
     <string name="unimplementedExperimentMsg">Unimplemented experiment</string>
 	
     <string name="instructionsText">Welcome to the GLORIA Solar Activity Experiment!\n\nHelp us to study the solar activity by counting sunspots (dark spots on solar surface). First mark a group, after count the number of individual sunspots. It is very important to mark all sunspot groups on solar surface. The total number of sunspots determines the Wolf Number related with solar activity, and it\'s very important for solar research. The Sun is currently at the maximum of its 11 year cycle so your help is crucial to understand sun evolution.\n\nJust select a date to get sun images for that day, and start contributing!</string>
-    <string name="instructionsImgAlt">Guidance image</string>
+    <string name="instructionsExampleImage">Example image</string>
     
-    <string name="wolfText">Wolf\nNumber</string>
-    <string name="wolfPreffix">R =</string>
+    <string name="wolfPreffix">Wolf Number =</string>
     <string name="wolfDefaultValue">0</string>
     <string name="defaultDate">Date</string>
     <string name="setDate">Set Date</string>
@@ -46,7 +45,6 @@
     <string name="noImagesForThisDateMsg">There are no images for that date</string>
     <string name="gettingImageMsg">Getting new image &#8230;</string>
     <string name="sendingResultsMsg">Sending results &#8230;</string>
-    
     
     <string name="newImageMsg">Image #</string>
     <string name="noMoreImagesMsg">There are no more images for this day</string>

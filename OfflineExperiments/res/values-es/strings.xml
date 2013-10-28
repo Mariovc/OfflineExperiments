@@ -20,10 +20,9 @@
     <string name="unimplementedExperimentMsg">Experimento no implementado</string>
 	
     <string name="instructionsText">¡Bienvenido a GLORIA Solar Activity Experiment!\n\nAyúdanos a estudiar la actividad solar contando manchas solares (puntos oscuros en la superficie del Sol). Marca un grupo, y cuenta las manchas individuales. Es muy importante marcar todos los grupos de manchas. El número total determina el Número de Wolf relacionado con la actividad solar, y es muy importante para la investigación solar. El Sol está en el máximo de su ciclo de 11 años, y tu ayuda es crucial para entender la evolución solar.\n\nElige una fecha para buscar imágenes del sol de ese día, ¡y empieza a contribuir!</string>
-    <string name="instructionsImgAlt">Imagen de ayuda</string>
+    <string name="instructionsExampleImage">Example image</string>
     
-    <string name="wolfText">Número\nde Wolf</string>
-    <string name="wolfPreffix">R =</string>
+    <string name="wolfPreffix">Númer de Wolf =</string>
     <string name="wolfDefaultValue">0</string>
     <string name="defaultDate">Fecha</string>
     <string name="setDate">Cambiar Fecha</string>

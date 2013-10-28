@@ -12,7 +12,7 @@ public class InstructionsActivity extends Activity {
 	private String username;
 	private String sha1Password;
 	private String authorizationToken;
-
+	
 	/** Called when the activity is first created. */
 	@Override public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -24,6 +24,12 @@ public class InstructionsActivity extends Activity {
 		setContentView(R.layout.instructions);
 		prepareWidgets();
 		
+	}
+
+	public void showUsageImage(View view) {
+		findViewById(R.id.imageButton).setVisibility(View.GONE);
+		findViewById(R.id.textLayout).setVisibility(View.GONE);
+		findViewById(R.id.usageImageView).setVisibility(View.VISIBLE);
 	}
 
 	public void launchSunMarker(View view) {
@@ -38,5 +44,7 @@ public class InstructionsActivity extends Activity {
 		final Typeface typeface = TypefaceManager.INSTANCE.getTypeface(
 				getApplicationContext(), TypefaceManager.VERDANA);
 		TypefaceManager.INSTANCE.applyTypefaceToAllViews(this, typeface);
+		findViewById(R.id.usageImageView).setVisibility(View.GONE);
 	}	
+	
 }
