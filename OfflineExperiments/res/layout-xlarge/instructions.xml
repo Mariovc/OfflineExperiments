@@ -31,8 +31,9 @@
     <ImageView
         android:id="@+id/usageImageView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginTop="@dimen/small_separation"
+        android:layout_weight="1"
         android:contentDescription="@string/instructionsExampleImage"
         android:scaleType="fitCenter"
         android:src="@drawable/usage" />
