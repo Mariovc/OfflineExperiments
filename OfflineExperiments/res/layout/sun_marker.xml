@@ -27,7 +27,18 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:orientation="horizontal" >
+        android:gravity="center_horizontal"
+        android:orientation="vertical" >
+
+        <com.gloria.offlineexperiments.ui.TooltipImageButton
+            android:id="@+id/deleteButton"
+            android:layout_width="@dimen/next_button_size"
+            android:layout_height="@dimen/next_button_size"
+            android:layout_margin="@dimen/btn_margin"
+            android:background="@drawable/delete_button"
+            android:contentDescription="@string/deleteBtn"
+            android:onClick="showDeleteDialog"
+            android:scaleType="fitCenter" />
 
         <LinearLayout
             android:id="@+id/groupColumn"
@@ -56,17 +67,6 @@
                 android:layout_marginTop="@dimen/small_separation" >
             </net.simonvt.numberpicker.NumberPicker>
         </LinearLayout>
-
-        <com.gloria.offlineexperiments.ui.TooltipImageButton
-            android:id="@+id/deleteButton"
-            android:layout_width="@dimen/next_button_size"
-            android:layout_height="@dimen/next_button_size"
-            android:layout_gravity="bottom|left"
-            android:layout_margin="@dimen/btn_margin"
-            android:background="@drawable/delete_button"
-            android:contentDescription="@string/deleteBtn"
-            android:onClick="showDeleteDialog"
-            android:scaleType="fitCenter" />
     </LinearLayout>
 
     <LinearLayout
