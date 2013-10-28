@@ -48,7 +48,7 @@
 
         <Button
             android:id="@+id/imageButton"
-            android:layout_width="225dp"
+            android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:onClick="showUsageImage"
             android:paddingLeft="@dimen/login_btn_lateral_padding"
@@ -57,7 +57,7 @@
 
         <Button
             android:id="@+id/loginButton"
-            android:layout_width="225dp"
+            android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:onClick="launchSunMarker"
             android:paddingLeft="@dimen/login_btn_lateral_padding"
