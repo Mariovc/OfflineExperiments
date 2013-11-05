@@ -70,6 +70,7 @@ public class SunMarkerActivity extends Activity{
 	private static final int GET_CONTEXT_TIMEOUT_MS = 15000;
 	private static final int MAX_SUNSPOTS_PER_GROUP = 50;
 
+	private String username;
 	private String authorizationToken;
 
 	//private boolean loadImage = true;
@@ -115,6 +116,7 @@ public class SunMarkerActivity extends Activity{
 
 		Bundle extras = getIntent().getExtras();
 		authorizationToken = extras.getString("authorizationToken");
+		username = extras.getString("username");
 		
 		setContentView(R.layout.sun_marker);
 		prepareWidgets(true);
@@ -618,7 +620,8 @@ public class SunMarkerActivity extends Activity{
 		int i = 0;
 		while (!wolfFound && i < experiments.length()) {
 			JSONObject experiment = experiments.optJSONObject(i);
-			if (experiment.optString("experiment").compareTo("WOLF") == 0){
+			if (experiment.optString("experiment").compareTo("WOLF") == 0
+					&& experiment.optString("user").compareTo(username) == 0){
 				reservationID = experiment.optInt("reservationId");
 				wolfFound = true;
 			}
