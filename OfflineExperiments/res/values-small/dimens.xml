@@ -1,0 +1,22 @@
+<resources>
+
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">0dp</dimen>
+    <dimen name="activity_vertical_margin">0dp</dimen>
+    
+    <dimen name="pin_number_text_size">15sp</dimen>
+    <dimen name="pin_number_text_size_two_digits">13sp</dimen>
+    <dimen name="titlebar_margin">2dp</dimen>
+    <dimen name="btn_margin">2dp</dimen>
+    <dimen name="between_btn_margin">2dp</dimen>
+    <dimen name="increase_decrease_margin">16dp</dimen>
+    <dimen name="standard_padding">2dp</dimen>
+    <dimen name="standard_separation">4dp</dimen>
+    <dimen name="small_padding">1dp</dimen>
+    <dimen name="small_separation">2dp</dimen>
+    <dimen name="login_btn_lateral_padding">10dp</dimen>
+    <dimen name="background_rounding">4dp</dimen>
+	<dimen name="instructions_text_size">12sp</dimen>
+	<dimen name="wolf_number_size">25sp</dimen>
+	<dimen name="next_button_size">25dp</dimen>
+</resources>

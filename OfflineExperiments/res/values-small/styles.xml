@@ -12,12 +12,12 @@
         -->
     </style>
     
-    <style name="NoTitleTheme" parent="@android:style/Theme.NoTitleBar"/>
+    <style name="NoTitleTheme" parent="@android:style/Theme.NoTitleBar.Fullscreen"/>
     
-    <style name="DialogTheme" parent="@android:style/Theme.Dialog"/>
+    <style name="DialogTheme" parent="@android:style/Theme.NoTitleBar.Fullscreen"/>
+    
+    <style name="TitleThemeIfSpaceEnough" parent="@android:style/Theme.NoTitleBar.Fullscreen"/>
 
-    <style name="TitleThemeIfSpaceEnough" parent="AppTheme"/>
-        
     <!-- Application theme. -->
     <style name="AppTheme" parent="AppBaseTheme">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->

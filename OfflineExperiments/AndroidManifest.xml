@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.gloria.offlineexperiments"
-    android:versionCode="1005"
-    android:versionName="1.0.0.5" >
+    android:versionCode="1008"
+    android:versionName="1.0.0.8" >
 
     <uses-sdk
         android:minSdkVersion="8"
@@ -42,7 +42,7 @@
         <activity 
             android:name=".InstructionsActivity" 
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme">
+            android:theme="@style/TitleThemeIfSpaceEnough">
         </activity>
         <activity 
             android:name=".ExperimentsActivity" 

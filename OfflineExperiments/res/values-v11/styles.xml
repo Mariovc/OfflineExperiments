@@ -12,4 +12,5 @@
     
     <style name="DialogTheme" parent="@android:style/Theme.Holo.Dialog"/>    
 
+	<style name="TitleThemeIfSpaceEnough" parent="AppTheme"/>    
 </resources>
