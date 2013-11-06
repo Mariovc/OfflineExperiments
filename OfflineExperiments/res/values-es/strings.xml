@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">GLORIA Solar Activity Experiment</string>
+    <string name="action_settings">Preferencias</string>
+    <string name="usernameTitle">Nombre de usuario:</string>
+    <string name="usernameHint">Usuario</string>
+    <string name="passwordTitle">Contraseña:</string>
+    <string name="passwordHint">Contraseña</string>
+    <string name="remembermeTitle">Recuérdame</string>
+    <string name="loginBtn">Login</string>
+    <string name="register"><a href="http://users.gloria-project.eu/home?p_p_id=58&amp;p_p_lifecycle=0&amp;p_p_state=maximized&amp;p_p_mode=view&amp;p_p_col_id=column-2&amp;p_p_col_count=2&amp;saveLastPath=0&amp;_58_struts_action=%2Flogin%2Fcreate_account">Registrarse</a></string>
+    
+    <string name="informationTitle">Información</string>
+    <string name="loginInfo">GLORIA es un proyecto europeo para la construcción de una red de telescopios robóticos. Participa y ayuda a los astrónomos a descubrir los misterios del Universo. Gracias a tu ayuda, seremos capaz de medir la actividad del Sol.\n\nVisítanos en <a href="http://gloria-project.eu/">http://gloria-project.eu</a></string>
+    
+    <string name="experimentsTitle">Experimentos</string>
+    <string name="wolfExperiment">Manchas solares</string>
+    <string name="asteroidsExperiment">Asteroides</string>
+    <string name="unimplementedExperimentMsg">Experimento no implementado</string>
+	
+    <string name="instructionsText">¡Bienvenido a GLORIA Solar Activity Experiment!\n\nAyúdanos a estudiar la actividad solar contando manchas solares (puntos oscuros en la superficie del Sol). Marca un grupo, y cuenta las manchas individuales. Es muy importante marcar todos los grupos de manchas. El número total determina el Número de Wolf relacionado con la actividad solar, y es muy importante para la investigación solar. El Sol está en el máximo de su ciclo de 11 años, y tu ayuda es crucial para entender la evolución solar.\n\nElige una fecha para buscar imágenes del sol de ese día, ¡y empieza a contribuir!</string>
+    <string name="instructionsExampleImage">Imagen de ejemplo</string>
+    
+    <string name="wolfPreffix">Número de Wolf =</string>
+    <string name="wolfDefaultValue">0</string>
+    <string name="defaultDate">Fecha</string>
+    <string name="setDate">Cambiar Fecha</string>
+    <string name="deleteBtn">Borrar</string>
+    <string name="increaseBtn">Incrementar</string>
+    <string name="decreaseBtn">Decrementar</string>
+    <string name="nextBtn">Siguiente</string>
+    <string name="cancelBtn">Cancelar</string>
+    <string name="sunMarkerTitle">Imagen de %s</string>
+    
+    <string name="authenticatingMsg">Autenticando &#8230;</string>
+    <string name="defaultErrorMsg">Error inesperado</string>
+    <string name="wrongLoginMsg">Usuario o contraseña incorrecta</string>
+    <string name="noInternetMsg">Imposible contactar con el servidor. Compruebe la conexión a Internet</string>
+    <string name="noAccessMsg">No se pudo acceder al servidor: </string>
+    
+    
+    <string name="requestingAccess">Solicitando acceso a experimento…</string>
+    <string name="selectDateMsg">Selecciona una fecha</string>
+    <string name="noImagesForThisDateMsg">No hay imágenes para ese día</string>
+    <string name="gettingImageMsg">Obteniendo nueva imagen &#8230;</string>
+    <string name="sendingResultsMsg">Enviando resultados &#8230;</string>
+    
+    
+    <string name="newImageMsg">Imagen #</string>
+    <string name="noMoreImagesMsg">No hay más imágenes por hoy</string>
+    <string name="loadingImageMsg">Cargando imagen &#8230;</string>
+    <string name="loadingIDsMsg">Obteniendo imágenes &#8230;</string>
+    <string name="zoomsMsg">Puedes hacer zoom sobre la imagen con dos dedos</string>
+    <string name="markPinMsg">Marca un grupo de manchas solares haciendo clic en él</string>
+    <string name="sunspotNumberMsg">Indica el número de manchas solares individuales con los botones incrementar y decrementar</string>
+    <string name="acceptBtn">Aceptar</string>
+    <string name="tutorialTitle">Instrucciones</string>
+    <string name="groupSunspots">Manchas\nen grupo</string>
+    <string name="deleteGroup">¿Eliminar grupo?</string>    
+    <string name="sendResultsTitle">Enviar Resultados</string>
+    <string name="sendResultsMsg">¿Deseas enviar los resultados de esta imagen?</string>
+    <string name="yes">Sí</string>
+    <string name="no">No</string>
+    <string name="sevenCapLogo">Seven Capacities CORDIS</string>
+    <string name="euLogo">Unión Europea</string>    
+</resources>

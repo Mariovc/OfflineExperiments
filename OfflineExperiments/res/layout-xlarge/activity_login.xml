@@ -1,0 +1,174 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin" >
+
+    <RelativeLayout
+        android:id="@+id/topLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right" >
+
+        <com.gloria.offlineexperiments.ui.TooltipImageButton
+            android:id="@+id/infoButton"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:background="#00000000"
+            android:contentDescription="@string/informationTitle"
+            android:scaleType="fitCenter"
+            android:src="@android:drawable/ic_menu_info_details" />
+
+        <TextView
+            android:id="@+id/registerTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:text="@string/register"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/link_blue"
+            android:textSize="@dimen/tablet_text_size" />
+
+    </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/logoContainer"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_gravity="center"
+        android:layout_weight="1" >
+
+        <ImageView
+            android:id="@+id/imageView1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:contentDescription="@string/app_name"
+            android:padding="@dimen/standard_padding"
+            android:scaleType="fitCenter"
+            android:src="@drawable/app_logo" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/fieldsContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/standard_separation"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:id="@+id/fieldsLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/rounded_background"
+            android:orientation="vertical"
+            android:padding="@dimen/standard_padding"
+            tools:context=".LoginActivity"
+            tools:ignore="UselessParent" >
+
+            <EditText
+                android:id="@+id/username"
+                android:layout_width="400dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="@string/usernameHint"
+                android:imeOptions="actionNext"
+                android:inputType="textNoSuggestions|textPersonName"
+                android:padding="@dimen/standard_padding"
+                android:singleLine="true"
+                android:textColorHint="@color/hint_text_color"
+                android:textSize="@dimen/tablet_text_size" >
+
+                <requestFocus />
+            </EditText>
+
+            <EditText
+                android:id="@+id/password"
+                android:layout_width="400dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="@string/passwordHint"
+                android:imeOptions="actionGo"
+                android:inputType="textPassword"
+                android:padding="@dimen/standard_padding"
+                android:shadowColor="@color/white"
+                android:textColorHint="@color/hint_text_color"
+                android:textSize="@dimen/tablet_text_size" />
+
+            <CheckBox
+                android:id="@+id/rememberMe"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/small_separation"
+                android:checked="true"
+                android:text="@string/remembermeTitle"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/tablet_text_size" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/bottomLayout"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/standard_separation" >
+
+        <Button
+            android:id="@+id/loginButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:onClick="authenticate"
+            android:paddingBottom="20dp"
+            android:paddingLeft="@dimen/login_btn_lateral_padding"
+            android:paddingRight="@dimen/login_btn_lateral_padding"
+            android:paddingTop="20dp"
+            android:text="@string/loginBtn"
+            android:textSize="@dimen/tablet_text_size_big" />
+
+        <LinearLayout
+            android:id="@+id/logosLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:gravity="right"
+            android:orientation="vertical" >
+
+            <ImageView
+                android:id="@+id/logoEuImageView"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:contentDescription="@string/euLogo"
+                android:scaleType="fitEnd"
+                android:src="@drawable/eu_logo" />
+
+            <ImageView
+                android:id="@+id/ImageView01"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:contentDescription="@string/sevenCapLogo"
+                android:scaleType="fitStart"
+                android:src="@drawable/seven_cap_logo" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</LinearLayout>
