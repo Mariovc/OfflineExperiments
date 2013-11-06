@@ -13,7 +13,7 @@
     <dimen name="standard_separation">16dp</dimen>
     <dimen name="small_padding">5dp</dimen>
     <dimen name="small_separation">8dp</dimen>
-    <dimen name="login_btn_lateral_padding">50dp</dimen>
+    <dimen name="login_btn_lateral_padding">30dp</dimen>
     <dimen name="background_rounding">8dp</dimen>
 	<dimen name="instructions_text_size">13sp</dimen>
 	<dimen name="wolf_number_size">30sp</dimen>
